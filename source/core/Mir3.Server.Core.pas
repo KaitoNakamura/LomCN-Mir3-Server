@@ -93,7 +93,7 @@ type
 
 
 procedure ServerLogMessage(ALogMessage: String);
-function MakeDefaultMsg(msg: word; soul: integer; wparam, atag, nseries: word): TDefaultMessage;
+function MakeDefaultMsg(AMessage: Word; ARecog: Integer; WParam, ATag, ASeries: Word): TDefaultMessage;
 
 implementation
 
@@ -107,18 +107,17 @@ begin
   end;
 end;
 
-function MakeDefaultMsg(msg: word; soul: integer; wparam, atag, nseries: word): TDefaultMessage;
+function MakeDefaultMsg(AMessage: Word; ARecog: Integer; WParam, ATag, ASeries: Word): TDefaultMessage;
 begin
   with Result do
   begin
-    RIdent  := msg;
-    RRecog  := soul;
-    RParam  := wparam;
-    RTag	  := atag;
-    RSeries := nseries;
+    RIdent  := AMessage;
+    RRecog  := ARecog;
+    RParam  := WParam;
+    RTag	  := ATag;
+    RSeries := ASeries;
   end;
 end;
-
 
 procedure InitGlobalCoreCode;
 begin

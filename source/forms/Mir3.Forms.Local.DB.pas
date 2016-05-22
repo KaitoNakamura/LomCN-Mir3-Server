@@ -7,7 +7,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.ExtCtrls,
 
-  Mir3.Server.Constants;
+  Mir3.Server.Constants, Mir3.Server.Functions;
 
 type
   TFrmDB = class(TForm)

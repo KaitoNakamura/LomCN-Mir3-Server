@@ -19,7 +19,8 @@ uses
   Mir3.Objects.Monster_3 in 'objects\Mir3.Objects.Monster_3.pas',
   Mir3.Objects.Monster_4 in 'objects\Mir3.Objects.Monster_4.pas',
   Mir3.Objects.Monster_5 in 'objects\Mir3.Objects.Monster_5.pas',
-  Mir3.Objects.Monster_6 in 'objects\Mir3.Objects.Monster_6.pas';
+  Mir3.Objects.Monster_6 in 'objects\Mir3.Objects.Monster_6.pas',
+  Mir3.Server.Functions in 'core\Mir3.Server.Functions.pas';
 
 {$R *.res}
 

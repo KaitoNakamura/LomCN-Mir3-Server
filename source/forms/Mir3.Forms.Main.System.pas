@@ -73,70 +73,10 @@ implementation
 
 {$R *.dfm}
 
-function ArrestStringEx (Source, SearchAfter, ArrestBefore: string; var ArrestStr: string): string;
-var
-   BufCount, SrcCount, SrcLen: integer;
-   GoodData, Fin, flag: Boolean;
-   i, n: integer;
-begin
-   ArrestStr := ''; {result string}
-   Result := '';
-   if Source = '' then exit;
-
-   try
-      SrcLen := Length (Source);
-      GoodData := FALSE;
-      if SrcLen >= 2 then
-         if Source[1] = SearchAfter then begin
-            Source := Copy (Source, 2, SrcLen-1);
-            SrcLen := Length (Source);
-            GoodData := TRUE;
-         end else begin
-            n := Pos (SearchAfter, Source);
-            if n > 0 then begin
-               Source := Copy (Source, n+1, SrcLen-(n));
-               SrcLen := Length(Source);
-               GoodData := TRUE;
-            end;
-         end;
-      if GoodData then begin
-         n := Pos (ArrestBefore, Source);
-         if n > 0 then begin
-            ArrestStr := Copy (Source, 1, n-1);
-            Result := Copy (Source, n+1, SrcLen-n);
-         end else begin
-            Result := SearchAfter + Source;
-         end;
-      end else begin
-         if SrcLen = 1 then begin
-            if Source[1] = SearchAfter then
-               Result := Source;
-         end;
-         {for i:=1 to SrcLen do begin
-            if Source[i] = SearchAfter then begin
-               Result := Copy (Source, i, SrcLen-i+1);
-               flag := TRUE;
-               break;
-            end;
-         end;}
-      end;
-   except
-      ArrestStr := '';
-      Result := '';
-   end;
-end;
-
-
-
 {$REGION ' - Form Section '}
   procedure TFrmMain.FormCreate(Sender: TObject);
-  var
-    S, D : String;
   begin
-    S := '#Call [Text.txt] @dsgfsdfsdf';
-    S := ArrestStringEx(S,'[',']',D);
-    if S = '' then
-      ConnectTimer.Enabled := True;
+    ConnectTimer.Enabled := True;
   end;
 
   procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
