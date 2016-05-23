@@ -20,7 +20,13 @@ type
   private
     { Private-Deklarationen }
   public
-    { Public-Deklarationen }
+
+    (* Load Functions *)
+    function LoadMiniMapInfos: Integer;
+    function LoadMapFiles: Integer;
+    function LoadMonAI: Integer;
+    function LoadMonGen: Integer;
+    function LoadMapQuest: Integer;
   end;
 
 var
@@ -101,5 +107,78 @@ begin
 
   end;
 end;
+
+function TFrmDB.LoadMiniMapInfos: Integer;
+var
+  I           : Integer;
+  FIndex      : Integer;
+  FTempList   : TStringList;
+  FFileName   : String;
+  FTempString : String;
+  FMap        : String;
+  FIndexString: String;
+begin
+  Result := 0;
+  FFileName := GDir_Envir + GFile_MiniMap;
+  if FileExists(FFileName) then
+  begin
+    FTempList := TStringList.Create;
+    FTempList.LoadFromFile(FFileName);
+    for I := 0 to FTempList.Count-1 do
+    begin
+      FTempString := FTempList[I];
+      if FTempString <> '' then
+      begin
+        if FTempString[1] <> ';' then
+        begin
+          FTempString := GetValidStr3(FTempString, FMap        , [' ', #9]);
+          FTempString := GetValidStr3(FTempString, FIndexString, [' ', #9]);
+          FIndex      := StrToIntDef(FIndexString, 0);
+          if FIndex > 0 then
+          begin
+            GMiniMapList.AddObject(FMap, TObject(FIndex));
+          end;
+        end;
+      end;
+    end;
+    FTempList.Clear;
+    FreeAndNil(FTempList);
+  end;
+end;
+
+function TFrmDB.LoadMapFiles: Integer;
+begin
+  Result := -1;
+
+
+  Result := 1;
+end;
+
+function TFrmDB.LoadMonAI: Integer;
+begin
+  Result := -1;
+
+
+  Result := 1;
+end;
+
+function TFrmDB.LoadMonGen: Integer;
+begin
+  Result := -1;
+
+
+  Result := 1;
+end;
+
+function TFrmDB.LoadMapQuest: Integer;
+begin
+  Result := -1;
+
+
+  Result := 1;
+end;
+
+
+
 
 end.

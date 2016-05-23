@@ -12,13 +12,22 @@ type
   private
     FMapName        : String;
     FUserName       : String;
-    FHomeMap        : String;
+    FHomeMap0       : String;
+    FHomeMap1       : String;
+    FHomeMap2       : String;
+    FHomeMap3       : String;
     FDirection      : Byte;
     FGender         : Byte;
     FJob            : Byte;     //0: Warrior 1: Wizard 2: Taoist 3:Assassin
     FHair           : Word;
-    FHomeX          : Integer;
-    FHomeY          : Integer;
+    FHomeX0         : Integer;
+    FHomeY0         : Integer;
+    FHomeX1         : Integer;
+    FHomeY1         : Integer;
+    FHomeX2         : Integer;
+    FHomeY2         : Integer;
+    FHomeX3         : Integer;
+    FHomeY3         : Integer;
     FCharStatus     : Integer;
     FViewRange      : Integer;
     FGhostTime      : Cardinal;
@@ -39,7 +48,10 @@ type
   public
     property MapName        : String   read FMapName         write FMapName;
     property UserName       : String   read FUserName        write FUserName;
-    property HomeMap        : String   read FHomeMap         write FHomeMap;
+    property HomeMap0       : String   read FHomeMap0        write FHomeMap0;
+    property HomeMap1       : String   read FHomeMap1        write FHomeMap1;
+    property HomeMap2       : String   read FHomeMap2        write FHomeMap2;
+    property HomeMap3       : String   read FHomeMap3        write FHomeMap3;
     property Ghost          : Boolean  read FGhost           write FGhost;
     property Death          : Boolean  read FDeath           write FDeath;
     property HoldPlace      : Boolean  read FHoldPlace       write FHoldPlace;
@@ -53,8 +65,14 @@ type
     property Gender         : Byte     read FGender          write FGender;
     property Job            : Byte     read FJob             write FJob;
     property Hair           : Word     read FHair            write FHair;
-    property HomeX          : Integer  read FHomeX           write FHomeX;
-    property HomeY          : Integer  read FHomeY           write FHomeY;
+    property HomeX0         : Integer  read FHomeX0          write FHomeX0;
+    property HomeY0         : Integer  read FHomeY0          write FHomeY0;
+    property HomeX1         : Integer  read FHomeX1          write FHomeX1;
+    property HomeY1         : Integer  read FHomeY1          write FHomeY1;
+    property HomeX2         : Integer  read FHomeX2          write FHomeX2;
+    property HomeY2         : Integer  read FHomeY2          write FHomeY2;
+    property HomeX3         : Integer  read FHomeX3          write FHomeX3;
+    property HomeY4         : Integer  read FHomeY3          write FHomeY3;
     property CharStatus     : Integer  read FCharStatus      write FCharStatus;
     property ViewRange      : Integer  read FViewRange       write FViewRange;
     property ItemList       : TList    read FItemList        write FItemList;

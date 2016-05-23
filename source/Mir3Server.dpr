@@ -23,7 +23,8 @@ uses
   Mir3.Server.Functions in 'core\Mir3.Server.Functions.pas',
   Mir3.Server.Envirnoment in 'core\Mir3.Server.Envirnoment.pas',
   Mir3.Server.Events in 'core\Mir3.Server.Events.pas',
-  Mir3.Server.UserManagerEngine in 'core\Mir3.Server.UserManagerEngine.pas';
+  Mir3.Server.UserManagerEngine in 'core\Mir3.Server.UserManagerEngine.pas',
+  Mir3.Forms.Server.Values in 'forms\Mir3.Forms.Server.Values.pas' {FrmServerValue};
 
 {$R *.res}
 
@@ -33,5 +34,6 @@ begin
   Application.CreateForm(TFrmMain, FrmMain);
   Application.CreateForm(TFrmDB, FrmDB);
   Application.CreateForm(TFrmIDSoc, FrmIDSoc);
+  Application.CreateForm(TFrmServerValue, FrmServerValue);
   Application.Run;
 end.

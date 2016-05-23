@@ -3,6 +3,7 @@ unit Mir3.Server.Constants;
 interface
 
 const
+
   (* Run Gate things *)
   MIR3_MAX_GATE                     = 20;
   MIR3_MAX_PUBLIC_ADDR              = 30;

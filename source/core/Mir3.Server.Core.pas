@@ -5,12 +5,60 @@ interface
 uses System.SysUtils, System.Classes, System.SyncObjs, Mir3.Objects.Base;
 
 var
+  GServerReady       : Boolean = False;
+  GServiceMode       : Boolean = True;
+  GTestServer        : Boolean = False;
+  GNonPKServer       : Boolean = False;
+  GViewHackMessage   : Boolean = False;
+  GServerRunTime     : Cardinal;
   GMir3DayTime       : Integer = 0;
   GServerIndex       : Integer = 0;
-  GServerName        : String  = 'Lom3';
-  GServerReady       : Boolean = False;
+  GServerNumber      : Integer = 0;
+  GTestLevel         : Integer = 1;
+  GTestGold          : Integer = 1500;
+  GEmergencyMap      : Integer;
+  GEmergencyX        : Integer;
+  GEmergencyY        : Integer;
+  GHomeMap0          : Integer;
+  GHomeX0            : Integer;
+  GHomeY0            : Integer;
+  GHomeMap1          : Integer;
+  GHomeX1            : Integer;
+  GHomeY1            : Integer;
+  GHomeMap2          : Integer;
+  GHomeX2            : Integer;
+  GHomeY2            : Integer;
+  GHomeMap3          : Integer;
+  GHomeX3            : Integer;
+  GHomeY3            : Integer;
+  GDBPort            : Integer;
+  GHumLimit          : Integer;
+  GMonLimit          : Integer;
+  GZenLimit          : Integer;
+  GNpcLimit          : Integer;
+  GSocLimit          : Integer;
+  GMaxOpenStack      : Integer;
+  GMaxSaveStack      : Integer;
+  GUserFull          : Integer;
+  GZenFastStep       : Integer;
+  GMsgSrvPort        : Integer;
+  GLogServerPort     : Integer;
   GItemNumber        : Integer = 0;
-
+  GServerName        : String  = 'Lom3';
+  GSqlDBLoc          : String;
+  GSqlDBID           : String;
+  GSqlDBPassword     : String;
+  GSqlDBDSN          : String;
+  GDBAddr            : String;
+  GMsgSrvAddr        : String;
+  GLogServerAddr     : String;
+  GDir_Envir         : String  = '.\Envir\';
+  GDir_Map           : String  = '.\Map\';
+  GDir_Guild         : String  = '.\GuildBase\';
+  GFile_MiniMap      : String  = 'MiniMap.txt';
+  GFile_Guild        : String  = 'Guildlist.txt';
+  GBlanceLogDir      : String  = '\ShareL\';
+  GConLogDir         : String  = '\ShareL\Conlog\';
 
   { Global Critical Sections }
   GCS_MessageLock            : TCriticalSection;
@@ -27,7 +75,7 @@ var
   GUserLogList       : TStringList;
   GUserConLogList    : TStringList;
   GUserChatLogList   : TStringList;
-
+  GMiniMapList       : TStringList;
 
 type
   PMsgHeader = ^TMsgHeader;
@@ -206,6 +254,7 @@ begin
   GUserLogList        := TStringList.Create;
   GUserConLogList     := TStringList.Create;
   GUserChatLogList    := TStringList.Create;
+  GMiniMapList        := TStringList.Create;
 end;
 
 procedure FreeGlobalCoreCode;
@@ -219,6 +268,8 @@ begin
   FreeAndNil(GUserLogList);
   GServerLogList.Clear;
   FreeAndNil(GServerLogList);
+  GMiniMapList.Clear;
+  FreeAndNil(GMiniMapList);
 
   // Global Critical Sections
   FreeAndNil(GCS_FrontEngineOpenLock);

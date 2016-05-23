@@ -5,11 +5,42 @@ interface
 uses System.Classes, System.SyncObjs, System.SysUtils, Mir3.Server.Core;
 
 type
-   TUserMgrEngine = class(TThread)
-
-   end;
+  TUserMgrEngine = class(TThread)
+  protected
+    procedure Execute; override;
+  public
+    constructor Create;
+    destructor Destroy; override;
+  end;
 
 implementation
+
+{$REGION ' - TUserMgrEngine Constructor / Destructor '}
+  constructor TUserMgrEngine.Create;
+  begin
+
+    inherited Create(False);
+    FreeOnTerminate := True;
+  end;
+
+  destructor TUserMgrEngine.Destroy;
+  begin
+
+    inherited Destroy;
+  end;
+{$ENDREGION}
+
+procedure TUserMgrEngine.Execute;
+begin
+  Suspend;
+  while TRUE do
+  begin
+    ///
+
+    Sleep(1);
+    if Terminated then exit;
+  end;
+end;
 
 //procedure TUserMgrEngine.Execute;
 //begin//0
