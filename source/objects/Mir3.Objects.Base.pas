@@ -2,22 +2,62 @@ unit Mir3.Objects.Base;
 
 interface  //5 Classes
 
-uses System.SysUtils;
+uses System.SysUtils, System.Classes;
 
 type
 
   (* base class TCreature *)
 
   TCreature = class
-  strict private
-    FGhost : Boolean;
+  private
+    FMapName        : String;
+    FUserName       : String;
+    FHomeMap        : String;
+    FDirection      : Byte;
+    FGender         : Byte;
+    FJob            : Byte;     //0: Warrior 1: Wizard 2: Taoist 3:Assassin
+    FHair           : Word;
+    FHomeX          : Integer;
+    FHomeY          : Integer;
+    FCharStatus     : Integer;
+    FViewRange      : Integer;
+    FGhostTime      : Cardinal;
+    FGold           : Int64;
+    FGhost          : Boolean;
+    FDeath          : Boolean;
+    FHoldPlace      : Boolean;
+    FAnimal         : Boolean;
+    FSkeleton       : Boolean;
+    FHideMode       : Boolean;
+    FSuperviserMode : Boolean;
+    FItemList       : TList;
   public
     constructor Create;
     destructor Destroy; override;
   public
     procedure DropUseItems(AItemOwnerShip: TObject; ADieFromMob : Boolean);
   public
-    property Ghost : Boolean read FGhost   write FGhost;
+    property MapName        : String   read FMapName         write FMapName;
+    property UserName       : String   read FUserName        write FUserName;
+    property HomeMap        : String   read FHomeMap         write FHomeMap;
+    property Ghost          : Boolean  read FGhost           write FGhost;
+    property Death          : Boolean  read FDeath           write FDeath;
+    property HoldPlace      : Boolean  read FHoldPlace       write FHoldPlace;
+    property Animal         : Boolean  read FAnimal          write FAnimal;
+    property Skeleton       : Boolean  read FSkeleton        write FSkeleton;
+    property HideMode       : Boolean  read FHideMode        write FHideMode;
+    property SuperviserMode : Boolean  read FSuperviserMode  write FSuperviserMode;
+    property GhostTime      : Cardinal read FGhostTime       write FGhostTime;
+    property Gold           : Int64    read FGold            write FGold;
+    property Direction      : Byte     read FDirection       write FDirection;
+    property Gender         : Byte     read FGender          write FGender;
+    property Job            : Byte     read FJob             write FJob;
+    property Hair           : Word     read FHair            write FHair;
+    property HomeX          : Integer  read FHomeX           write FHomeX;
+    property HomeY          : Integer  read FHomeY           write FHomeY;
+    property CharStatus     : Integer  read FCharStatus      write FCharStatus;
+    property ViewRange      : Integer  read FViewRange       write FViewRange;
+    property ItemList       : TList    read FItemList        write FItemList;
   end;
 
   (* class TAnimal *)
@@ -62,6 +102,10 @@ type
     constructor Create;
     destructor Destroy; override;
   public
+    // Comand Functions
+    procedure ComandChangeJob(AJobName: String);
+    procedure ComandChangeGender;
+  public
     property EmergencyClose   : Boolean read FEmergencyClose   write FEmergencyClose;
     property SoftClosed       : Boolean read FSoftClosed       write FSoftClosed;
     property UserSocketClosed : Boolean read FUserSocketClosed write FUserSocketClosed;
@@ -70,6 +114,8 @@ type
 
 
 implementation
+
+uses Mir3.Forms.Main.System;
 
   (* base class TCreature *)
 
@@ -199,6 +245,25 @@ implementation
 {$ENDREGION}
 
 {$REGION ' - TUserHuman Public Function '}
+
+
+
+  (* TUserHuman Commands *)
+
+procedure TUserHuman.ComandChangeJob(AJobName: String);
+begin
+  if CompareText(AJobName, 'Warrior')  = 0 then FJob := 0;
+  if CompareText(AJobName, 'Wizard')   = 0 then FJob := 1;
+  if CompareText(AJobName, 'Taoist')   = 0 then FJob := 2;
+  if CompareText(AJobName, 'Assassin') = 0 then FJob := 3;
+end;
+
+procedure TUserHuman.ComandChangeGender;
+begin
+  if FGender = 0 then
+    FGender := 1
+  else FGender := 0;
+end;
 
 {$ENDREGION}
 

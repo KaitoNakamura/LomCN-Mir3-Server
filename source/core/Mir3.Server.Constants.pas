@@ -366,6 +366,25 @@ const
   QI_CHECKDEMESNE                   = $85;
 
 
+  OS_MOVING_OBJECT                  = 1;
+  OS_ITEM_OBJECT                    = 2;
+  OS_EVENT_OBJECT                   = 3;
+  OS_GATE_OBJECT                    = 4;
+  OS_SWITCH_OBJECT                  = 5;
+  OS_MAP_EVENT                      = 6;
+
+  MP_CAN_MOVE                       = 0;
+  MP_WALL			                      = 1;
+  MP_HIGHWALL                       = 2;
+
+  NAME_OF_GOLD                      = 'Gold';
+  MAX_GOLD                          = 2000000000;
+  BAG_GOLD                          = 50000000;
+  GROUP_MAX                         = 11;
+
+  STDMODE_OF_DECOITEM               = 9;
+  SHAPE_OF_DECOITEM                 = 1;
+
 implementation
 
 end.

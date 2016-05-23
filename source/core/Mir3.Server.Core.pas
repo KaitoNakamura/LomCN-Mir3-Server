@@ -9,11 +9,13 @@ var
   GServerIndex       : Integer = 0;
   GServerName        : String  = 'Lom3';
   GServerReady       : Boolean = False;
+  GItemNumber        : Integer = 0;
 
 
   { Global Critical Sections }
   GCS_MessageLock            : TCriticalSection;
   GCS_TimerLock              : TCriticalSection;
+  GCS_Share                  : TCriticalSection;
   GCS_RunSocketLock          : TCriticalSection;
   GCS_SendDataLock           : TCriticalSection;
   GCS_FrontEngineLock        : TCriticalSection;
@@ -90,6 +92,74 @@ type
      RReadyInfo : TReadyUserInfo;
   end;
 
+  PUserItem = ^TUserItem;
+  TUserItem = packed record
+    RMakeIndex    : Integer;
+    RIndex        : word;
+    RDura         : word;
+    RDuraMax      : word;
+    RDesc         : array[0..13] of Byte;
+    RColorR       : byte;
+    RColorG       : byte;
+    RColorB       : byte;
+    RPrefix       : array [0..12] of AnsiChar;
+  end;
+
+  PGateInfo = ^TGateInfo;
+  TGateInfo = record
+    RGateType   : Byte;
+    REnterEnvir : TObject;
+    REnterX     : Integer;
+    REnterY     : Integer;
+  end;
+
+  //TODO: Add all Mir3 Item Propertys
+  PStdItem = ^TStdItem;
+  TStdItem = record
+    RName         : String;
+    RStdMode      : Byte;
+    RShape 	     : Byte;
+    RWeight       : Byte;
+    RAniCount     : Byte;
+    RSpecialPwr   : shortint;
+    RItemDesc     : Byte;
+    RLooks        : Word;
+    RDuraMax      : Word;
+    RAC           : Word;
+    RMAC          : Word;
+    RDC           : Word;
+    RMC           : Word;
+    RSC           : Word;
+    RBC           : Word;
+    RNeed         : Byte;
+    RNeedLevel    : Byte;
+    RPrice        : Integer;
+    RStock        : Integer;
+    RAtkSpd       : Byte;
+    RAgility      : Byte;
+    RAccurate     : Byte;
+    RMgAvoid      : Byte;
+    RStrong       : Byte;
+    RUndead       : Byte;
+    RHpAdd        : Integer;
+    RMpAdd        : Integer;
+    RExpAdd       : Integer;
+    REffType1     : Byte;
+    REffRate1     : Byte;
+    REffValue1    : Byte;
+    REffType2     : Byte;
+    REffRate2     : Byte;
+    REffValue2    : Byte;
+    RSlowdown     : Byte;
+    RTox          : Byte;
+    RToxAvoid     : Byte;
+    RUniqueItem   : Byte;
+    ROverlapItem  : Byte;
+    Rlight        : Byte;
+    RItemType     : Byte;
+    RItemSet      : Word;
+    RReference    : String;
+  end;
 
 
 procedure ServerLogMessage(ALogMessage: String);
@@ -124,6 +194,7 @@ begin
   // Global Critical Sections
   GCS_MessageLock           := TCriticalSection.Create;
   GCS_TimerLock             := TCriticalSection.Create;
+  GCS_Share                 := TCriticalSection.Create;
   GCS_RunSocketLock         := TCriticalSection.Create;
   GCS_SendDataLock          := TCriticalSection.Create;
   GCS_FrontEngineLock       := TCriticalSection.Create;
@@ -157,6 +228,7 @@ begin
   FreeAndNil(GCS_RunSocketLock);
   FreeAndNil(GCS_MessageLock);
   FreeAndNil(GCS_TimerLock);
+  FreeAndNil(GCS_Share);
 end;
 
 

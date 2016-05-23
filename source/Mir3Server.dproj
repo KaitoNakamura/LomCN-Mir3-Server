@@ -148,6 +148,9 @@
         <DCCReference Include="objects\Mir3.Objects.Monster_5.pas"/>
         <DCCReference Include="objects\Mir3.Objects.Monster_6.pas"/>
         <DCCReference Include="core\Mir3.Server.Functions.pas"/>
+        <DCCReference Include="core\Mir3.Server.Envirnoment.pas"/>
+        <DCCReference Include="core\Mir3.Server.Events.pas"/>
+        <DCCReference Include="core\Mir3.Server.UserManagerEngine.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

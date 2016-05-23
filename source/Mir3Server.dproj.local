@@ -1,50 +1,17 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.525,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.217,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.183,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.NPC.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.620,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Guards.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.593,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.743,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.212,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.107,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\core\Mir3.Server.FrontEngine.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.903,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\core\Mir3.Server.Constants.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.759,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3.Objects.Monster_1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.793,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.455,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_6.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.250,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.992,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3.Objects.Monster_1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.635,D:\06_Entwicklung\05_Mir3_GSP_Server\source\ObjBase.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.467,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.IDServer.Client.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.362,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_5.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.103,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_3.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.591,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.013,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.547,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.453,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_4.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.022,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.298,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.249,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.284,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.298,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.635,D:\06_Entwicklung\05_Mir3_GSP_Server\source\ObjBase.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.467,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.IDServer.Client.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.992,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3.Objects.Monster_1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.050,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3Server.dproj=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Project2.dproj</Transaction>
     <Transaction>1899.12.30 00:00:00.000.352,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Local.DB.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.659,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.dfm=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit2.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.050,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3Server.dproj=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.298,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.dfm</Transaction>
     <Transaction>1899.12.30 00:00:00.000.352,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Local.DB.pas</Transaction>
     <Transaction>1899.12.30 00:00:00.000.659,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.pas=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit2.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.711,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.211,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Animal.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.467,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.IDServer.Client.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.760,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\core\Mir3.Server.UserEngine.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.705,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.363,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.482,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.103,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\core\Mir3.Server.Core.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.252,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\core\Mir3.Server.RunSocket.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.994,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Base.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.550,=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
   </Transactions>
 </BorlandProject>

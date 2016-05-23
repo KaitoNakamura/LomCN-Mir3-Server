@@ -8,7 +8,7 @@ uses
   IdBaseComponent, IdComponent, IdUDPBase, IdUDPClient, System.Win.ScktComp,
 
   Mir3.Server.Core, Mir3.Forms.IDServer.Client, Mir3.Server.RunSocket,
-  Mir3.Server.FrontEngine, Mir3.Server.UserEngine;
+  Mir3.Server.FrontEngine, Mir3.Server.UserEngine, Mir3.Server.Envirnoment;
 
 type
   TFrmMain = class(TForm)
@@ -65,9 +65,10 @@ type
   end;
 
 var
-  FrmMain     : TFrmMain;
-  GRunSocket  : TRunSocket;
-  GUserEngine : TUserEngine;
+  FrmMain      : TFrmMain;
+  GRunSocket   : TRunSocket;
+  GUserEngine  : TUserEngine;
+  GEnvirnoment : TEnvirList;
 
 implementation
 
