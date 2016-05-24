@@ -30,6 +30,13 @@ const
   ISM_FUNC_USER_CLOSE               = 115;
   ISM_CHECKTIMEACCOUNT              = 116;
 
+  (* Item Description *)
+  IDC_UN_IDENTIFIED                 = $01;
+  IDC_UNABLE_TAKE_OFF               = $02;
+  IDC_NEVER_TAKE_OFF                = $04;
+  IDC_DIE_AND_BREAK                 = $08;
+  IDC_NEVER_LOSE                    = $10;
+
   SM_OUTOFCONNECTION                = 528;
 
   (* Skript Command Idents (QA) *)

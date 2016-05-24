@@ -24,7 +24,8 @@ uses
   Mir3.Server.Envirnoment in 'core\Mir3.Server.Envirnoment.pas',
   Mir3.Server.Events in 'core\Mir3.Server.Events.pas',
   Mir3.Server.UserManagerEngine in 'core\Mir3.Server.UserManagerEngine.pas',
-  Mir3.Forms.Server.Values in 'forms\Mir3.Forms.Server.Values.pas' {FrmServerValue};
+  Mir3.Forms.Server.Values in 'forms\Mir3.Forms.Server.Values.pas' {FrmServerValue},
+  Mir3.Server.ItemUnit in 'core\Mir3.Server.ItemUnit.pas';
 
 {$R *.res}
 

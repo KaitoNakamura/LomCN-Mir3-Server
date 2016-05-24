@@ -5,6 +5,8 @@ interface
 uses System.SysUtils, System.Classes, System.SyncObjs, Mir3.Objects.Base;
 
 var
+  GServerVersion     : String  = 'Ver : LomCN v 0.0.1 build 00005';
+
   GServerReady       : Boolean = False;
   GServiceMode       : Boolean = True;
   GTestServer        : Boolean = False;
@@ -183,7 +185,7 @@ type
     RNeedLevel    : Byte;
     RPrice        : Integer;
     RStock        : Integer;
-    RAtkSpd       : Byte;
+    RAttackSpeed  : Byte;
     RAgility      : Byte;
     RAccurate     : Byte;
     RMgAvoid      : Byte;
