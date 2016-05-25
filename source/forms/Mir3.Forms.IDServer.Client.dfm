@@ -11,6 +11,8 @@ object FrmIDSoc: TFrmIDSoc
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
   object IDSocket: TClientSocket
@@ -27,6 +29,7 @@ object FrmIDSoc: TFrmIDSoc
   object Timer1: TTimer
     Enabled = False
     Interval = 30000
+    OnTimer = Timer1Timer
     Left = 96
     Top = 32
   end

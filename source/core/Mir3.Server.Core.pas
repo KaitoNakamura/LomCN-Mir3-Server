@@ -55,12 +55,20 @@ var
   GMsgSrvAddr        : String;
   GLogServerAddr     : String;
   GDir_Envir         : String  = '.\Envir\';
+  GDir_MonDef        : String  = 'Mon_Def\';
   GDir_Map           : String  = '.\Map\';
   GDir_Guild         : String  = '.\GuildBase\';
-  GFile_MiniMap      : String  = 'MiniMap.txt';
-  GFile_Guild        : String  = 'Guildlist.txt';
   GBlanceLogDir      : String  = '\ShareL\';
   GConLogDir         : String  = '\ShareL\Conlog\';
+  GFile_MiniMap      : String  = 'MiniMap.txt';
+  GFile_Guild        : String  = 'Guildlist.txt';
+  GFile_Merchant     : String  = 'Merchant.txt';
+  GFile_Map_Quest    : String  = 'MapQuest.txt';
+  GFile_Mon_Gen      : String  = 'MonGen.txt';
+  GFile_Zen_Message  : String  = 'GenMsg.txt';
+  GFile_Map_Info     : String  = 'MapInfo.txt';
+  GFile_AdminList    : String  = 'AdminList.txt';
+
 
   { Global Critical Sections }
   GCS_MessageLock            : TCriticalSection;
@@ -93,29 +101,11 @@ type
 
   PDefaultMessage = ^TDefaultMessage;
   TDefaultMessage = record
-     RRecog:   Integer;
-     RIdent:   Word;
-     RParam:   Word;
-     RTag:     Word;
-     RSeries:  Word;
-  end;
-
-  PReadyUserInfo = ^TReadyUserInfo;
-  TReadyUserInfo = record
-    RUserId             : String;//[20];
-    RUserName           : String;//[14];
-    RUserAddress        : String;//[16];
-    RStartNew           : Boolean;
-    RApprovalMode       : Integer;
-    RAvailableMode      : Integer;
-    RClientVersion      : Integer;
-    RLoginClientVersion : integer;
-    RClientCheckSum     : Integer;
-    RShandle            : Integer;
-    RUserGateIndex      : Integer;
-    RGateIndex          : Integer;
-    RReadyStartTime     : LongWord;
-    RClosed             : Boolean;
+    RRecog:   Integer;
+    RIdent:   Word;
+    RParam:   Word;
+    RTag:     Word;
+    RSeries:  Word;
   end;
 
   PChangeUserInfo = ^TChangeUserInfo;
@@ -123,36 +113,6 @@ type
     RCommandWho  : String;//[14];
     RUserName    : String;//[14];
     RChangeGold  : Integer;
-  end;
-
-  PSaveRcd = ^TSaveRcd;
-  TSaveRcd = record
-    RUserID    : String;
-    RUserName  : String;
-    RSaveFail  : Integer;
-    RSaveTime  : LongWord;
-    RUserHuman : TUserHuman;
-    //RRCDData   : FDBRecord;  //Fix me
-  end;
-
-  PUserOpenInfo = ^TUserOpenInfo;
-  TUserOpenInfo = record
-     RName      : String;
-     //RRcd       : FDBRecord;  //Fix me
-     RReadyInfo : TReadyUserInfo;
-  end;
-
-  PUserItem = ^TUserItem;
-  TUserItem = packed record
-    RMakeIndex    : Integer;
-    RIndex        : word;
-    RDura         : word;
-    RDuraMax      : word;
-    RDesc         : array[0..13] of Byte;
-    RColorR       : byte;
-    RColorG       : byte;
-    RColorB       : byte;
-    RPrefix       : array [0..12] of AnsiChar;
   end;
 
   PGateInfo = ^TGateInfo;
@@ -210,6 +170,173 @@ type
     RItemSet      : Word;
     RReference    : String;
   end;
+
+  PEventSetupInfo = ^TEventSetupInfo;
+  TEventSetupInfo = record
+    ExtraExp1        : Integer;
+    ExtraLowLevel1   : Integer;
+    ExtraHighLevel1  : Integer;
+    ExtraExp2        : Integer;
+    ExtraLowLevel2   : Integer;
+    ExtraHighLevel2  : Integer;
+    ExtraExp3        : Integer;
+    ExtraLowLevel3   : Integer;
+    ExtraHighLevel3  : Integer;
+    ExtraMoneyPer    : Integer;
+    ExtraItemPer     : Integer;
+    GoldDrop         : Integer;
+    ExtraLowDC       : Integer;
+    ExtraHighDC      : Integer;
+    ExtraLowMC       : Integer;
+    ExtraHighMC      : Integer;
+    ExtraLowSC       : Integer;
+    ExtraHighSC      : Integer;
+    ExtraPW          : Integer;
+    ExtraLowAC       : Integer;
+    ExtraHighAC      : Integer;
+    ExtraLowMAC      : Integer;
+    ExtraHighMAC     : Integer;
+    ExtraLUCK        : Integer;
+    ExtraMAXHP       : Integer;
+    ExtraMAXMP       : Integer;
+    NoDelayRun       : Boolean;
+    ExtraMonGenRate  : Integer;
+    TrialLevel       : Integer;
+    ServerUserLimit  : Integer;
+  end;
+
+  PTestMode = ^TTestMode;
+  TTestMode = record
+    TestServer : Boolean;
+    FreeMode   : Boolean;
+  end;
+
+  PSaveRcd = ^TSaveRcd;
+  TSaveRcd = record
+    RUserID    : String;
+    RUserName  : String;
+    RSaveFail  : Integer;
+    RSaveTime  : LongWord;
+    RUserHuman : TUserHuman;
+    //RRCDData   : FDBRecord;  //Fix me
+  end;
+
+  PUserItem = ^TUserItem;
+  TUserItem = packed record
+    RMakeIndex    : Integer;
+    RIndex        : word;
+    RDura         : word;
+    RDuraMax      : word;
+    RDesc         : array[0..13] of Byte;
+    RColorR       : byte;
+    RColorG       : byte;
+    RColorB       : byte;
+    RPrefix       : array [0..12] of AnsiChar;
+  end;
+
+  PReadyUserInfo = ^TReadyUserInfo;
+  TReadyUserInfo = record
+    RUserId             : String;//[20];
+    RUserName           : String;//[14];
+    RUserAddress        : String;//[16];
+    RStartNew           : Boolean;
+    RApprovalMode       : Integer;
+    RAvailableMode      : Integer;
+    RClientVersion      : Integer;
+    RLoginClientVersion : integer;
+    RClientCheckSum     : Integer;
+    RShandle            : Integer;
+    RUserGateIndex      : Integer;
+    RGateIndex          : Integer;
+    RReadyStartTime     : LongWord;
+    RClosed             : Boolean;
+  end;
+
+  PUserOpenInfo = ^TUserOpenInfo;
+  TUserOpenInfo = record
+     RName      : String;
+     //RRcd       : FDBRecord;  //Fix me
+     RReadyInfo : TReadyUserInfo;
+  end;
+
+  PMapItem = ^TMapItem;
+  TMapItem = record
+    RUserItem  : TUserItem;
+    RName      : String;
+    RLooks     : Word;
+    RAniCount  : Byte;
+    RReserved  : Byte;
+    RCount     : Integer;
+    ROwnership : TObject;
+    RDroptime  : LongWord;
+    RDroper    : TObject;
+  end;
+
+  PZenInfo = ^TZenInfo;
+  TZenInfo = record
+    RMapName       : String;
+    RX             : Integer;
+    RY             : Integer;
+    RMonName       : String;
+    RMonRace       : Integer;
+    RArea          : Integer;
+    RCount         : Integer;
+    RMonZenTime    : Cardinal;
+    RStartTime     : Cardinal;
+    RMons          : TList;
+    RSmallZenRate  : integer;
+    RTX            : integer;
+    RTY            : integer;
+    RZenShoutType  : integer;
+    RZenShoutMsg   : integer;
+  end;
+
+  PMonsterInfo = ^TMonsterInfo;
+  TMonsterInfo = record
+    RName        : String;
+    RRace        : Word;
+    RRaceImg     : Byte;
+    RAppr        : Word;
+    RLevel       : Byte;
+    RLifeAttrib  : Byte;
+    RCoolEye     : Byte;
+    RExp         : Word;
+    RHP          : Word;
+    RMP          : Word;
+    RAC          : Byte;
+    RMAC         : Byte;
+    RDC          : Byte;
+    RMaxDC       : Byte;
+    RMC          : Byte;
+    RSC          : Byte;
+    RSpeed       : Byte;
+    RHit         : Byte;
+    RWalkSpeed   : Word;
+    RWalkStep    : Word;
+    RWalkWait    : Word;
+    RAttackSpeed : Word;
+    RTame        : Word;
+    RAntiPush    : Word;
+    RAntiUndead  : Word;
+    RSizeRate    : Word;
+    RAntiStop    : Word;
+    RItemList    : TList;
+  end;
+
+  TMapAttribute  = (maNoSpaceMove, maNoRandomMove, maNoSpellMove, maNoItemMove,
+                    maNoCastleMove, maNeedHole, moNoRecall, maNoDrug, maNoPositionMove,
+                    maNoSlave, maOnly75Over, maNoGuildWar, maNoSpell, maNoRecovery,
+                    maNoProtectRing, maNoPoison, maHideCharName, maNoGroup, maNoGuild,
+                    maNoArmor, maNoScriptMove, maNoNecklaceMove, maNoFreeFly, maNoFly,
+                    maSafe, maSnow, maFog, maDark, maRain, maDay, maAsh, maSolo, maSnowFight,
+                    maNoUniqueItem, maNoChat, maTeamChat, maTeamFight, maFightEventMap,
+                    maClean, maAshFog, maNoLuck, maPKFree, maNoRevival, maClear, maNoRFly,
+                    maNoReconnect, maFight, maHorse, maMine, maMine2, maMine3);
+  TMapAttributes = set of TMapAttribute;
+
+var
+  GEventSetupInfo : TEventSetupInfo;
+  GTestMode       : TTestMode;
 
 
 procedure ServerLogMessage(ALogMessage: String);
@@ -283,8 +410,6 @@ begin
   FreeAndNil(GCS_TimerLock);
   FreeAndNil(GCS_Share);
 end;
-
-
 
 initialization
   InitGlobalCoreCode;

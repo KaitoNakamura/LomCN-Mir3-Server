@@ -25,7 +25,8 @@ uses
   Mir3.Server.Events in 'core\Mir3.Server.Events.pas',
   Mir3.Server.UserManagerEngine in 'core\Mir3.Server.UserManagerEngine.pas',
   Mir3.Forms.Server.Values in 'forms\Mir3.Forms.Server.Values.pas' {FrmServerValue},
-  Mir3.Server.ItemUnit in 'core\Mir3.Server.ItemUnit.pas';
+  Mir3.Server.ItemUnit in 'core\Mir3.Server.ItemUnit.pas',
+  Mir3.Forms.Inter.Message.Client in 'forms\Mir3.Forms.Inter.Message.Client.pas' {FrmMsgClient};
 
 {$R *.res}
 
@@ -33,8 +34,9 @@ begin
   Application.Initialize;
   Application.MainFormOnTaskbar := True;
   Application.CreateForm(TFrmMain, FrmMain);
-  Application.CreateForm(TFrmDB, FrmDB);
   Application.CreateForm(TFrmIDSoc, FrmIDSoc);
+  Application.CreateForm(TFrmDB, FrmDB);
   Application.CreateForm(TFrmServerValue, FrmServerValue);
+  Application.CreateForm(TFrmMsgClient, FrmMsgClient);
   Application.Run;
 end.

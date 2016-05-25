@@ -381,6 +381,10 @@ const
   OS_SWITCH_OBJECT                  = 5;
   OS_MAP_EVENT                      = 6;
 
+  EVENT_MINE                        = 2;
+  EVENT_MINE2                       = 8;
+  EVENT_MINE3                       = 13;
+
   MP_CAN_MOVE                       = 0;
   MP_WALL			                      = 1;
   MP_HIGHWALL                       = 2;
@@ -392,6 +396,26 @@ const
 
   STDMODE_OF_DECOITEM               = 9;
   SHAPE_OF_DECOITEM                 = 1;
+
+  UD_USER                           = 0;
+  UD_USER2                          = 1;
+  UD_OBSERVER                       = 2;
+  UD_SYSOP                          = 3;
+  UD_ADMIN                          = 4;
+  UD_SUPERADMIN                     = 5;
+
+  (* Race Type *)
+
+  RACE_USERHUMAN                    = 0;
+  RACE_NPC                          = 10;
+  RACE_DOORGUARD                    = 11;
+  RACE_ARCHERPOLICE                 = 20;
+  RACE_ANIMAL                       = 50;
+  RACE_HEN                          = 51;
+  RACE_MONSTER                      = 80;
+  RACE_SOCCERBALL                   = 120;
+  RACE_BAMTREE                      = 121;
+  RACE_ARCHERMASTER                 = 161;
 
 implementation
 

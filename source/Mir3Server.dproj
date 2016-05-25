@@ -58,6 +58,7 @@
         <Base>true</Base>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Base)'!=''">
+        <BRCC_Defines>..\release;$(BRCC_Defines)</BRCC_Defines>
         <SanitizedProjectName>Mir3Server</SanitizedProjectName>
         <Icon_MainIcon>$(BDS)\bin\delphi_PROJECTICON.ico</Icon_MainIcon>
         <DCC_Namespace>System;Xml;Data;Datasnap;Web;Soap;Vcl;Vcl.Imaging;Vcl.Touch;Vcl.Samples;Vcl.Shell;$(DCC_Namespace)</DCC_Namespace>
@@ -158,6 +159,10 @@
             <FormType>dfm</FormType>
         </DCCReference>
         <DCCReference Include="core\Mir3.Server.ItemUnit.pas"/>
+        <DCCReference Include="forms\Mir3.Forms.Inter.Message.Client.pas">
+            <Form>FrmMsgClient</Form>
+            <FormType>dfm</FormType>
+        </DCCReference>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

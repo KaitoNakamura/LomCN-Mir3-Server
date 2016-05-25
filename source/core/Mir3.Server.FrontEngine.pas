@@ -87,6 +87,12 @@ begin
   while TRUE do
   begin
     try
+      //ProcessPacket;
+    except
+      ServerLogMessage('[FrontEngine] raise exception0..');
+    end;
+
+    try
       ProcessReadyPlayers;
     except
       ServerLogMessage('[FrontEngine] raise exception 1..');
@@ -108,10 +114,10 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 procedure TFrontEngine.ProcessReadyPlayers;
 var
-  I, C            : Integer;
-  FListTime       : LongWord;
-  FTotalTime      : LongWord;
-  FListCount      : Integer;
+  I {, C}            : Integer;
+  //FListTime       : LongWord;
+  //FTotalTime      : LongWord;
+  //FListCount      : Integer;
   FTempLoadList   ,
   FTempSaveList   ,
   FTempChangeList : TList;
@@ -120,7 +126,7 @@ var
   FReadyUserInfo  : PReadyUserInfo;
   FChangeUserInfo : PChangeUserInfo;
 begin
-  FTotalTime      := GetTickCount;
+  //FTotalTime      := GetTickCount;
   FTempLoadList   := nil;
   FTempSaveList   := nil;
   FTempChangeList := nil;
@@ -173,8 +179,8 @@ begin
 
   if FTempSaveList <> nil then
   begin
-    FListTime  := GetTickCount;
-    FListCount := FTempSaveList.Count;
+    //FListTime  := GetTickCount;
+    //FListCount := FTempSaveList.Count;
 
     for I := 0 to FTempSaveList.Count-1 do
     begin
@@ -216,8 +222,8 @@ begin
 
   if FTempLoadList <> nil then
   begin
-    FListTime  := GetTickCount;
-    FListCount := FTempLoadList.Count;
+    //FListTime  := GetTickCount;
+    //FListCount := FTempLoadList.Count;
 
     for I := 0 to FTempLoadList.Count-1 do
     begin
@@ -240,8 +246,8 @@ begin
 
   if FTempChangeList <> nil then
   begin
-    FListTime  := GetTickCount;
-    FListCount := FTempChangeList.Count;
+    //FListTime  := GetTickCount;
+    //FListCount := FTempChangeList.Count;
 
     for I := 0 to FTempChangeList.Count-1 do
     begin
@@ -254,8 +260,8 @@ begin
 
   if FTempDataList <> nil then
   begin
-    FListTime  := GetTickCount;
-    FListCount := FTempDataList.Count;
+    //FListTime  := GetTickCount;
+    //FListCount := FTempDataList.Count;
 
     for I := 0 to FTempDataList.Count - 1 do
     begin
@@ -301,7 +307,7 @@ var
   FUserOpenInfo: PUserOpenInfo;
   //rcd: FDBRecord;
 begin
-  Result := False;
+//  Result := False;
 //  if not LoadHumanCharacter(AReadyUserInfo.RUserId, AReadyUserInfo.RUserName, AReadyUserInfo.RUserAddress, 0, rcd) then
 //  begin
 //    try
@@ -325,7 +331,7 @@ end;
 
 function TFrontEngine.OpenChangeSaveUserInfo(AChangeUserInfo: PChangeUserInfo): Boolean;
 begin
-
+  Result := False;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -426,7 +432,6 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 function TFrontEngine.AddSavePlayer(AData: PSaveRcd): Integer;
 begin
-  Result := -1;
   try
     GCS_FrontEngineLock.Enter;
     FSavePlayers.Add(AData);

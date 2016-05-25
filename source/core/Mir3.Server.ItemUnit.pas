@@ -2,7 +2,9 @@ unit Mir3.Server.ItemUnit;
 
 interface
 
-uses WinAPI.Windows, System.SysUtils, Mir3.Server.Core, Mir3.Server.Constants;
+uses WinAPI.Windows, System.SysUtils,
+
+     Mir3.Server.Core, Mir3.Server.Constants;
 
 (*
   Class TODO : We need a list with all StdModes to update the class...
@@ -333,7 +335,7 @@ uses System.Math;
   // Parameter AUserItem is essentially a weapon.
   // TUserItem Desc upgrade 0: DC 1: MC 2: SC
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
     FInc        : integer;
   begin
@@ -384,7 +386,7 @@ uses System.Math;
 
   procedure TItemUnit.UpgradeRandomDress(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
   begin
 
@@ -420,7 +422,7 @@ uses System.Math;
 
   procedure TItemUnit.UpgradeRandomNecklace(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
   begin
 
@@ -457,7 +459,7 @@ uses System.Math;
 
   procedure TItemUnit.UpgradeRandomBarcelet(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
   begin
 
@@ -492,7 +494,7 @@ uses System.Math;
 
   procedure TItemUnit.UpgradeRandomRings(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
   begin
 
@@ -521,7 +523,7 @@ uses System.Math;
 
   procedure TItemUnit.UpgradeRandomHelmet(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
   begin
 
@@ -559,7 +561,7 @@ uses System.Math;
 
   procedure TItemUnit.RandomSetUnknownHelmet(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
     FSumme      : Integer;
   begin
@@ -631,7 +633,7 @@ uses System.Math;
 
   procedure TItemUnit.RandomSetUnknownRing(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
     FSumme      : Integer;
   begin
@@ -689,7 +691,7 @@ uses System.Math;
 
   procedure TItemUnit.RandomSetUnknownBracelet(AUserItem: PUserItem);
   var
-    I, C        : Integer;
+    C           : Integer;
     FUpdateValue: Integer;
     FSumme      : Integer;
   begin

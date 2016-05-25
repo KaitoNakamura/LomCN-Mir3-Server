@@ -12,14 +12,18 @@ type
   private
     FMapName        : String;
     FUserName       : String;
-    FHomeMap0       : String;
-    FHomeMap1       : String;
-    FHomeMap2       : String;
-    FHomeMap3       : String;
+    FHomeMap0       : String;   //Home Warrior
+    FHomeMap1       : String;   //Home Wizard
+    FHomeMap2       : String;   //Home Taoist
+    FHomeMap3       : String;   //Home Assassin
     FDirection      : Byte;
     FGender         : Byte;
     FJob            : Byte;     //0: Warrior 1: Wizard 2: Taoist 3:Assassin
+    FRaceServer     : Word;
     FHair           : Word;
+    FAppearance     : Word;
+    FCX             : Integer;
+    FCY             : Integer;
     FHomeX0         : Integer;
     FHomeY0         : Integer;
     FHomeX1         : Integer;
@@ -40,6 +44,7 @@ type
     FHideMode       : Boolean;
     FSuperviserMode : Boolean;
     FItemList       : TList;
+    FEnvirnoment    : TObject;
   public
     constructor Create;
     destructor Destroy; override;
@@ -64,7 +69,11 @@ type
     property Direction      : Byte     read FDirection       write FDirection;
     property Gender         : Byte     read FGender          write FGender;
     property Job            : Byte     read FJob             write FJob;
+    property RaceServer     : Word     read FRaceServer      write FRaceServer;
     property Hair           : Word     read FHair            write FHair;
+    property Appearance     : Word     read FAppearance      write FAppearance;
+    property CX             : Integer  read FCX              write FCX;
+    property CY             : Integer  read FCY              write FCY;
     property HomeX0         : Integer  read FHomeX0          write FHomeX0;
     property HomeY0         : Integer  read FHomeY0          write FHomeY0;
     property HomeX1         : Integer  read FHomeX1          write FHomeX1;
@@ -133,14 +142,15 @@ type
 
 implementation
 
-uses Mir3.Forms.Main.System;
+uses Mir3.Forms.Main.System, Mir3.Server.Envirnoment, Mir3.Server.Constants;
 
   (* base class TCreature *)
 
 {$REGION ' - TCreature Constructor / Destructor '}
   constructor TCreature.Create;
   begin
-    FGhost := False;
+    FGhost      := False;
+    FRaceServer := RACE_ANIMAL;
   end;
 
   destructor TCreature.Destroy;

@@ -1,17 +1,28 @@
 unit Mir3.Server.UserEngine;
 
 interface
-uses System.SysUtils, System.Classes, System.Generics.Collections, Mir3.Server.Core;
+uses System.SysUtils, System.Classes, System.Generics.Collections,
+
+     Mir3.Server.Core, Mir3.Objects.Base;
 
 type
   TUserEngine = class
   strict private
-    FStdItemList: TList<PStdItem>;
+    FStdItemList    : TList<PStdItem>;
+    FMerchantList   : TList<TCreature>;
+    FNpcList        : TList<TCreature>;
+    FMonsterList    : TList<PZenInfo>;
+    FMonsterDefList : TList<PMonsterInfo>;
+    FReadyList      : TStringList;
+    FRunUserList    : TStringList;
+    FAdminList      : TStringList;
   public
     constructor Create;
     destructor Destroy; override;
   public
     procedure AddNewUser(AUserOpenInfo: PUserOpenInfo);
+    procedure Initialize;
+    function GetMonsterRace(AMonsterName: String): Integer;
     { StdItem function }
     function GetStdItemName(AItemIndex: Integer): String;
     function GetStdItemIndex(AItemName: String): Integer;
@@ -21,7 +32,14 @@ type
     function CopyToUserItem(AItemIndex: Integer; var AUserItem: TUserItem): Boolean;
     function CopyToUserItemFromName(AItemName: String; var AUserItem: TUserItem): Boolean;
   public
-    property StdItemList : TList<PStdItem> read FStdItemList write FStdItemList;
+    property StdItemList    : TList<PStdItem>     read FStdItemList     write FStdItemList;
+    property MerchantList   : TList<TCreature>    read FMerchantList    write FMerchantList;
+    property NpcList        : TList<TCreature>    read FNpcList         write FNpcList;
+    property MonsterList    : TList<PZenInfo>     read FMonsterList     write FMonsterList;
+    property MonsterDefList : TList<PMonsterInfo> read FMonsterDefList  write FMonsterDefList;
+    property RunUserList    : TStringList         read FRunUserList     write FRunUserList;
+    property ReadyList      : TStringList         read FReadyList       write FReadyList;
+    property AdminList      : TStringList         read FAdminList       write FAdminList;
   end;
 
 implementation
@@ -33,7 +51,14 @@ uses Mir3.Server.Functions;
 {$REGION ' - TUserEngine Constructor / Destructor '}
   constructor TUserEngine.Create;
   begin
-    FStdItemList := TList<PStdItem>.Create;
+    FStdItemList    := TList<PStdItem>.Create;
+    FMerchantList   := TList<TCreature>.Create;
+    FNpcList        := TList<TCreature>.Create;
+    FMonsterList    := TList<PZenInfo>.Create;
+    FMonsterDefList := TList<PMonsterInfo>.Create;
+    FRunUserList    := TStringList.Create;
+    FReadyList      := TStringList.Create;
+    FAdminList      := TStringList.Create;
   end;
 
   destructor TUserEngine.Destroy;
@@ -44,6 +69,25 @@ uses Mir3.Server.Functions;
     begin
       Dispose(StdItemList[I]);
     end;
+    FreeAndNil(FStdItemList);
+
+    for I := 0 to FMonsterList.Count-1 do
+    begin
+      Dispose(FMonsterList[I]);
+    end;
+    FreeAndNil(FMonsterList);
+
+    for I := 0 to FMonsterDefList.Count-1 do
+    begin
+      Dispose(FMonsterDefList[I]);
+    end;
+    FreeAndNil(FMonsterDefList);
+
+    FreeAndNil(FMerchantList);
+    FreeAndNil(FNpcList);
+    FreeAndNil(FRunUserList);
+    FreeAndNil(FReadyList);
+    FreeAndNil(FAdminList);
     inherited Destroy;
   end;
 {$ENDREGION}
@@ -53,6 +97,40 @@ uses Mir3.Server.Functions;
   procedure TUserEngine.AddNewUser(AUserOpenInfo: PUserOpenInfo);
   begin
 
+  end;
+
+  procedure TUserEngine.Initialize;
+  var
+    I        : Integer;
+    FZenInfo : PZenInfo;
+  begin
+    //LoadRefillCretInfos;
+    //InitializeMerchants;
+    //InitializeNpcs;
+
+    for I := 0 to MonsterList.Count-1 do
+    begin
+      FZenInfo := PZenInfo(MonsterList[i]);
+      if FZenInfo <> nil then
+      begin
+        FZenInfo.RMonRace := GetMonsterRace(FZenInfo.RMonName);
+      end;
+    end;
+  end;
+
+  function TUserEngine.GetMonsterRace(AMonsterName: String): Integer;
+  var
+    I : Integer;
+  begin
+    Result := -1;
+    for i:=0 to MonsterDefList.Count-1 do
+    begin
+      if CompareText (PMonsterInfo(MonsterDefList[i]).RName, AMonsterName) = 0 then
+      begin
+        Result := PMonsterInfo(MonsterDefList[i]).RRace;
+        break;
+      end;
+    end;
   end;
 
   { StdItem function }

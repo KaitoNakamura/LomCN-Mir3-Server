@@ -4,8 +4,8 @@ interface
 
 uses System.Classes, System.Generics.Collections, System.SyncObjs,
 
-     Mir3.Server.Core, Mir3.Objects.Base, Mir3.Server.Constants,
-     Mir3.Server.Functions;
+     Mir3.Server.Constants, Mir3.Server.Functions, Mir3.Server.Core,
+     Mir3.Objects.Base;
 
 type
 
@@ -62,19 +62,6 @@ type
    TMapInfoList  = array[0..MaxInt div 16] of TMapInfo;
    PMapInfoList  = ^TMapInfoList;
 
-   PMapItem = ^TMapItem;
-   TMapItem = record
-     RUserItem  : TUserItem;
-     RName      : String;//[25];
-     RLooks     : Word;
-     RAniCount  : Byte;
-     RReserved  : Byte;
-     RCount     : Integer;
-     ROwnership : TObject;
-     RDroptime  : LongWord;
-     RDroper    : TObject;
-   end;
-
 {$ENDREGION}
 
   (* class TEnvirnoment *)
@@ -85,8 +72,14 @@ type
     FMapTitle    : String;
     FMapWidth    : Integer;
     FMapHeight   : Integer;
+    FMiniMap     : Integer;
+    FMineMap     : Integer;
+    FMapQuest    : TObject;
+    FServerIndex : Integer;
     FCanGetItem  : Boolean;
+    FReconnectMap: String;
     FMapInfoList : PMapInfoList;
+    FAttributes  : TMapAttributes;
   private
     procedure ResizeMap(X, Y: Integer);
   public
@@ -113,10 +106,16 @@ type
     // Map things
     function AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
   public
-    property MapName    : String  read FMapName    write FMapName;
-    property MapTitle   : String  read FMapTitle   write FMapTitle;
-    property MapWidth   : Integer read FMapWidth   write FMapWidth;
-    property MapHeight  : Integer read FMapHeight  write FMapHeight;
+    property MapName     : String         read FMapName      write FMapName;
+    property MapTitle    : String         read FMapTitle     write FMapTitle;
+    property MapWidth    : Integer        read FMapWidth     write FMapWidth;
+    property MapHeight   : Integer        read FMapHeight    write FMapHeight;
+    property MiniMap     : Integer        read FMiniMap      write FMiniMap;
+    property MineMap     : Integer        read FMineMap      write FMineMap;
+    property MapQuest    : TObject        read FMapQuest     write FMapQuest;
+    property ServerIndex : Integer        read FServerIndex  write FServerIndex;
+    property Attributes  : TMapAttributes read FAttributes   write FAttributes;
+    property ReconnectMap: String         read FReconnectMap write FReconnectMap;
   end;
 
   (* class TEnvirList *)
@@ -128,12 +127,14 @@ type
     constructor Create;
     destructor Destroy; override;
   public
+    function AddEnvirnoment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvirnoment;
     function AddGateToMap(AFromMap: String; FX, FY: integer; AToMap: string; TX, TY: Integer): Boolean;
     function GetEnvirnoment(AMapName: String): TEnvirnoment;
+    procedure InitEnvirnoments;
+    function ServerGetEnvirnoment(AServerIndex: Integer; AMapName: String): TEnvirnoment;
   public
     property ServerIndex: Integer read FServerIndex  write FServerIndex;
   end;
-
 
 implementation
 
@@ -785,7 +786,7 @@ uses
 
 (* class TEnvirList *)
 
-{$REGION ' - TEnvirnoment Constructor / Destructor '}
+{$REGION ' - TEnvirList Constructor / Destructor '}
   constructor TEnvirList.Create;
   begin
     inherited Create;
@@ -799,7 +800,42 @@ uses
   end;
 {$ENDREGION}
 
-{$REGION ' - TEnvirnoment Public Function '}
+{$REGION ' - TEnvirList Public Function '}
+  function TEnvirList.AddEnvirnoment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvirnoment;
+  var
+    I     : Integer;
+    FEnvir: TEnvirnoment;
+  begin
+    Result := nil;
+    FEnvir := TEnvirnoment.Create;
+    with FEnvir do
+    begin
+      MapName      := AMapName;
+      MapTitle     := AMapTitel;
+      ServerIndex  := AServerIndex;
+      Attributes   := AAttributes;
+      ReconnectMap := AReconnectMap;
+      MapQuest     := ANpc;
+
+      for I := 0 to GMiniMapList.Count-1 do
+      begin
+        if CompareText(GMiniMapList[i], AMapName) = 0 then
+        begin
+          MiniMap := Integer(GMiniMapList.Objects[I]);
+          break;
+        end;
+      end;
+
+      if LoadMap(GDir_Map + AMapName + '.map') then
+      begin
+        Result := FEnvir;
+        Add(FEnvir);
+      end else begin
+        ServerLogMessage('file not found..  ' + GDir_Map + AMapName + '.map');
+      end;
+    end;
+  end;
+
   function TEnvirList.AddGateToMap(AFromMap: String; FX, FY: integer; AToMap: String; TX, TY: Integer): Boolean;
   var
     FFromMap  : TEnvirnoment;
@@ -842,6 +878,35 @@ uses
         if CompareText(TEnvirnoment(Items[I]).MapName, AMapName) = 0 then
         begin
           Result := TEnvirnoment(Items[I]);
+          exit;
+        end;
+      end;
+    finally
+      GCS_Share.Leave;
+    end;
+  end;
+
+  procedure TEnvirList.InitEnvirnoments;
+  //var
+    //I: integer;
+  begin
+    //for i:=0 to Count-1 do
+      //TEnvirnoment(Items[i]).ApplyDoors;
+  end;
+
+  function TEnvirList.ServerGetEnvirnoment(AServerIndex: Integer; AMapName: String): TEnvirnoment;
+  var
+    I : Integer;
+  begin
+    Result := nil;
+    try
+      GCS_Share.Enter;
+      for I := 0 to Count-1 do
+      begin
+        if (TEnvirnoment(Items[i]).ServerIndex = AServerIndex)      and
+        (CompareText(TEnvirnoment(Items[i]).MapName, AMapName) = 0) then
+        begin
+          Result := TEnvirnoment(Items[i]);
           exit;
         end;
       end;

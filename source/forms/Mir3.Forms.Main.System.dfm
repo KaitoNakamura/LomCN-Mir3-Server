@@ -139,8 +139,8 @@ object FrmMain: TFrmMain
     ParentBackground = False
     TabOrder = 2
     object LbServerVersion: TLabel
-      Left = 0
-      Top = 0
+      Left = 2
+      Top = 2
       Width = 134
       Height = 20
       Caption = 'LbServerVersion'
