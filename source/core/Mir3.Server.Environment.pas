@@ -1,4 +1,4 @@
-unit Mir3.Server.Envirnoment;
+unit Mir3.Server.Environment;
 
 interface
 
@@ -64,9 +64,9 @@ type
 
 {$ENDREGION}
 
-  (* class TEnvirnoment *)
+  (* class TEnvironment *)
 
-  TEnvirnoment = class
+  TEnvironment = class
   strict private
     FMapName     : String;
     FMapTitle    : String;
@@ -105,6 +105,7 @@ type
     function CanSafeWalk(X, Y: Integer): Boolean;
     // Map things
     function AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
+    function DeleteFromMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Integer;
   public
     property MapName     : String         read FMapName      write FMapName;
     property MapTitle    : String         read FMapTitle     write FMapTitle;
@@ -127,11 +128,11 @@ type
     constructor Create;
     destructor Destroy; override;
   public
-    function AddEnvirnoment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvirnoment;
+    function AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
     function AddGateToMap(AFromMap: String; FX, FY: integer; AToMap: string; TX, TY: Integer): Boolean;
-    function GetEnvirnoment(AMapName: String): TEnvirnoment;
-    procedure InitEnvirnoments;
-    function ServerGetEnvirnoment(AServerIndex: Integer; AMapName: String): TEnvirnoment;
+    function GetEnvironment(AMapName: String): TEnvironment;
+    procedure InitEnvironment;
+    function ServerGetEnvironment(AServerIndex: Integer; AMapName: String): TEnvironment;
   public
     property ServerIndex: Integer read FServerIndex  write FServerIndex;
   end;
@@ -142,10 +143,10 @@ uses
   Winapi.Windows, System.SysUtils,
   Mir3.Objects.NPC, Mir3.Server.Events, Mir3.Forms.Local.DB, Mir3.Forms.Main.System;
 
-  (* class TEnvirnoment *)
+  (* class TEnvironment *)
 
-{$REGION ' - TEnvirnoment Constructor / Destructor '}
-  constructor TEnvirnoment.Create;
+{$REGION ' - TEnvironment Constructor / Destructor '}
+  constructor TEnvironment.Create;
   begin
     FMapName     := '';
     FMapTitle    := '';
@@ -154,16 +155,16 @@ uses
     FMapInfoList := nil;
   end;
 
-  destructor TEnvirnoment.Destroy;
+  destructor TEnvironment.Destroy;
   begin
 
     inherited Destroy;
   end;
 {$ENDREGION}
 
-{$REGION ' - TEnvirnoment Public Function '}
+{$REGION ' - TEnvironment Public Function '}
 
-  function TEnvirnoment.LoadMap(AMapName: String): Boolean;
+  function TEnvironment.LoadMap(AMapName: String): Boolean;
   var
     X, Y, C     : Integer;
     FSize       : Integer;
@@ -209,7 +210,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.GetMapInfoXY(X, Y: Integer; var AMapInfo: PMapInfo): Boolean;
+  function TEnvironment.GetMapInfoXY(X, Y: Integer; var AMapInfo: PMapInfo): Boolean;
   begin
     AMapInfo := nil;
     Result   := False;
@@ -223,7 +224,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.GetCreature(X, Y: Integer; AAliveOnly: Boolean): TObject;
+  function TEnvironment.GetCreature(X, Y: Integer; AAliveOnly: Boolean): TObject;
   var
     I         : Integer;
     FMapInfo  : PMapInfo;
@@ -256,7 +257,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.GetAllCreature(X, Y: Integer; AAliveOnly: Boolean; ACreatureList: TList<TCreature>): Integer;
+  function TEnvironment.GetAllCreature(X, Y: Integer; AAliveOnly: Boolean; ACreatureList: TList<TCreature>): Integer;
   var
     I         : Integer;
     FMapInfo  : PMapInfo;
@@ -288,7 +289,7 @@ uses
     Result := ACreatureList.Count;
   end;
 
-  function TEnvirnoment.GetCreatureInRange(X, Y, AWide: Integer; AAliveOnly: Boolean; ACreatureList: TList<TCreature>): Integer;
+  function TEnvironment.GetCreatureInRange(X, Y, AWide: Integer; AAliveOnly: Boolean; ACreatureList: TList<TCreature>): Integer;
   var
     I, C : Integer;
   begin
@@ -302,7 +303,7 @@ uses
     Result := ACreatureList.Count;
   end;
 
-  function TEnvirnoment.IsValidCreature(X, Y, ACheckRange: Integer; ACreature: TObject): Boolean;
+  function TEnvironment.IsValidCreature(X, Y, ACheckRange: Integer; ACreature: TObject): Boolean;
   var
     I, C, L   : Integer;
     FMapInfo  : PMapInfo;
@@ -335,7 +336,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.IsValidFrontCreature(X, Y, ACeckRange: Integer; var ACreature: TObject): Boolean;
+  function TEnvironment.IsValidFrontCreature(X, Y, ACeckRange: Integer; var ACreature: TObject): Boolean;
   var
     I, C, L   : Integer;
     FMapInfo  : PMapInfo;
@@ -378,7 +379,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.GetItem(X, Y: Integer): PMapItem;
+  function TEnvironment.GetItem(X, Y: Integer): PMapItem;
   var
     I        : Integer;
     FMapInfo : PMapInfo;
@@ -420,7 +421,7 @@ uses
      end;
   end;
 
-  function TEnvirnoment.GetItemAndCount(X, Y: Integer; var AItemCount: Integer): PMapItem;
+  function TEnvironment.GetItemAndCount(X, Y: Integer; var AItemCount: Integer): PMapItem;
   var
     I        : Integer;
     FMapInfo : PMapInfo;
@@ -463,7 +464,7 @@ uses
      end;
   end;
 
-  function TEnvirnoment.GetEvent(X, Y: Integer): TObject;
+  function TEnvironment.GetEvent(X, Y: Integer): TObject;
   var
     I        : Integer;
     FMapInfo : PMapInfo;
@@ -485,7 +486,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.GetDupCount(X, Y: Integer): Integer;
+  function TEnvironment.GetDupCount(X, Y: Integer): Integer;
   var
     I        : Integer;
     FMapInfo : PMapInfo;
@@ -517,7 +518,7 @@ uses
     end;
   end;
 
-  procedure TEnvirnoment.SetMovement(X, Y: Integer; ACanMove: Boolean);
+  procedure TEnvironment.SetMovement(X, Y: Integer; ACanMove: Boolean);
   var
     FMapInfo : PMapInfo;
     FInRange : Boolean;
@@ -532,7 +533,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.CanWalk(X, Y: Integer; AAllowDup: Boolean): Boolean;
+  function TEnvironment.CanWalk(X, Y: Integer; AAllowDup: Boolean): Boolean;
   var
     I        : Integer;
     FMapInfo : PMapInfo;
@@ -575,7 +576,7 @@ uses
      end;
   end;
 
-  function TEnvirnoment.CanFly(X1, Y1, X2, Y2: Integer): Boolean;
+  function TEnvironment.CanFly(X1, Y1, X2, Y2: Integer): Boolean;
   var
     I, FX, FY   : Integer;
     FStepX, FStepY : Real;
@@ -595,7 +596,7 @@ uses
      end;
   end;
 
-  function TEnvirnoment.CanFireFly(X, Y: Integer): Boolean;
+  function TEnvironment.CanFireFly(X, Y: Integer): Boolean;
   var
     FMapInfo : PMapInfo;
     FInRange : Boolean;
@@ -611,7 +612,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.CanSafeWalk(X, Y: Integer): Boolean;
+  function TEnvironment.CanSafeWalk(X, Y: Integer): Boolean;
   var
     I        : Integer;
     FMapInfo : PMapInfo;
@@ -634,7 +635,7 @@ uses
     end;
   end;
 
-  function TEnvirnoment.AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
+  function TEnvironment.AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
   var
     I, C        : Integer;
     FMapInfo    : PMapInfo;
@@ -746,14 +747,75 @@ uses
         end;
       end;
     except
-       ServerLogMessage('[TEnvirnoment] AddToMap exception');
+       ServerLogMessage('[TEnvironment] AddToMap exception');
+    end;
+  end;
+
+  function TEnvironment.DeleteFromMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Integer;
+  var
+    I           : Integer;
+    FMapInfo    : PMapInfo;
+    FCellObject : PCellObject;
+    InRange     : Boolean;
+  begin
+    Result := -1;
+    try
+      InRange := GetMapInfoXY(X, Y, FMapInfo);
+      if InRange then
+      begin
+        if FMapInfo <> nil then
+        begin
+          try
+            if FMapInfo.RObjectList <> nil then
+            begin
+              i := 0;
+              while TRUE do
+              begin
+                if i >= FMapInfo.RObjectList.Count then break;
+                FCellObject := FMapInfo.RObjectList[i];
+                if FCellObject <> nil then
+                begin
+                   if (AObjectType = FCellObject.RShape) and (AObject = FCellObject.RObject) then
+                   begin
+                     FMapInfo.RObjectList.Delete (i);
+                     Dispose(FCellObject);
+                     Result := 1;
+                     if FMapInfo.RObjectList.Count <= 0 then
+                     begin
+                       FMapInfo.RObjectList.Free;
+                       FMapInfo.RObjectList := nil;
+                       break;
+                     end;
+                     Continue;
+                   end;
+                end else begin
+                  FMapInfo.RObjectList.Delete (i);
+                  if FMapInfo.RObjectList.Count <= 0 then
+                  begin
+                    FMapInfo.RObjectList.Free;
+                    FMapInfo.RObjectList := nil;
+                    break;
+                  end;
+                  continue;
+                end;
+                inc(I);
+              end;
+            end else Result := -2;
+          except
+            FMapInfo := nil;
+            ServerLogMessage('[TEnvironment] DeleteFromMap -> Except 1 **' + IntToStr(AObjectType));
+          end;
+        end else Result := -3;
+      end else Result := 0;
+    except
+      ServerLogMessage('[TEnvironment] DeleteFromMap -> Except 2 **' + IntToStr(AObjectType));
     end;
   end;
 
 {$ENDREGION}
 
-{$REGION ' - TEnvirnoment Private Functions '}
-  procedure TEnvirnoment.ResizeMap(X, Y: Integer);
+{$REGION ' - TEnvironment Private Functions '}
+  procedure TEnvironment.ResizeMap(X, Y: Integer);
   var
     I, C : Integer;
   begin
@@ -801,13 +863,13 @@ uses
 {$ENDREGION}
 
 {$REGION ' - TEnvirList Public Function '}
-  function TEnvirList.AddEnvirnoment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvirnoment;
+  function TEnvirList.AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
   var
     I     : Integer;
-    FEnvir: TEnvirnoment;
+    FEnvir: TEnvironment;
   begin
     Result := nil;
-    FEnvir := TEnvirnoment.Create;
+    FEnvir := TEnvironment.Create;
     with FEnvir do
     begin
       MapName      := AMapName;
@@ -838,13 +900,13 @@ uses
 
   function TEnvirList.AddGateToMap(AFromMap: String; FX, FY: integer; AToMap: String; TX, TY: Integer): Boolean;
   var
-    FFromMap  : TEnvirnoment;
-    FToMap    : TEnvirnoment;
+    FFromMap  : TEnvironment;
+    FToMap    : TEnvironment;
     FGateInfo : PGateInfo;
   begin
     Result   := False;
-    FFromMap := GetEnvirnoment(AFromMap);
-    FToMap   := GetEnvirnoment(AToMap);
+    FFromMap := GeTEnvironment(AFromMap);
+    FToMap   := GeTEnvironment(AToMap);
     if (FFromMap <> nil) and (FToMap <> nil) then
     begin
       New(FGateInfo);
@@ -866,7 +928,7 @@ uses
     end;
   end;
 
-  function TEnvirList.GetEnvirnoment(AMapName: String): TEnvirnoment;
+  function TEnvirList.GeTEnvironment(AMapName: String): TEnvironment;
   var
     I: Integer;
   begin
@@ -875,9 +937,9 @@ uses
       GCS_Share.Enter;
       for I := 0 to Count-1 do
       begin
-        if CompareText(TEnvirnoment(Items[I]).MapName, AMapName) = 0 then
+        if CompareText(TEnvironment(Items[I]).MapName, AMapName) = 0 then
         begin
-          Result := TEnvirnoment(Items[I]);
+          Result := TEnvironment(Items[I]);
           exit;
         end;
       end;
@@ -886,15 +948,15 @@ uses
     end;
   end;
 
-  procedure TEnvirList.InitEnvirnoments;
+  procedure TEnvirList.InitEnvironment;
   //var
     //I: integer;
   begin
     //for i:=0 to Count-1 do
-      //TEnvirnoment(Items[i]).ApplyDoors;
+      //TEnvironment(Items[i]).ApplyDoors;
   end;
 
-  function TEnvirList.ServerGetEnvirnoment(AServerIndex: Integer; AMapName: String): TEnvirnoment;
+  function TEnvirList.ServerGetEnvironment(AServerIndex: Integer; AMapName: String): TEnvironment;
   var
     I : Integer;
   begin
@@ -903,10 +965,10 @@ uses
       GCS_Share.Enter;
       for I := 0 to Count-1 do
       begin
-        if (TEnvirnoment(Items[i]).ServerIndex = AServerIndex)      and
-        (CompareText(TEnvirnoment(Items[i]).MapName, AMapName) = 0) then
+        if (TEnvironment(Items[i]).ServerIndex = AServerIndex)      and
+        (CompareText(TEnvironment(Items[i]).MapName, AMapName) = 0) then
         begin
-          Result := TEnvirnoment(Items[i]);
+          Result := TEnvironment(Items[i]);
           exit;
         end;
       end;

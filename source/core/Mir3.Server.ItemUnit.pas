@@ -340,7 +340,7 @@ uses System.Math;
     FInc        : integer;
   begin
 
-    // DC Options
+    // Damage Power Class
     FUpdateValue := GetUpgrade(12, 15);
     if Random(15) = 0 then AUserItem^.RDesc[0] := 1+FUpdateValue;
 
@@ -357,11 +357,11 @@ uses System.Math;
       end;
     end;
 
-    //MC Options
+    //Magic Power Class
     FUpdateValue := GetUpgrade(12, 15);
     if Random(15) = 0 then AUserItem.RDesc[1] := 1+FUpdateValue;
 
-    //SC Options
+    //Sprite Energy Class
     FUpdateValue := GetUpgrade(12, 15);
     if Random(15) = 0 then AUserItem.RDesc[2] := 1+FUpdateValue;
 
@@ -397,15 +397,15 @@ uses System.Math;
     FUpdateValue := GetUpgrade(6, 15); //MAC
     if Random(30) = 0 then AUserItem.RDesc[1] := 1+FUpdateValue;
 
-    //Destruction Power
+    //Damage Power Class
     FUpdateValue := GetUpgrade(6, 20);  //DC
     if Random(40) = 0 then AUserItem.RDesc[2] := 1+FUpdateValue;
 
-    //Magic Power
+    //Magic Power Class
     FUpdateValue := GetUpgrade(6, 20);  //MC
     if Random(40) = 0 then AUserItem.RDesc[3] := 1+FUpdateValue;
 
-    //Soul Power
+    //Sprite Energy Class
     FUpdateValue := GetUpgrade(6, 20);  //SC
     if Random(40) = 0 then AUserItem.RDesc[4] := 1+FUpdateValue;
 
@@ -434,15 +434,15 @@ uses System.Math;
      FUpdateValue := GetUpgrade(6, 30); //MAC(SPEED)
      if Random(60) = 0 then AUserItem.RDesc[1] := 1+FUpdateValue;
 
-     //Destruction Power
+     //Damage Power Class
      FUpdateValue := GetUpgrade(6, 20);  //DC
      if Random(30) = 0 then AUserItem.RDesc[2] := 1+FUpdateValue;
 
-     //Magic Power
+     //Magic Power Class
      FUpdateValue := GetUpgrade(6, 20);  //MC
      if Random(30) = 0 then AUserItem.RDesc[3] := 1+FUpdateValue;
 
-     //Soul Power
+     //Sprite Energy Class
      FUpdateValue := GetUpgrade(6, 20);  //SC
      if Random(30) = 0 then AUserItem.RDesc[4] := 1+FUpdateValue;
 
@@ -470,15 +470,15 @@ uses System.Math;
      FUpdateValue := GetUpgrade(6, 20); //MAC
      if Random(20) = 0 then AUserItem.RDesc[1] := 1+FUpdateValue;
 
-     //Destruction Power
+     //Damage Power Class
      FUpdateValue := GetUpgrade(6, 20);  //DC
      if Random(30) = 0 then AUserItem.RDesc[2] := 1+FUpdateValue;
 
-     //Magic Power
+     //Magic Power Class
      FUpdateValue := GetUpgrade(6, 20);  //MC
      if Random(30) = 0 then AUserItem.RDesc[3] := 1+FUpdateValue;
 
-     //Soul Power
+     //Sprite Energy Class
      FUpdateValue := GetUpgrade(6, 20);  //SC
      if Random(30) = 0 then AUserItem.RDesc[4] := 1+FUpdateValue;
 
@@ -498,15 +498,15 @@ uses System.Math;
     FUpdateValue: Integer;
   begin
 
-     //Destruction Power
+     //Damage Power Class
      FUpdateValue := GetUpgrade(6, 20);  //DC
      if Random(30) = 0 then AUserItem.RDesc[2] := 1+FUpdateValue;
 
-     //Magic Power
+     //Magic Power Class
      FUpdateValue := GetUpgrade(6, 20);  //MC
      if Random(30) = 0 then AUserItem.RDesc[3] := 1+FUpdateValue;
 
-     //Soul Power
+     //Sprite Energy Class
      FUpdateValue := GetUpgrade(6, 20);  //SC
      if Random(30) = 0 then AUserItem.RDesc[4] := 1+FUpdateValue;
 
@@ -534,15 +534,15 @@ uses System.Math;
      FUpdateValue := GetUpgrade(6, 20); //MAC
      if Random(30) = 0 then AUserItem.RDesc[1] := 1+FUpdateValue;
 
-     //Destruction Power
+     //Damage Power Class
      FUpdateValue := GetUpgrade(6, 20);  //DC
      if Random(30) = 0 then AUserItem.RDesc[2] := 1+FUpdateValue;
 
-     //Magic Power
+     //Magic Power Class
      FUpdateValue := GetUpgrade(6, 20);  //MC
      if Random(30) = 0 then AUserItem.RDesc[3] := 1+FUpdateValue;
 
-     //Soul Power
+     //Sprite Energy Class
      FUpdateValue := GetUpgrade(6, 20);  //SC
      if Random(30) = 0 then AUserItem.RDesc[4] := 1+FUpdateValue;
 

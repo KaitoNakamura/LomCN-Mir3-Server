@@ -4,41 +4,52 @@ interface
 
 uses WinAPI.Windows, System.Classes, System.Generics.Collections,
 
-     Mir3.Server.Envirnoment, Mir3.Server.Core;
+     Mir3.Server.Environment, Mir3.Server.Core;
 
 type
   TEvent = class
-  private
-    FActive      : Boolean;
-    FClosed      : Boolean;
-    FIsAddToMap  : Boolean;
-    FDamage      : Integer;
-    FEnvirnoment : TEnvirnoment;
-    FPosX        : Integer;
-    FPosY        : Integer;
-    FEventType   : Integer;
-    FCloseTime   : Cardinal;
-    FRunStart    : Cardinal;
-    FRunTick     : Cardinal;
+  strict private
+    FVisible       : Boolean;
+    FActive        : Boolean;
+    FClosed        : Boolean;
+    FIsAddToMap    : Boolean;
+    FDamage        : Integer;
+    FPosX          : Integer;
+    FPosY          : Integer;
+    FEventType     : Integer;
+    FEventParam    : Integer;
+    FCloseTime     : Cardinal;
+    FRunStart      : Cardinal;
+    FRunTick       : Cardinal;
+    FOpenStartTime : Cardinal;
+    FContinueTime  : Cardinal;
+    FOwnCreatur    : TObject;
+    FEnvirnoment   : TEnvironment;
   private
     procedure AddToMap; virtual;
   public
-    constructor Create(AEnvirnoment: TEnvirnoment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
+    constructor Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
     destructor Destroy; override;
   public
-    procedure Run;
+    procedure RunEvent; dynamic;
+    procedure CloseEvent;
   public
-    property Active    : Boolean      read FActive      write FActive;
-    property Closed    : Boolean      read FClosed      write FClosed;
-    property IsAddToMap: Boolean      read FIsAddToMap  write FIsAddToMap;
-    property Damage    : Integer      read FDamage      write FDamage;
-    property Envir     : TEnvirnoment read FEnvirnoment write FEnvirnoment;
-    property X         : Integer      read FPosX        write FPosX;
-    property Y         : Integer      read FPosY        write FPosY;
-    property EventType : Integer      read FEventType   write FEventType;
-    property CloseTime : Cardinal     read FCloseTime   write FCloseTime;
-    property RunStart  : Cardinal     read FRunStart    write FRunStart;
-    property RunTick   : Cardinal     read FRunTick     write FRunTick;
+    property Visible       : Boolean      read FVisible       write FVisible;
+    property Active        : Boolean      read FActive        write FActive;
+    property Closed        : Boolean      read FClosed        write FClosed;
+    property IsAddToMap    : Boolean      read FIsAddToMap    write FIsAddToMap;
+    property Damage        : Integer      read FDamage        write FDamage;
+    property X             : Integer      read FPosX          write FPosX;
+    property Y             : Integer      read FPosY          write FPosY;
+    property EventParam    : Integer      read FEventParam    write FEventParam;
+    property EventType     : Integer      read FEventType     write FEventType;
+    property CloseTime     : Cardinal     read FCloseTime     write FCloseTime;
+    property RunStart      : Cardinal     read FRunStart      write FRunStart;
+    property RunTick       : Cardinal     read FRunTick       write FRunTick;
+    property OpenStartTime : Cardinal     read FOpenStartTime write FOpenStartTime;
+    property ContinueTime  : Cardinal     read FContinueTime  write FContinueTime;
+    property OwnCreatur    : TObject      read FOwnCreatur    write FOwnCreatur;
+    property Envir         : TEnvironment read FEnvirnoment   write FEnvirnoment;
   end;
 
   TStoneMineEvent = class(TEvent)
@@ -48,15 +59,16 @@ type
   private
     procedure AddToMap; override;
   public
-    constructor Create(AEnvirnoment: TEnvirnoment; AX, AY, AEventType: Integer);
+    constructor Create(AEnvirnoment: TEnvironment; AX, AY, AEventType: Integer);
   public
-
+    property MineCount  : Integer  read FMineCount write FMineCount;
+    property RefillTime : Cardinal read FRefillTime write FRefillTime;
   end;
 
   TPileStones = class(TEvent)
   private
   public
-    constructor Create(AEnvirnoment: TEnvirnoment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
+    constructor Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
   public
 
   end;
@@ -95,18 +107,35 @@ type
     destructor Destroy; override;
   public
     procedure AddEvent(AEvent: TEvent);
-    function FindEvent(AEnvirnoment: TEnvirnoment; AX, AY, AEventType: Integer): TEvent;
+    function FindEvent(AEnvirnoment: TEnvironment; AX, AY, AEventType: Integer): TEvent;
     procedure Run;
   end;
 
 implementation
 
+uses  Mir3.Server.Constants;
+
   (* TEvent *)
 
 {$REGION ' - TEvent Constructor / Destructor '}
-  constructor TEvent.Create(AEnvirnoment: TEnvirnoment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
+  constructor TEvent.Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
   begin
+     FOpenStartTime := GetTickCount;
+     FRunstart      := GetTickCount;
+     FRuntick       := 500;
+     FEventType     := AEventType;
+     FEventParam    := 0;
+     FContinueTime  := AEventTime;
+     FVisible       := AVisible;
+     FClosed        := False;
+     FEnvirnoment   := AEnvirnoment;
+     FPosX          := AX;
+     FPosY          := AY;
+     FActive        := True;
+     FDamage        := 0;
+     FOwnCreatur    := nil;
 
+     AddToMap;
   end;
 
   destructor TEvent.Destroy;
@@ -117,23 +146,47 @@ implementation
 {$ENDREGION}
 
 {$REGION ' - TEvent Public Function '}
-  procedure TEvent.Run;
+  procedure TEvent.RunEvent;
   begin
-
+    if GetTickCount - OpenStartTime > ContinueTime then
+    begin
+      Closed := True;
+      CloseEvent;
+    end;
   end;
+
+  procedure TEvent.CloseEvent;
+  begin
+    CloseTime := GetTickCount;
+    if FVisible then
+    begin
+      FVisible := FALSE;
+      if Envir <> nil then
+        Envir.DeleteFromMap(X, Y, OS_EVENT_OBJECT, Self);
+      Envir := nil;
+    end;
+  end;
+
 {$ENDREGION}
 
 {$REGION ' - TEvent Private Function '}
   procedure TEvent.AddToMap;
   begin
-
+    IsAddToMap := False;
+    if (Envir <> nil) and Visible then
+    begin
+      if (Envir.AddToMap(X, Y, OS_EVENT_OBJECT, Self) <> nil) then
+      begin
+        IsAddToMap := True;
+      end;
+    end else Visible := False;
   end;
 {$ENDREGION}
 
   (* TStoneMineEvent *)
 
 {$REGION ' - TStoneMineEvent Constructor / Destructor '}
-  constructor TStoneMineEvent.Create(AEnvirnoment: TEnvirnoment; AX, AY, AEventType: Integer);
+  constructor TStoneMineEvent.Create(AEnvirnoment: TEnvironment; AX, AY, AEventType: Integer);
   begin
 
   end;
@@ -150,7 +203,7 @@ implementation
   (* TPileStones *)
 
 {$REGION ' - TPileStones Constructor / Destructor '}
-  constructor TPileStones.Create(AEnvirnoment: TEnvirnoment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
+  constructor TPileStones.Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
   begin
 
   end;
@@ -184,7 +237,7 @@ implementation
     FEventList.Add(AEvent);
   end;
 
-  function TEventManager.FindEvent(AEnvirnoment: TEnvirnoment; AX, AY, AEventType: Integer): TEvent;
+  function TEventManager.FindEvent(AEnvirnoment: TEnvironment; AX, AY, AEventType: Integer): TEvent;
   var
     I      : Integer;
     FEvent : TEvent;
@@ -216,7 +269,7 @@ implementation
         if FEvent.Active and (GetTickCount - FEvent.RunStart > FEvent.RunTick) then
         begin
           FEvent.RunStart := GetTickCount;
-          FEvent.Run;
+          FEvent.RunEvent;
           if FEvent.Closed then
           begin
             FClosedList.Add(FEvent);

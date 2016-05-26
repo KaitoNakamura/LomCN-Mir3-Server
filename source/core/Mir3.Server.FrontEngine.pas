@@ -2,7 +2,9 @@ unit Mir3.Server.FrontEngine;
 
 interface
 
-uses System.Classes, System.SyncObjs, System.SysUtils, Mir3.Server.Core;
+uses System.Classes, System.SyncObjs, System.SysUtils,
+
+     Mir3.Server.Core, Mir3.Server.Core.Share;
 
 type
   TFrontEngine = class(TThread)

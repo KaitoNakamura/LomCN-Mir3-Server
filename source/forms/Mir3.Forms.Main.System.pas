@@ -9,7 +9,7 @@ uses
   System.IniFiles,
 
   Mir3.Server.Core, Mir3.Forms.IDServer.Client, Mir3.Server.RunSocket,
-  Mir3.Server.FrontEngine, Mir3.Server.UserEngine, Mir3.Server.Envirnoment,
+  Mir3.Server.FrontEngine, Mir3.Server.UserEngine, Mir3.Server.Environment,
   Mir3.Server.UserManagerEngine, Mir3.Server.ItemUnit, Mir3.Forms.Inter.Message.Client;
 
 type
@@ -455,7 +455,7 @@ begin
     FrmIDSoc.Initialize;
     Memo1.Lines.Add('IDSoc Initialized..');
 
-    GEnvirnoment.InitEnvirnoments;
+    GEnvirnoment.InitEnvironment;
     Memo1.Lines.Add('GEnvirnoment loaded..');
 
     MakeStoneMines;
@@ -478,12 +478,12 @@ var
   I      : Integer;
   X, Y   : Integer;
   FEvent : TStoneMineEvent;
-  FEnvir : TEnvirnoment;
+  FEnvir : TEnvironment;
 begin
   for I := 0 to GEnvirnoment.Count-1 do
   begin
     FEvent := nil;
-    FEnvir := TEnvirnoment(GEnvirnoment[i]);
+    FEnvir := TEnvironment(GEnvirnoment[i]);
     if (maMine in FEnvir.Attributes) then
     begin
       for X := 0 to FEnvir.MapWidth-1 do

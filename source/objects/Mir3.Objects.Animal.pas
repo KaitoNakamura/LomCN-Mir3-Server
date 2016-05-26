@@ -1,6 +1,6 @@
 unit Mir3.Objects.Animal;
 
-interface  //12 Classes
+interface  //15 Classes
 
 uses Mir3.Objects.Base;
 
@@ -49,6 +49,37 @@ type
   (* class TBamTree *)
 
   TBamTree = class(TAnimal)
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+
+  end;
+
+  (* class TTreasureBox *)
+
+  TTreasureBox = class(TBamTree)
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+
+  end;
+
+
+  (* class TBrightBox *)
+
+  TBrightBox = class(TBamTree)
+  public
+    constructor Create;
+    destructor Destroy; override;
+  public
+
+  end;
+
+  (* class TPaKunSung *)
+
+  TPaKunSung = class(TBamTree)
   public
     constructor Create;
     destructor Destroy; override;
@@ -241,6 +272,75 @@ implementation
 {$ENDREGION}
 
 {$REGION ' - TBamTree Private Functions '}
+
+{$ENDREGION}
+
+  (* class TTreasureBox *)
+
+{$REGION ' - TTreasureBox Constructor / Destructor '}
+  constructor TTreasureBox.Create;
+  begin
+
+  end;
+
+  destructor TTreasureBox.Destroy;
+  begin
+
+    inherited Destroy;
+  end;
+{$ENDREGION}
+
+{$REGION ' - TTreasureBox Public Function '}
+
+{$ENDREGION}
+
+{$REGION ' - TTreasureBox Private Functions '}
+
+{$ENDREGION}
+
+  (* class TBrightBox *)
+
+{$REGION ' - TBrightBox Constructor / Destructor '}
+  constructor TBrightBox.Create;
+  begin
+
+  end;
+
+  destructor TBrightBox.Destroy;
+  begin
+
+    inherited Destroy;
+  end;
+{$ENDREGION}
+
+{$REGION ' - TBrightBox Public Function '}
+
+{$ENDREGION}
+
+{$REGION ' - TBrightBox Private Functions '}
+
+{$ENDREGION}
+
+  (* class TPaKunSung *)
+
+{$REGION ' - TPaKunSung Constructor / Destructor '}
+  constructor TPaKunSung.Create;
+  begin
+
+  end;
+
+  destructor TPaKunSung.Destroy;
+  begin
+
+    inherited Destroy;
+  end;
+{$ENDREGION}
+
+{$REGION ' - TPaKunSung Public Function '}
+
+{$ENDREGION}
+
+{$REGION ' - TPaKunSung Private Functions '}
 
 {$ENDREGION}
 

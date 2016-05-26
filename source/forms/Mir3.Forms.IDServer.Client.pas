@@ -96,7 +96,7 @@ procedure TFrmIDSoc.IDSocketRead(Sender: TObject; Socket: TCustomWinSocket);
 begin
   try
     GCS_Share.Enter;
-    FIdSocStr := FIdSocStr + Socket.ReceiveText;
+    FIdSocStr := FIdSocStr + String(Socket.ReceiveText);
     //NetLoginServer;
   finally
     GCS_Share.Leave;

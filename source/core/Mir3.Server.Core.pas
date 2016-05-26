@@ -2,7 +2,7 @@ unit Mir3.Server.Core;
 
 interface
 
-uses System.SysUtils, System.Classes, System.SyncObjs, Mir3.Objects.Base;
+uses System.SysUtils, System.Classes, System.SyncObjs;
 
 var
   GServerVersion     : String  = 'Ver : LomCN v 0.0.1 build 00005';
@@ -211,16 +211,6 @@ type
     FreeMode   : Boolean;
   end;
 
-  PSaveRcd = ^TSaveRcd;
-  TSaveRcd = record
-    RUserID    : String;
-    RUserName  : String;
-    RSaveFail  : Integer;
-    RSaveTime  : LongWord;
-    RUserHuman : TUserHuman;
-    //RRCDData   : FDBRecord;  //Fix me
-  end;
-
   PUserItem = ^TUserItem;
   TUserItem = packed record
     RMakeIndex    : Integer;
@@ -284,11 +274,11 @@ type
     RMonZenTime    : Cardinal;
     RStartTime     : Cardinal;
     RMons          : TList;
-    RSmallZenRate  : integer;
-    RTX            : integer;
-    RTY            : integer;
-    RZenShoutType  : integer;
-    RZenShoutMsg   : integer;
+    RSmallZenRate  : Integer;
+    RTX            : Integer;
+    RTY            : Integer;
+    RZenShoutType  : Integer;
+    RZenShoutMsg   : Integer;
   end;
 
   PMonsterInfo = ^TMonsterInfo;
@@ -321,6 +311,59 @@ type
     RSizeRate    : Word;
     RAntiStop    : Word;
     RItemList    : TList;
+  end;
+
+  TAbility = record
+    RLevel         : Byte;
+    RReserved1     : Byte;
+    RAC            : Word;
+    RMAC           : Word;
+    RDC            : Word;
+    RMC            : Word;
+    RSC            : Word;
+    RHP            : Word;
+    RMP            : Word;
+    RMaxHP         : Word;
+    RMaxMP         : Word;
+    RExpCount      : byte;
+    RExpMaxCount   : byte;
+    RExp           : Cardinal;
+    RMaxExp        : Cardinal;
+    RWeight        : Word;
+    RMaxWeight     : Word;
+    RWearWeight    : Byte;
+    RMaxWearWeight : Byte;
+    RHandWeight    : Byte;
+    RMaxHandWeight : Byte;
+  end;
+
+  PDefMagic = ^TDefMagic;
+  TDefMagic = record
+    RMagicId       : Word;
+    RMagicName     : String;
+    REffectType    : Byte;
+    REffect        : Byte;
+    RSpell         : Word;
+    RMinPower      : Word;
+    RNeedLevel     : array[0..3] of Byte;
+    RMaxTrain      : array[0..3] of Integer;
+    RMaxTrainLevel : Byte;
+    RJob           : Byte;
+    RDelayTime     : Integer;
+    RDefSpell      : Byte;
+    RDefMinPower   : Byte;
+    RMaxPower      : Word;
+    RDefMaxPower   : Byte;
+    RDesc          : String;
+  end;
+
+  PUserMagic = ^TUserMagic;
+  TUserMagic = record
+    RDef        : PDefMagic;
+    RMagicId    : Word;
+    RLevel      : Byte;
+    RKey        : Char;
+    RCurTrain   : Integer;
   end;
 
   TMapAttribute  = (maNoSpaceMove, maNoRandomMove, maNoSpellMove, maNoItemMove,

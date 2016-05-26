@@ -7,6 +7,7 @@ const
   (* Run Gate things *)
   MIR3_MAX_GATE                     = 20;
   MIR3_MAX_PUBLIC_ADDR              = 30;
+  MIR3_STATUS_ARRAY_SIZE            = 16;
 
   GM_OPEN                           = 1;
   GM_CLOSE                          = 2;
@@ -38,6 +39,23 @@ const
   IDC_NEVER_LOSE                    = $10;
 
   SM_OUTOFCONNECTION                = 528;
+
+  RM_TURN                           = 10001;
+  RM_WALK                           = 10002;
+  RM_RUN                            = 10003;
+  RM_HIT                            = 10004;
+  RM_HEAVYHIT                       = 10005;
+  RM_BIGHIT                         = 10006;
+  RM_SPELL                          = 10007;
+  RM_POWERHIT                       = 10008;
+  RM_SITDOWN                        = 10009;
+  RM_MOVEFAIL                       = 10010;
+  RM_LONGHIT                        = 10011;
+  RM_WIDEHIT                        = 10012;
+  RM_PUSH                           = 10013;
+  RM_FIREHIT                        = 10014;
+  RM_RUSH                           = 10015;
+  RM_RUSHKUNG                       = 10016;
 
   (* Skript Command Idents (QA) *)
   QA_SET                            = $1;
@@ -393,6 +411,8 @@ const
   MAX_GOLD                          = 2000000000;
   BAG_GOLD                          = 50000000;
   GROUP_MAX                         = 11;
+  BODY_LUCK_UNIT                    = 5000;
+  MAX_GUILD_MEMBER                  = 400;
 
   STDMODE_OF_DECOITEM               = 9;
   SHAPE_OF_DECOITEM                 = 1;
@@ -407,16 +427,63 @@ const
   (* Race Type *)
 
   RACE_USERHUMAN                    = 0;
+  RACE_DOOR_GUARD                   = 11;
+  RACE_CHICKEN                      = 31; //OK
+
+  RACE_DEER                         = 52; //Pig, Deer, Cow , Sheep etc.
+  RACE_WOLF                         = 53; //OK
+
+  RACE_OMA_WAR                      = 81; //OK like OmaWarrior, ClawCat etc.
+  RACE_SPIT_SPIDER                  = 82; //OK like SpittingSpider etc.
+  RACE_SLOW_MONSTER                 = 83; //OK like Oma, Scarecrow etc.
+  RACE_SCORPION                     = 84; //OK
+  RACE_KILLING_HERB                 = 85; //OK like CarnivorousPlant etc.
+  RACE_SKELETON                     = 86; //OK
+  RACE_DUAL_AXE_SKELETON            = 87; //OK like SkeletonAxeThrower
+  RACE_HEAVY_AXE_SKELETON           = 88; //OK like SkeletonAxeman
+  RACE_KNIGHT_SKELETON              = 89; //OK like SkeletonWarrior
+  RACE_GAS_ATTACK                   = 90; //OK like CaveMaggot
+  RACE_MAG_COW_FACE_MON             = 91; //OK like UmaFlamethrower
+  RACE_COW_FACE_KING_MON            = 92; //OK like UmaKing
+  RACE_THORN_DARK                   = 93; //OK like SpinedDarkLizard
+  RACE_LIGHTING_ZOMBI               = 94; //OK like GhostSorcerer
+
+  RACE_ZILKIN_ZOMBI                 = 96; //OK like VoraciousGhost
+  RACE_COW_MON                      = 97; //OK like Minotaur
+  RACE_NUMA_GATE                    = 98; //OK like NumaGate
+  RACE_SCULTURE_MON                 = 101; //OK like ZumaGuardian
+  RACE_SCULTURE_KING                = 102; //OK like ZumaKing
+  RACE_BEE_QUEEN                    = 103; //OK like WedgeMothLarva
+  RACE_ARCHER_MON                   = 104; //OK like CannibalFanatic ,MutantFlea ,DevotedCultist
+  RACE_GAS_MOTH                     = 105;
+  RACE_DUNG                         = 106;
+  RACE_CENTIPEDE_KING               = 107; //OK like LordJi'Nae
+  RACE_CASTLE_DOOR_R                = 110; //OK GateofSabukKeep1 GateofSabukKeep2
+  RACE_CASTLE_DOOR_L                = 111; //OK GateofSabukKeep3 GateofSabukKeep4
+  RACE_SHINSU_STATE_1               = 113; //Shinsu
+  RACE_SHINSU_STATE_2               = 114; //Shinsu 1
+
+  RACE_SOCCERBALL                   = 120; //Football
+  RACE_CATAPULT                     = 121; //OK Catapult
+  RACE_BALLISTA                     = 122; //OK Ballista
+
+  RACE_HORSE                        = 150; //OK YellowHorse, BrownHorse, WhiteHorse, RedHorse, BlackHorse, IronArmoredHorse....
+
+  RACE_TREASURE_BOX                 = 199;
+
+  RACE_MON_AI                       = 255;
+
+
   RACE_NPC                          = 10;
-  RACE_DOORGUARD                    = 11;
+
   RACE_ARCHERPOLICE                 = 20;
   RACE_ANIMAL                       = 50;
-  RACE_HEN                          = 51;
   RACE_MONSTER                      = 80;
-  RACE_SOCCERBALL                   = 120;
-  RACE_BAMTREE                      = 121;
+
+
   RACE_ARCHERMASTER                 = 161;
 
+//  NAME="ChestnutTree" RACE="209"
 implementation
 
 end.

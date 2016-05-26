@@ -1,9 +1,9 @@
 unit Mir3.Server.UserEngine;
 
 interface
-uses System.SysUtils, System.Classes, System.Generics.Collections,
+uses System.SysUtils, System.Classes, System.Generics.Collections, WinAPI.Windows,
 
-     Mir3.Server.Core, Mir3.Objects.Base;
+     Mir3.Server.Core, Mir3.Objects.Base, Mir3.Server.Constants;
 
 type
   TUserEngine = class
@@ -21,8 +21,10 @@ type
     destructor Destroy; override;
   public
     procedure AddNewUser(AUserOpenInfo: PUserOpenInfo);
+    function AddCreature(AMap: String; X, Y, ARace: Integer; AMonsterName: String): TCreature;
     procedure Initialize;
     function GetMonsterRace(AMonsterName: String): Integer;
+    procedure ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
     { StdItem function }
     function GetStdItemName(AItemIndex: Integer): String;
     function GetStdItemIndex(AItemName: String): Integer;
@@ -44,7 +46,10 @@ type
 
 implementation
 
-uses Mir3.Server.Functions;
+uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
+     Mir3.Objects.Monster_1, Mir3.Objects.Monster_2, Mir3.Objects.Monster_3,
+     Mir3.Objects.Monster_4, Mir3.Objects.Monster_5, Mir3.Objects.Monster_6,
+     Mir3.Objects.Animal, Mir3.Objects.NPC;
 
   (* class TUserEngine *)
 
@@ -99,6 +104,169 @@ uses Mir3.Server.Functions;
 
   end;
 
+  function TUserEngine.AddCreature(AMap: String; X, Y, ARace: Integer; AMonsterName: String): TCreature;
+  var
+    FCreature: TCreature;
+    FEnvir   : TEnvironment;
+  begin
+    Result    := nil;
+    FCreature := nil;
+    FEnvir    := GEnvirnoment.GetEnvironment(AMap);
+
+    if FEnvir = nil then exit;
+
+    case ARace of
+      RACE_DOOR_GUARD          : begin
+        FCreature := TSuperGuard.Create;
+      end;
+      RACE_CHICKEN             : begin
+        FCreature := TChickenDeer.Create;
+        with FCreature do
+        begin
+          Animal      := True;
+          MeatQuality := 3000 + Random(3000);
+        end;
+      end;
+      RACE_DEER                : begin
+        FCreature := TChickenDeer.Create;
+        with FCreature do
+        begin
+          Animal      := True;
+          MeatQuality := 3000 + Random(3000);
+        end;
+      end;
+      RACE_WOLF                : begin
+
+      end;
+      RACE_OMA_WAR             : begin
+
+      end;
+      RACE_SPIT_SPIDER         : begin
+        FCreature := TSpitSpider.Create;
+      end;
+      RACE_SLOW_MONSTER        : begin
+        FCreature := TSlowATMonster.Create;
+      end;
+      RACE_SCORPION            : begin
+        FCreature := TScorpien.Create;
+      end;
+      RACE_KILLING_HERB        : begin
+        FCreature := TStickMonster.Create;
+      end;
+      RACE_SKELETON            : begin
+
+      end;
+      RACE_DUAL_AXE_SKELETON   : begin
+        FCreature := TDualAxeMonster.Create;
+      end;
+      RACE_HEAVY_AXE_SKELETON  : begin
+
+      end;
+      RACE_GAS_ATTACK          : begin
+        FCreature := TGasAttackMonster.Create;
+      end;
+      RACE_MAG_COW_FACE_MON    : begin
+        FCreature := TMagCowMonster.Create;
+      end;
+      RACE_COW_FACE_KING_MON   : begin
+        FCreature := TCowKingMonster.Create;
+      end;
+      RACE_THORN_DARK          : begin
+        FCreature := TThornDarkMonster.Create;
+      end;
+      RACE_LIGHTING_ZOMBI      : begin
+        FCreature := TLightingZombi.Create;
+      end;
+
+      RACE_ZILKIN_ZOMBI        : begin
+        FCreature := TZilKinZombi.Create;
+      end;
+      RACE_COW_MON             : begin
+        FCreature := TCowMonster.Create;
+      end;
+      RACE_NUMA_GATE           : begin
+        // Find out
+      end;
+      RACE_SCULTURE_MON        : begin
+        FCreature := TScultureMonster.Create;
+      end;
+      RACE_SCULTURE_KING       : begin
+        FCreature := TScultureKingMonster.Create;
+      end;
+      RACE_BEE_QUEEN           : begin
+        FCreature := TBeeQueen.Create;
+      end;
+      RACE_ARCHER_MON          : begin
+        FCreature := TArcherMonster.Create;
+      end;
+      RACE_GAS_MOTH            : begin
+        FCreature := TGasMothMonster.Create;
+      end;
+      RACE_DUNG                 : begin
+        FCreature := TGasDungMonster.Create;
+      end;
+      RACE_CENTIPEDE_KING       : begin
+        FCreature := TCentipedeKingMonster.Create;
+      end;
+      RACE_CASTLE_DOOR_R        : begin
+        FCreature := TCastleDoor.Create;
+      end;
+      RACE_CASTLE_DOOR_L        : begin
+        FCreature := TCastleDoor.Create;
+      end;
+      RACE_SHINSU_STATE_1       : begin
+        FCreature := TElfMonster.Create;
+      end;
+      RACE_SHINSU_STATE_2       : begin
+        FCreature := TElfWarriorMonster.Create;
+      end;
+
+      RACE_SOCCERBALL           : begin
+        FCreature := TSoccerBall.Create;
+      end;
+
+      RACE_HORSE                : begin
+        FCreature := THorse.Create;
+      end;
+
+      RACE_TREASURE_BOX         : begin
+        FCreature := TTreasureBox.Create;
+      end;
+
+
+      RACE_MON_AI               : begin
+        //Need to find the correct Race out
+      end;
+    end;
+
+    if FCreature <> nil then
+    begin
+
+      ApplyMonsterAbility(FCreature, AMonsterName);
+      with FCreature do
+      begin
+        Environment := FEnvir;
+        MapName     := AMap;
+        CX          := X;
+        CY          := Y;
+        Direction   := Random(8);
+        UserName    := AMonsterName;
+        SetWAbility(Ability);
+      end;
+
+      if Random(100) < FCreature.CoolEye then
+      begin
+        FCreature.ViewFixedHide := True;
+      end;
+
+      //MonGetRandomItems(FCreature);
+
+      FCreature.Initialize;
+
+    end;
+
+  end;
+
   procedure TUserEngine.Initialize;
   var
     I        : Integer;
@@ -128,6 +296,54 @@ uses Mir3.Server.Functions;
       if CompareText (PMonsterInfo(MonsterDefList[i]).RName, AMonsterName) = 0 then
       begin
         Result := PMonsterInfo(MonsterDefList[i]).RRace;
+        break;
+      end;
+    end;
+  end;
+
+  procedure TUserEngine.ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
+  var
+    I           : Integer;
+    FMonsterInfo: PMonsterInfo;
+    FAbilitiy   : TAbility;
+  begin
+    for I := 0 to MonsterDefList.Count-1 do
+    begin
+      if CompareText(PMonsterInfo(MonsterDefList[I]).RName, AMonsterName) = 0 then
+      begin
+        FMonsterInfo := PMonsterInfo(MonsterDefList[I]);
+        with ACreature do
+        begin
+          RaceServer       := FMonsterInfo.RRace;
+          RaceImage        := FMonsterInfo.RRaceImg;
+          Appearance       := FMonsterInfo.RAppr;
+          LifeAttribute    := FMonsterInfo.RLifeAttrib;
+          CoolEye          := FMonsterInfo.RCoolEye;
+          FightExp         := FMonsterInfo.RExp;
+          SpeedPoint       := FMonsterInfo.RSpeed;
+          AccuracyPoint    := FMonsterInfo.RHit;
+          NextWalkTime     := FMonsterInfo.RWalkSpeed;
+          WalkStep         := FMonsterInfo.RWalkStep;
+          WalkWaitTime     := FMonsterInfo.RWalkWait;
+          NextHitTime      := FMonsterInfo.RAttackSpeed;
+          Tame             := FMonsterInfo.RTame;
+          AntiPush         := FMonsterInfo.RAntiPush;
+          AntiUndead       := FMonsterInfo.RAntiUndead;
+          SizeRate         := FMonsterInfo.RSizeRate;
+          AntiStop         := FMonsterInfo.RAntiStop;
+
+          FAbilitiy.RLevel := FMonsterInfo.RLevel;
+          FAbilitiy.RHP    := FMonsterInfo.RHP;
+          FAbilitiy.RMaxHP := FMonsterInfo.RHP;
+          FAbilitiy.RMP    := FMonsterInfo.RMP;
+          FAbilitiy.RMaxMP := FMonsterInfo.RMP;
+          FAbilitiy.RAC    := MakeWord(FMonsterInfo.RAC,  FMonsterInfo.RAC);
+          FAbilitiy.RMAC   := MakeWord(FMonsterInfo.RMAC, FMonsterInfo.RMAC);
+          FAbilitiy.RDC    := MakeWord(FMonsterInfo.RDC,  FMonsterInfo.RMaxDC);
+          FAbilitiy.RMC    := MakeWord(FMonsterInfo.RMC,  FMonsterInfo.RMC);
+          FAbilitiy.RSC    := MakeWord(FMonsterInfo.RSC,  FMonsterInfo.RSC);
+          SetAbility(FAbilitiy);
+        end;
         break;
       end;
     end;

@@ -36,7 +36,8 @@ var
 
 implementation
 
-uses Mir3.Server.Core, Mir3.Forms.Main.System, Mir3.Objects.NPC, Mir3.Server.Envirnoment;
+uses Mir3.Server.Core, Mir3.Forms.Main.System, Mir3.Objects.NPC,
+     Mir3.Server.Environment;
 
 {$R *.dfm}
 
@@ -191,7 +192,7 @@ var
   FTempCaption  : String;
   FMapInfoList  : TStringList;
   FMapAttribute : TMapAttributes;
-  FTempEnvir    : TEnvirnoment;
+  FTempEnvir    : TEnvironment;
 
   function GetMapNpc(AMapQuestFile: String): TNormNpc;
   var
@@ -331,7 +332,7 @@ begin
             end else break;
           end;
 
-          FTempEnvir := GEnvirnoment.AddEnvirnoment(UpperCase(FMapName),
+          FTempEnvir := GEnvirnoment.AddEnvironment(UpperCase(FMapName),
                                                     FMapTitle,
                                                     FReconnectMap,
                                                     nil,
@@ -476,7 +477,7 @@ begin
 
           if (FZenInfo.RMapName<>'') and (FZenInfo.RMonName<>'') and (FZenInfo.RMonZenTime<>0) then
           begin
-            if GEnvirnoment.ServerGetEnvirnoment(GServerIndex, FZenInfo.RMapName) <> nil then
+            if GEnvirnoment.ServerGetEnvironment(GServerIndex, FZenInfo.RMapName) <> nil then
             begin
               FZenInfo.RStartTime := 0;
               FZenInfo.RMons      := TList.Create;

@@ -21,12 +21,13 @@ uses
   Mir3.Objects.Monster_5 in 'objects\Mir3.Objects.Monster_5.pas',
   Mir3.Objects.Monster_6 in 'objects\Mir3.Objects.Monster_6.pas',
   Mir3.Server.Functions in 'core\Mir3.Server.Functions.pas',
-  Mir3.Server.Envirnoment in 'core\Mir3.Server.Envirnoment.pas',
+  Mir3.Server.Environment in 'core\Mir3.Server.Environment.pas',
   Mir3.Server.Events in 'core\Mir3.Server.Events.pas',
   Mir3.Server.UserManagerEngine in 'core\Mir3.Server.UserManagerEngine.pas',
   Mir3.Forms.Server.Values in 'forms\Mir3.Forms.Server.Values.pas' {FrmServerValue},
   Mir3.Server.ItemUnit in 'core\Mir3.Server.ItemUnit.pas',
-  Mir3.Forms.Inter.Message.Client in 'forms\Mir3.Forms.Inter.Message.Client.pas' {FrmMsgClient};
+  Mir3.Forms.Inter.Message.Client in 'forms\Mir3.Forms.Inter.Message.Client.pas' {FrmMsgClient},
+  Mir3.Server.Core.Share in 'core\Mir3.Server.Core.Share.pas';
 
 {$R *.res}
 
