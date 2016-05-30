@@ -8,6 +8,16 @@ uses
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, System.Win.ScktComp;
 
 type
+  PAdmission = ^TAdmission;
+  TAdmission = record
+    usrid          : string[14];
+    uaddr          : string[15];
+    Certification  : integer;
+    PayMode        : integer;
+    AvailableMode  : integer;
+    ClientVersion  : integer;
+  end;
+
   TFrmIDSoc = class(TForm)
     IDSocket: TClientSocket;
     Timer1: TTimer;
@@ -22,9 +32,12 @@ type
     FIdSocStr      : String;
     FServerAddress : String;
     FServerPort    : Integer;
+    FAdmissionList : TList;
+    FShareIPList   : TStringList;
   public
     procedure Initialize;
     procedure SendUserClose(AUserID: String);
+    function GetAdmission(uid, ipaddr: String; ACertification : Integer; var availmode, clversion: integer): integer;
   end;
 
 var
@@ -41,6 +54,9 @@ var
   FSetupIni      : TIniFile;
   FSetupFileName : String;
 begin
+  FAdmissionList := TList.Create;
+  FShareIPList   := TStringList.Create;
+
   IDSocket.Address := '';
   FSetupFileName   := '.\Setup\Setup.txt';
   if FileExists(FSetupFileName) then
@@ -61,6 +77,8 @@ end;
 
 procedure TFrmIDSoc.FormDestroy(Sender: TObject);
 begin
+  FAdmissionList.Free;
+  FShareIPList.Free;
   //NetLoginServer.Free;
 end;
 
@@ -134,6 +152,60 @@ begin
     end;
   finally
   end;
+end;
+
+function TFrmIDSoc.GetAdmission(uid, ipaddr: String; ACertification : Integer; var availmode, clversion: integer): integer;
+
+   function IsShareIP (ip: string): Boolean;
+   var
+      i: integer;
+   begin
+     Result := FALSE;
+     for i:=0 to FShareIPList.Count-1 do
+       if FShareIPList[i] = ip then
+       begin
+         Result := True;
+         break;
+       end;
+   end;
+
+var
+  I : Integer;
+begin
+   Result := 0;
+   availmode := 0;
+   try
+      try
+         GCS_Share.Enter;
+         for i:=0 to FAdmissionList.Count-1 do begin
+            if PAdmission(FAdmissionList[i]).Certification = ACertification then
+            begin
+               //if (PTAdmission(AdmissionList[i]).usrid = uid) and
+               //   (
+               //     (PTAdmission(AdmissionList[i]).uaddr = ipaddr)
+               //       or IsShareIP (PTAdmission(AdmissionList[i]).uaddr)
+               //   ) then
+               //begin
+                  case PAdmission(FAdmissionList[i]).PayMode of
+                    2: Result := 3;
+                    1: Result := 2;
+                    0: Result := 1;
+                  end;
+                  availmode := PAdmission(FAdmissionList[i]).AvailableMode;
+                  clversion := PAdmission(FAdmissionList[i]).ClientVersion;
+               //end else begin
+               //   if ViewAdmissionFail then
+               //      ServerLogMessage('[Adm-Failure] ' + ipaddr + '/' + uid);
+               //end;
+               break;
+            end;
+         end;
+      finally
+        GCS_Share.Leave;
+      end;
+   except
+     ServerLogMessage('[RunSock->FrmIdSoc] GetAdmission exception');
+   end;
 end;
 
 end.

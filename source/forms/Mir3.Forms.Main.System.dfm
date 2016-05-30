@@ -135,6 +135,7 @@ object FrmMain: TFrmMain
     Width = 439
     Height = 27
     Align = alBottom
+    BevelOuter = bvNone
     Color = clBtnShadow
     ParentBackground = False
     TabOrder = 2
@@ -180,10 +181,10 @@ object FrmMain: TFrmMain
     Left = 192
     Top = 8
   end
-  object TCloseTimer: TTimer
+  object CloseTimer: TTimer
     Enabled = False
     Interval = 100
-    OnTimer = TCloseTimerTimer
+    OnTimer = CloseTimerTimer
     Left = 256
     Top = 8
   end

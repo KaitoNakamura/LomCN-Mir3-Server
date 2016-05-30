@@ -14,18 +14,18 @@ type
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
-    CheckBox1: TCheckBox;
-    SpinEdit1: TSpinEdit;
-    SpinEdit2: TSpinEdit;
-    SpinEdit3: TSpinEdit;
-    SpinEdit4: TSpinEdit;
-    SpinEdit5: TSpinEdit;
+    cbViewHackMessage: TCheckBox;
+    spHumLimit: TSpinEdit;
+    spMonLimit: TSpinEdit;
+    spZenLimit: TSpinEdit;
+    spSocLimit: TSpinEdit;
+    spNPCLimit: TSpinEdit;
     BitBtn1: TBitBtn;
-    procedure SpinEdit1KeyPress(Sender: TObject; var Key: Char);
+    procedure BitBtn1Click(Sender: TObject);
   private
     { Private-Deklarationen }
   public
-    { Public-Deklarationen }
+    function Execute: Boolean;
   end;
 
 var
@@ -33,11 +33,34 @@ var
 
 implementation
 
+uses Mir3.Server.Core, System.Math;
+
 {$R *.dfm}
 
-procedure TFrmServerValue.SpinEdit1KeyPress(Sender: TObject; var Key: Char);
+procedure TFrmServerValue.BitBtn1Click(Sender: TObject);
 begin
-  //
+  Close;
+end;
+
+function TFrmServerValue.Execute: Boolean;
+begin
+  Result := False;
+  spHumLimit.Value := GHumLimit;
+  spMonLimit.Value := GMonLimit;
+  spZenLimit.Value := GZenLimit;
+  spSocLimit.Value := GSocLimit;
+  spNPCLimit.Value := GNpcLimit;
+  cbViewHackMessage.Checked := GViewHackMessage;
+  if ShowModal = mrOk then
+  begin
+    GHumLimit := Min(150, spHumLimit.Value);
+    GMonLimit := Min(150, spMonLimit.Value);
+    GZenLimit := Min(150, spZenLimit.Value);
+    GSocLimit := Min(150, spSocLimit.Value);
+    GNpcLimit := Min(150, spNPCLimit.Value);
+    GViewHackMessage := cbViewHackMessage.Checked;
+    Result := True;
+  end;
 end;
 
 end.

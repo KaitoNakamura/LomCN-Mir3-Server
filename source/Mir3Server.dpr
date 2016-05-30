@@ -27,7 +27,10 @@ uses
   Mir3.Forms.Server.Values in 'forms\Mir3.Forms.Server.Values.pas' {FrmServerValue},
   Mir3.Server.ItemUnit in 'core\Mir3.Server.ItemUnit.pas',
   Mir3.Forms.Inter.Message.Client in 'forms\Mir3.Forms.Inter.Message.Client.pas' {FrmMsgClient},
-  Mir3.Server.Core.Share in 'core\Mir3.Server.Core.Share.pas';
+  Mir3.Server.Core.Share in 'core\Mir3.Server.Core.Share.pas',
+  Mir3.Server.Crypto in 'core\Mir3.Server.Crypto.pas',
+  Mir3.Server.Protocol in 'core\Mir3.Server.Protocol.pas',
+  Mir3.Server.XMLResourceReader in 'core\Mir3.Server.XMLResourceReader.pas';
 
 {$R *.res}
 

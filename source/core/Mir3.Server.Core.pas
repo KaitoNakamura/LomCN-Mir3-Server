@@ -9,10 +9,26 @@ var
 
   GServerReady       : Boolean = False;
   GServiceMode       : Boolean = True;
+  GServerClosing     : Boolean = False;
   GTestServer        : Boolean = False;
   GNonPKServer       : Boolean = False;
   GViewHackMessage   : Boolean = False;
   GServerRunTime     : Cardinal;
+  GRunStartTime      : Cardinal;
+  GRunCount          : Integer;
+  GCurRunCount       : Integer;
+  GMinRunCount       : Integer;
+  GHumanRotateCount  : Integer;
+  GCurSocketTime     : Integer;
+  GCurUserEngTime    : Integer;
+  GCurHumenTime      : Integer;
+  GCurMonsterTime    : Integer;
+  GCurHumRotateTime  : Integer;
+  GMaxSocketTime     : Integer;
+  GMaxUserEngTime    : Integer;
+  GMaxHumenTime      : Integer;
+  GMaxMonsterTime    : Integer;
+  GMaxHumRotateTime  : Integer;
   GMir3DayTime       : Integer = 0;
   GServerIndex       : Integer = 0;
   GServerNumber      : Integer = 0;
@@ -47,6 +63,8 @@ var
   GLogServerPort     : Integer;
   GItemNumber        : Integer = 0;
   GServerName        : String  = 'Lom3';
+  GLatestGenMessage  : String = '';
+  GLatestMonMessage  : String = '';
   GSqlDBLoc          : String;
   GSqlDBID           : String;
   GSqlDBPassword     : String;
@@ -54,7 +72,7 @@ var
   GDBAddr            : String;
   GMsgSrvAddr        : String;
   GLogServerAddr     : String;
-  GDir_Envir         : String  = '.\Envir\';
+  GDir_Envir         : String  = 'Envir\';
   GDir_MonDef        : String  = 'Mon_Def\';
   GDir_Map           : String  = '.\Map\';
   GDir_Guild         : String  = '.\GuildBase\';
@@ -74,6 +92,7 @@ var
   GCS_MessageLock            : TCriticalSection;
   GCS_TimerLock              : TCriticalSection;
   GCS_Share                  : TCriticalSection;
+  GCS_ObjectMessageLock      : TCriticalSection;
   GCS_RunSocketLock          : TCriticalSection;
   GCS_SendDataLock           : TCriticalSection;
   GCS_FrontEngineLock        : TCriticalSection;
@@ -90,7 +109,7 @@ var
 type
   PMsgHeader = ^TMsgHeader;
   TMsgHeader = record
-    RCode               : Integer;  //$aa55aa55;
+    RCode               : LongWord;  //$aa55aa55;
     RSocketNumber       : Integer;  //socket number
     RUserGateIndex      : Word;     //Gate Index
     RIdent              : Word;     //
@@ -121,6 +140,31 @@ type
     REnterEnvir : TObject;
     REnterX     : Integer;
     REnterY     : Integer;
+  end;
+
+  PMessageInfo = ^TMessageInfo;
+  TMessageInfo = record
+     RIdent	      : Word;
+     RWParam    	: Word;
+     RLParam1   	: LongInt;
+     RLParam2     : LongInt;
+     RLParam3     : LongInt;
+     RSender	    : TObject;
+     RTarget      : TObject;
+     RDescription : String;
+  end;
+
+  PMessageInfoEx = ^TMessageInfoEx;
+  TMessageInfoEx = record
+    RIdent	      : Word;
+    RWParam       : Word;
+    RLParam1     	: LongInt;
+    RLParam2      : LongInt;
+    RLParam3      : LongInt;
+    RSender	      : TObject;
+    RTarget       : TObject;
+    RDeliverytime : LongWord;
+    RDescription  : PChar;
   end;
 
   //TODO: Add all Mir3 Item Propertys
@@ -415,6 +459,7 @@ begin
   GCS_MessageLock           := TCriticalSection.Create;
   GCS_TimerLock             := TCriticalSection.Create;
   GCS_Share                 := TCriticalSection.Create;
+  GCS_ObjectMessageLock     := TCriticalSection.Create;
   GCS_RunSocketLock         := TCriticalSection.Create;
   GCS_SendDataLock          := TCriticalSection.Create;
   GCS_FrontEngineLock       := TCriticalSection.Create;
@@ -448,6 +493,7 @@ begin
   FreeAndNil(GCS_FrontEngineCloseLock);
   FreeAndNil(GCS_FrontEngineLock);
   FreeAndNil(GCS_SendDataLock);
+  FreeAndNil(GCS_ObjectMessageLock);
   FreeAndNil(GCS_RunSocketLock);
   FreeAndNil(GCS_MessageLock);
   FreeAndNil(GCS_TimerLock);

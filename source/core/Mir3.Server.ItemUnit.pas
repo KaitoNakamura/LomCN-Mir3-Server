@@ -98,8 +98,46 @@ uses System.Math;
   var
      FCount : Integer;
   begin
+
+    {$REGION ' - Std Mode List '}
+     (*
+      0 :
+      1 :
+      2 :
+      3 :
+      4 : Magic UnTranslatet
+      5 : Weapon
+      6 : Weapon
+     10 : Dress M
+     11 : Dress F
+     15 : Helmet
+     18 : ? (Repair Oil etc.)
+     19 : Necklace
+     20 : Necklace
+     21 : Necklace
+     22 : Ring
+     23 : Ring
+     24 : Bracelet
+     25 : Talisman , PoisonBottle
+     51 : Magic Translatet
+     52 : Shoes
+     53 : Shoes
+     67 : Pet Items
+     68 : Pet Items
+     69 : BasicPetBag
+      *)
+    {$ENDREGION}
+
      FCount := 0;
      case AStdItem.RStdMode of
+       0  : begin
+         {$REGION ' - Std Mode 0 (Items?) '}
+         {$ENDREGION}
+       end;
+       4  : begin
+         {$REGION ' - Std Mode 4 (Magic Book UnTranslatet) '}
+         {$ENDREGION}
+       end;
        5,6: begin
          {$REGION ' - Std Mode 5,6 (Weapon) '}
          with AStdItem, AUserItem do
@@ -141,6 +179,7 @@ uses System.Math;
 
        10,11: begin
          {$REGION ' - Std Mode 10,11 (Dress) '}
+         // 10 = M | 11 = F
          with AStdItem do
          begin
            RAC  := MakeWord(Lobyte(RAC) , Hibyte(RAC)  + AUserItem.RDesc[0]);
@@ -148,7 +187,6 @@ uses System.Math;
            RDC  := MakeWord(Lobyte(RDC) , Hibyte(RDC)  + AUserItem.RDesc[2]);
            RMC  := MakeWord(Lobyte(RMC) , Hibyte(RMC)  + AUserItem.RDesc[3]);
            RSC  := MakeWord(Lobyte(RSC) , Hibyte(RSC)  + AUserItem.RDesc[4]);
-           RBC  := MakeWord(Lobyte(RBC) , Hibyte(RBC)  + AUserItem.RDesc[5]); //Fix me
 
            RAgility  := RAgility  + AUserItem.RDesc[11];
            RMgAvoid  := RMgAvoid  + AUserItem.RDesc[12];
@@ -167,7 +205,7 @@ uses System.Math;
        end;
 
        15: begin
-         {$REGION ' - Std Mode 10,11 '}
+         {$REGION ' - Std Mode 15 (Helmet) '}
          with AStdItem, AUserItem do
          begin
            RAC  := MakeWord(Lobyte(RAC), Hibyte(RAC) + RDesc[0]);
@@ -193,6 +231,12 @@ uses System.Math;
            if RDesc[12] > 0 then Inc(FCount);
            if RDesc[13] > 0 then Inc(FCount);
          end;
+         {$ENDREGION}
+       end;
+
+       18: begin
+         {$REGION ' - Std Mode 18 (Repair Oil) '}
+
          {$ENDREGION}
        end;
 
@@ -287,6 +331,12 @@ uses System.Math;
          {$ENDREGION}
        end;
 
+       25: begin
+         {$REGION ' - Std Mode 25 (Talisman) '}
+
+         {$ENDREGION}
+       end;
+
        26: begin
          {$REGION ' - Std Mode 26 (Bracelet) '}
          with AStdItem, AUserItem do
@@ -313,7 +363,8 @@ uses System.Math;
          end;
          {$ENDREGION}
        end;
-       52: begin
+
+       52, 53: begin
          {$REGION ' - Std Mode 52 (Shoes) '}
          with AStdItem, AUserItem do
          begin

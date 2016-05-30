@@ -6,11 +6,12 @@ uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.StdCtrls, Vcl.ExtCtrls,
   IdBaseComponent, IdComponent, IdUDPBase, IdUDPClient, System.Win.ScktComp,
-  System.IniFiles,
+  System.IniFiles, System.Generics.Collections, System.UITypes,
 
   Mir3.Server.Core, Mir3.Forms.IDServer.Client, Mir3.Server.RunSocket,
   Mir3.Server.FrontEngine, Mir3.Server.UserEngine, Mir3.Server.Environment,
-  Mir3.Server.UserManagerEngine, Mir3.Server.ItemUnit, Mir3.Forms.Inter.Message.Client;
+  Mir3.Server.UserManagerEngine, Mir3.Server.ItemUnit, Mir3.Forms.Inter.Message.Client,
+  Mir3.Server.XMLResourceReader;
 
 type
   TFrmMain = class(TForm)
@@ -33,7 +34,7 @@ type
     Label3: TLabel;
     ConnectTimer: TTimer;
     StartTimer: TTimer;
-    TCloseTimer: TTimer;
+    CloseTimer: TTimer;
     LogUdp: TIdUDPClient;
     GateSocket: TServerSocket;
     DBSocket: TClientSocket;
@@ -47,7 +48,7 @@ type
     procedure RunTimerTimer(Sender: TObject);
     procedure ConnectTimerTimer(Sender: TObject);
     procedure StartTimerTimer(Sender: TObject);
-    procedure TCloseTimerTimer(Sender: TObject);
+    procedure CloseTimerTimer(Sender: TObject);
     procedure DBSocketConnect(Sender: TObject; Socket: TCustomWinSocket);
     procedure DBSocketDisconnect(Sender: TObject; Socket: TCustomWinSocket);
     procedure DBSocketRead(Sender: TObject; Socket: TCustomWinSocket);
@@ -60,6 +61,8 @@ type
     procedure GateSocketClientRead(Sender: TObject; Socket: TCustomWinSocket);
     procedure GateSocketClientError(Sender: TObject; Socket: TCustomWinSocket;
       ErrorEvent: TErrorEvent; var ErrorCode: Integer);
+  private
+    FXMLReader : TXMLResourceReader;
   private
     procedure MakeStoneMines;
   public
@@ -79,13 +82,15 @@ implementation
 
 {$R *.dfm}
 
-uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
+uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
+     Mir3.Forms.Server.Values;
 
 {$REGION ' - Form Section '}
   procedure TFrmMain.FormCreate(Sender: TObject);
   var
     FSetupFileName : String;
     FIniFile       : TIniFile;
+    FTestList      : TList<TXMLArtisanLevelNode>;
   begin
 
     GRunSocket     := TRunSocket.Create;
@@ -94,6 +99,8 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
     GFrontEngine   := TFrontEngine.Create;
     GUserEngine    := TUserEngine.Create;
     GUserMgrEngine := TUserMgrEngine.Create;
+    (* XML Reading *)
+    FXMLReader     := TXMLResourceReader.Create;
 
     (* Setup Ini Init *)
 
@@ -243,12 +250,25 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
 
   procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   begin
-    //
+    if not GServerClosing then
+    begin
+      CanClose := FALSE;
+      if MessageDlg('Would you like to close the Server?', mtConfirmation, [mbYes, mbNo, mbCancel], 0) = mrYes then
+      begin
+        GServerClosing     := True;
+        CloseTimer.Enabled := True;
+        GRunSocket.CloseAllGate;
+      end;
+    end;
   end;
 
   procedure TFrmMain.FormDestroy(Sender: TObject);
   begin
-    //
+    FreeAndNil(GItemUnit);
+    FreeAndNil(GRunSocket);
+    FreeAndNil(GUserEngine);
+    FreeAndNil(GEnvirnoment);
+    FreeAndNil(FXMLReader);
   end;
 {$ENDREGION}
 
@@ -312,6 +332,23 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
     try
 
 
+
+      LbUserCount.Caption := '(' + IntToStr(GUserEngine.MonsterRunCount) + '/' +
+                             IntToStr(GUserEngine.MonsterCount) + ')   ' +
+                             IntToStr(GUserEngine.GetRealUserCount) +
+                             '/' + IntToStr(GUserEngine.GetUserCount) +
+                             '/' + IntToStr(GUserEngine.FreeUserCount);
+      Label1.Caption      := 'Run' + IntToStr(GCurRunCount)    + '/' + IntToStr(GMinRunCount)    + ' ' +
+                             'Soc' + IntToStr(GCurSocketTime)  + '/' + IntToStr(GMaxSocketTime)  + ' ' +
+                             'Usr' + IntToStr(GCurUserEngTime) + '/' + IntToStr(GMaxUserEngTime);
+      Label2.Caption      := 'Hum' + IntToStr(GCurHumenTime)   + '/' + IntToStr(GMaxHumenTime)   + ' ' +
+                             'Mon' + IntToStr(GCurMonsterTime) + '/' + IntToStr(GMaxMonsterTime) + ' ' +
+                             'UsrRot' + IntToStr(GCurHumRotateTime) + '/' + IntToStr(GMaxHumRotateTime) +
+                             '(' + IntToStr(GHumanRotateCount) + ')';
+
+      Label5.Caption      := GLatestGenMessage + ' - ' + GLatestMonMessage + '    ';
+
+      Inc(GMinRunCount);
     except
       ServerLogMessage('Exception...');
     end;
@@ -319,17 +356,43 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
 
   procedure TFrmMain.RunTimerTimer(Sender: TObject);
   begin
-    //
+    try
+      if GServerReady then
+      begin
+        GRunSocket.RunRunSocket;
+        //FrmIDSoc.DecodeSocStr;
+        //GUserEngine.ExecuteRun;
+        //SqlEngine.ExecuteRun;
+        //GEventMan.Run;
+        if GServerIndex = 0 then
+        begin
+         // FrmSrvMsg.Run;
+        end else begin
+          FrmMsgClient.Run;
+        end;
+
+        Inc(GRunCount);
+        if GetTickCount - GRunStartTime > 250 then
+        begin
+           GRunStartTime := GetTickCount;
+           GCurRunCount  := GRunCount;
+           if GMinRunCount > GCurRunCount then
+             GMinRunCount := GCurRunCount;
+           GRunCount := 0;
+        end;
+      end;
+    except
+    end;
   end;
 
   procedure TFrmMain.ConnectTimerTimer(Sender: TObject);
-  begin //
+  begin
     try
-      //DBSocket
-
-      DBSocket.Active := True;
+      if not DBSocket.Active then
+      begin
+        DBSocket.Active := True;
+      end;
     except
-
     end;
   end;
 
@@ -339,6 +402,10 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
   begin
     StartTimer.Enabled := False;
     try
+      Memo1.Lines.Add('loading Mir3Res.xml...');
+      FXMLReader.ReadXMLResource(ExtractFilePath(ParamStr(0))+GDir_Envir+'Mir3Res.xml');
+      FXMLReader.ParseAllLists;
+      Memo1.Lines.Add('Mir3Res.xml information loaded...');
 
       (* Begin Load Mini Map *)
       Memo1.Lines.Add('loading MiniMap.txt...');
@@ -416,9 +483,10 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants;
     end;
   end;
 
-  procedure TFrmMain.TCloseTimerTimer(Sender: TObject);
+  procedure TFrmMain.CloseTimerTimer(Sender: TObject);
   begin
-    //
+    //TODO: Check if all Threads Closed
+    Close;
   end;
 {$ENDREGION}
 
@@ -428,8 +496,27 @@ begin
 end;
 
 procedure TFrmMain.Panel1DblClick(Sender: TObject);
+var
+  FIniFile  : TIniFile;
+  FFileName : String;
 begin
-  //
+  if FrmServerValue.Execute then
+  begin
+    FFileName := ExtractFilePath(ParamStr(0)) + '\Setup\Setup.ini';
+    FIniFile  := TIniFile.Create (FFileName);
+    if FIniFile <> nil then
+    begin
+      with FIniFile do
+      begin
+        WriteInteger ('Server', 'HumLimit', GHumLimit);
+        WriteInteger ('Server', 'MonLimit', GMonLimit);
+        WriteInteger ('Server', 'ZenLimit', GZenLimit);
+        WriteInteger ('Server', 'SocLimit', GSocLimit);
+        WriteInteger ('Server', 'NpcLimit', GNpcLimit);
+        WriteInteger('Server', 'ViewHackMessage', Integer(GViewHackMessage));
+      end;
+    end;
+  end;
 end;
 
 procedure TFrmMain.SpeedButton1Click(Sender: TObject);

@@ -2,7 +2,8 @@ unit Mir3.Objects.Base;
 
 interface  //5 Classes
 
-uses System.SysUtils, System.Classes, Mir3.Server.Core, Mir3.Server.Constants;
+uses System.SysUtils, System.Classes, System.SyncObjs, Vcl.Graphics,
+     Mir3.Server.Core, Mir3.Server.Constants;
 
 type
 
@@ -10,67 +11,75 @@ type
 
   TCreature = class
   private
-    FMapName        : String;
-    FUserName       : String;
-    FHomeMap0       : String;   //Home Warrior
-    FHomeMap1       : String;   //Home Wizard
-    FHomeMap2       : String;   //Home Taoist
-    FHomeMap3       : String;   //Home Assassin
-    FDirection      : Byte;
-    FGender         : Byte;
-    FJob            : Byte;     //0: Warrior 1: Wizard 2: Taoist 3:Assassin
-    FLifeAttribute  : Byte;
-    FCoolEye        : Byte;
-    FAntiMagic      : Byte;
-    FSpeedPoint     : Byte;
-    FAccuracyPoint  : Byte;
-    FRaceServer     : Word;
-    FRaceImage      : Word;
-    FHair           : Word;
-    FAppearance     : Word;
-    FCX             : Integer;
-    FCY             : Integer;
-    FHomeX0         : Integer;
-    FHomeY0         : Integer;
-    FHomeX1         : Integer;
-    FHomeY1         : Integer;
-    FHomeX2         : Integer;
-    FHomeY2         : Integer;
-    FHomeX3         : Integer;
-    FHomeY3         : Integer;
-    FCharStatus     : Integer;
-    FCharStatusEx   : Integer;
-    FViewRange      : Integer;
-    FMeatQuality    : Integer;
-    FFightExp       : Integer;
-    FAntiPush       : Integer;
-    FAntiUndead     : Integer;
-    FSizeRate       : Integer;
-    FAntiStop       : Integer;
-    FNextWalkTime   : Integer;
-    FWalkStep       : Integer;
-    FWalkWaitTime   : Integer;
-    FNextHitTime    : Integer;
-    FTame           : Integer;
-    FBodyLuckLevel  : Integer;
-    FGhostTime      : Cardinal;
-    FGold           : Int64;
-    FGhost          : Boolean;
-    FDeath          : Boolean;
-    FHoldPlace      : Boolean;
-    FAnimal         : Boolean;
-    FSkeleton       : Boolean;
-    FHideMode       : Boolean;
-    FSuperviserMode : Boolean;
-    FViewFixedHide  : Boolean;
-    FErrorOnInit    : Boolean;
-    FBodyLuck       : Real;
-    FItemList       : TList;
-    FMagicList      : TList;
-    FEnvironment    : TObject;
-    FAbility        : TAbility;
-    FWAbility       : TAbility;
-    FStatus_Array   : array[0..MIR3_STATUS_ARRAY_SIZE-1] of Word;
+    FMapName            : String;
+    FUserName           : String;
+    FHomeMap0           : String;   //Home Warrior
+    FHomeMap1           : String;   //Home Wizard
+    FHomeMap2           : String;   //Home Taoist
+    FHomeMap3           : String;   //Home Assassin
+    FDirection          : Byte;
+    FGender             : Byte;
+    FJob                : Byte;     //0: Warrior 1: Wizard 2: Taoist 3:Assassin
+    FLifeAttribute      : Byte;
+    FCoolEye            : Byte;
+    FAntiMagic          : Byte;
+    FSpeedPoint         : Byte;
+    FAccuracyPoint      : Byte;
+    FRaceServer         : Word;
+    FRaceImage          : Word;
+    FHair               : Word;
+    FAppearance         : Word;
+    FCX                 : Integer;
+    FCY                 : Integer;
+    FHomeX0             : Integer;
+    FHomeY0             : Integer;
+    FHomeX1             : Integer;
+    FHomeY1             : Integer;
+    FHomeX2             : Integer;
+    FHomeY2             : Integer;
+    FHomeX3             : Integer;
+    FHomeY3             : Integer;
+    FCharStatus         : Integer;
+    FCharStatusEx       : Integer;
+    FViewRange          : Integer;
+    FMeatQuality        : Integer;
+    FFightExp           : Integer;
+    FAntiPush           : Integer;
+    FAntiUndead         : Integer;
+    FSizeRate           : Integer;
+    FAntiStop           : Integer;
+    FNextWalkTime       : Integer;
+    FWalkStep           : Integer;
+    FWalkWaitTime       : Integer;
+    FNextHitTime        : Integer;
+    FTame               : Integer;
+    FBodyLuckLevel      : Integer;
+    FRunTime            : Integer;
+    FLuck               : Integer;
+    FGhostTime          : Cardinal;
+    FGold               : Int64;
+    FGhost              : Boolean;
+    FDeath              : Boolean;
+    FHoldPlace          : Boolean;
+    FAnimal             : Boolean;
+    FSkeleton           : Boolean;
+    FHideMode           : Boolean;
+    FStickMode          : Boolean;
+    FSuperviserMode     : Boolean;
+    FSysOpMode          : Boolean;
+    FViewFixedHide      : Boolean;
+    FErrorOnInit        : Boolean;
+    FBodyLuck           : Real;
+    FItemList           : TList;
+    FDealList           : TList;
+    FMagicList          : TList;
+    FMessageList        : TList;
+    FMessageTargetList  : TStringList;
+    FEnvironment        : TObject;
+    FAbility            : TAbility;
+    FWAbility           : TAbility;
+    FWatchTime          : LongWord;
+    FStatus_Array       : array[0..MIR3_STATUS_ARRAY_SIZE-1] of Word;
   public
     constructor Create;
     destructor Destroy; override;
@@ -84,7 +93,15 @@ type
     procedure AddBodyLuck(AValue: Real);
     function GetCharStatus: Integer;
   public
+    procedure SendFastMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String);
+    procedure SendMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String);
+    procedure SendDelayMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String; ADelay: Integer{ms});
     procedure SendRefMsg(AMessage, WParam: Word; LParam1, LParam2, LParam3: Longint; AStringValue: String);
+  public
+    procedure Say(ASayMessage: String);
+    procedure SysMsg(ASysMessage: String; AMode: Integer);
+    procedure NilMessage(AMessage: String);
+    procedure BoxMessage(AMessage: String; AMode: Integer);
   public
     {$REGION ' - TCreature Propertys '}
     property MapName        : String   read FMapName         write FMapName;
@@ -99,7 +116,9 @@ type
     property Animal         : Boolean  read FAnimal          write FAnimal;
     property Skeleton       : Boolean  read FSkeleton        write FSkeleton;
     property HideMode       : Boolean  read FHideMode        write FHideMode;
+    property StickMode      : Boolean  read FStickMode       write FStickMode;
     property SuperviserMode : Boolean  read FSuperviserMode  write FSuperviserMode;
+    property SysOpMode      : Boolean  read FSysOpMode       write FSysOpMode;
     property ViewFixedHide  : Boolean  read FViewFixedHide   write FViewFixedHide;
     property ErrorOnInit    : Boolean  read FErrorOnInit     write FErrorOnInit;
     property GhostTime      : Cardinal read FGhostTime       write FGhostTime;
@@ -141,8 +160,11 @@ type
     property SizeRate       : Integer  read FSizeRate        write FSizeRate;
     property AntiStop       : Integer  read FAntiStop        write FAntiStop;
     property BodyLuckLevel  : Integer  read FBodyLuckLevel   write FBodyLuckLevel;
+    property RunTime        : Integer  read FRunTime         write FRunTime;
+    property Luck           : Integer  read FLuck            write FLuck;
     property BodyLuck       : Real     read FBodyLuck        write FBodyLuck;
     property ItemList       : TList    read FItemList        write FItemList;
+    property DealList       : TList    read FDealList        write FDealList;
     property MagicList      : TList    read FMagicList       write FMagicList;
     property Environment    : TObject  read FEnvironment     write FEnvironment;
     property Ability        : TAbility read FAbility;
@@ -188,6 +210,11 @@ type
     FSoftClosed       : Boolean;
     FUserSocketClosed : Boolean;
     FSaveOk           : Boolean;
+    FReadyRun         : Boolean;
+    FGateIndex        : Integer;
+    FUserHandle       : Integer;
+    FUserGateIndex    : Integer;
+    //FLover            : TRelationShipMgr;
   public
     constructor Create;
     destructor Destroy; override;
@@ -200,28 +227,69 @@ type
     property SoftClosed       : Boolean read FSoftClosed       write FSoftClosed;
     property UserSocketClosed : Boolean read FUserSocketClosed write FUserSocketClosed;
     property SaveOk           : Boolean read FSaveOk           write FSaveOk;
+    property ReadyRun         : Boolean read FReadyRun         write FReadyRun;
+    property GateIndex        : Integer read FGateIndex        write FGateIndex;
+    property UserHandle       : Integer read FUserHandle       write FUserHandle;
+    property UserGateIndex    : Integer read FUserGateIndex    write FUserGateIndex;
   end;
 
 
 implementation
 
-uses Mir3.Forms.Main.System, Mir3.Server.Environment;
+uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
 
   (* base class TCreature *)
 
 {$REGION ' - TCreature Constructor / Destructor '}
   constructor TCreature.Create;
   begin
-    FGhost      := False;
-    FRaceServer := RACE_ANIMAL;
-    FItemList   := TList.Create;
-    FMagicList  := TList.Create;
+    FGhost             := False;
+    FDeath             := False;
+    FHoldPlace         := True;
+    FHideMode          := False;
+    FStickMode         := False;
+    FAnimal            := False;
+    FSuperviserMode    := False;
+    FViewFixedHide     := False;
+    FSysOpMode         := False;
+    FBodyLuck          := 0;
+    FLuck              := 0;
+    FViewRange         := 0;
+    FRaceServer        := RACE_ANIMAL;
+    FItemList          := TList.Create;
+    FDealList          := TList.Create;
+    FMagicList         := TList.Create;
+    FMessageList       := TList.Create;
+    FMessageTargetList := TStringList.Create;
+
+    with FAbility do
+    begin
+      RLevel     := 1;
+      RAC        := 0;
+      RMAC       := 0;
+      RDC        := MakeWord(1,4);
+      RMC        := MakeWord(1,2);
+      RSC        := MakeWord(1,2);
+      RMP        := 15;
+      RHP        := 15;
+      RMaxHP     := 15;
+      RMaxMP     := 15;
+      RExp       := 0;
+      RMaxExp    := 50;
+      RWeight    := 0;
+      RMaxWeight := 100;
+    end;
+
+
   end;
 
   destructor TCreature.Destroy;
   begin
     FItemList.Free;
     FMagicList.Free;
+    FDealList.Free;
+    FMessageList.Free;
+    FMessageTargetList.Free;
     inherited Destroy;
   end;
 {$ENDREGION}
@@ -375,9 +443,161 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment;
     Result := C or (CharStatusEx and $0000FFFF);
   end;
 
+  procedure TCreature.Say(ASayMessage: String);
+  begin
+    SendRefMsg(RM_HEAR, 0, clBlack, clWhite, 0, UserName + ': ' + ASayMessage);
+  end;
+
+  procedure TCreature.SendFastMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String);
+  var
+    FMsgInfo : PMessageInfoEx;
+  begin
+    try
+      GCS_ObjectMessageLock.Enter;
+      if not Ghost then
+      begin
+        New(FMsgInfo);
+        FMsgInfo.RIdent   := AIdent;
+        FMsgInfo.RWParam  := WParam;
+        FMsgInfo.RLParam1 := LParam1;
+        FMsgInfo.RLParam2 := LParam2;
+        FMsgInfo.RLParam3 := LParam3;
+        FMsgInfo.RSender	:= ASender;
+        if AMessage <> '' then
+        begin
+           try
+             GetMem(FMsgInfo.RDescription, Length(AMessage) + 1);
+             Move(AMessage[1], FMsgInfo.RDescription^, Length(AMessage) + 1);
+           except
+              FMsgInfo.RDescription := nil;
+           end;
+        end else FMsgInfo.RDescription := nil;
+        FMessageList.Insert(0, FMsgInfo);
+      end;
+    finally
+      GCS_ObjectMessageLock.Leave;
+    end;
+  end;
+
+  procedure TCreature.SendMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String);
+  var
+  	FMsgInfo : PMessageInfoEx;
+  begin
+    try
+      GCS_ObjectMessageLock.Enter;
+      if not Ghost then
+      begin
+        New(FMsgInfo);
+        FMsgInfo.RIdent 	     := AIdent;
+        FMsgInfo.RWParam       := WParam;
+        FMsgInfo.RLParam1      := LParam1;
+        FMsgInfo.RLParam2      := LParam2;
+        FMsgInfo.RLParam3      := LParam3;
+        FMsgInfo.RDeliveryTime := 0;
+        FMsgInfo.RSender	     := ASender;
+        if AMessage <> '' then
+        begin
+          try
+            GetMem(FMsgInfo.RDescription, Length(AMessage) + 1);
+            Move(AMessage[1], FMsgInfo.RDescription^, Length(AMessage) + 1);
+          except
+            FMsgInfo.RDescription := nil;
+          end;
+        end else FMsgInfo.RDescription := nil;
+        FMessageList.Add(FMsgInfo);
+      end;
+    finally
+      GCS_ObjectMessageLock.Leave;
+    end;
+  end;
+
+  procedure TCreature.SendDelayMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String; ADelay: Integer{ms});
+  var
+  	FMsgInfo : PMessageInfoEx;
+  begin
+    try
+      GCS_ObjectMessageLock.Enter;
+      if not Ghost then
+      begin
+        New(FMsgInfo);
+        FMsgInfo.RIdent 	     := AIdent;
+        FMsgInfo.RWParam       := WParam;
+        FMsgInfo.RLParam1      := LParam1;
+        FMsgInfo.RLParam2      := LParam2;
+        FMsgInfo.RLParam3      := LParam3;
+        FMsgInfo.RDeliveryTime := GetTickCount + LongWord(ADelay);
+        FMsgInfo.RSender	     := ASender;
+        if AMessage <> '' then
+        begin
+          try
+            GetMem(FMsgInfo.RDescription, Length(AMessage) + 1);
+            Move(AMessage[1], FMsgInfo.RDescription^, Length(AMessage)+1);
+          except
+            FMsgInfo.RDescription := nil;
+          end;
+        end else FMsgInfo.RDescription := nil;
+        FMessageList.Add(FMsgInfo);
+      end;
+    finally
+      GCS_ObjectMessageLock.Leave;
+    end;
+  end;
+
   procedure TCreature.SendRefMsg(AMessage, WParam: Word; LParam1, LParam2, LParam3: Longint; AStringValue: String);
   begin
+    if SuperviserMode or HideMode then
+    begin
+      exit;
+    end;
 
+    try
+      if (GetTickCount - FWatchTime >= 500) or (FMessageTargetList.Count = 0) then
+      begin
+        FWatchTime := GetTickCount;
+        FMessageTargetList.Clear;
+
+
+      end;
+    finally
+
+    end;
+  end;
+
+  (* Messages *)
+
+  procedure TCreature.SysMsg(ASysMessage: String; AMode: Integer);
+  begin
+    if RaceServer <> RACE_USERHUMAN then
+    begin
+      ServerLogMessage('TCreature.SysMsg : not a Human ' + IntToStr(RaceServer) + ', ' + IntToStr(AMode));
+      exit;
+    end;
+
+    case AMode of
+      1:   SendMsg(Self, RM_SYS_MESSAGE2  , 0, 0, 0, 0, ASysMessage);
+      2:   SendMsg(Self, RM_SYS_MSG_BLUE  , 0, 0, 0, 0, ASysMessage);
+      3:   SendMsg(Self, RM_SYS_MESSAGE3  , 0, 0, 0, 0, ASysMessage);
+      4:   SendMsg(Self, RM_SYS_MSG_REMARK, 0, 0, 0, 0, ASysMessage);
+      5:   SendMsg(Self, RM_SYS_MSG_PINK  , 0, 0, 0, 0, ASysMessage);
+      6:   SendMsg(Self, RM_SYS_MSG_GREEN , 0, 0, 0, 0, ASysMessage);
+      else SendMsg(Self, RM_SYS_MESSAGE   , 0, 0, 0, 0, ASysMessage);
+    end;
+  end;
+
+  procedure TCreature.NilMessage(AMessage: String);
+  begin
+    SendMsg(nil, RM_HEAR, 0, 0, 0, 0, AMessage);
+  end;
+
+  procedure TCreature.BoxMessage(AMessage: String; AMode: Integer);
+  begin
+    if RaceServer <> RACE_USERHUMAN then
+    begin
+       ServerLogMessage('TCreature.BoxMessage : not Human');
+       exit;
+    end;
+
+    SendMsg(Self, RM_MENU_OK, 0, Integer(Self), 0, 0, AMessage);
   end;
 
 {$ENDREGION}

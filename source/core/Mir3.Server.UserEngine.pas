@@ -8,14 +8,20 @@ uses System.SysUtils, System.Classes, System.Generics.Collections, WinAPI.Window
 type
   TUserEngine = class
   strict private
-    FStdItemList    : TList<PStdItem>;
-    FMerchantList   : TList<TCreature>;
-    FNpcList        : TList<TCreature>;
-    FMonsterList    : TList<PZenInfo>;
-    FMonsterDefList : TList<PMonsterInfo>;
-    FReadyList      : TStringList;
-    FRunUserList    : TStringList;
-    FAdminList      : TStringList;
+    FStdItemList        : TList<PStdItem>;
+    FMerchantList       : TList<TCreature>;
+    FNpcList            : TList<TCreature>;
+    FMonsterList        : TList<PZenInfo>;
+    FMonsterDefList     : TList<PMonsterInfo>;
+    FReadyList          : TStringList;
+    FRunUserList        : TStringList;
+    FAdminList          : TStringList;
+    FOtherUserNameList  : TStringList;
+    FFreeUserCount      : Integer;
+    FMonsterCount       : Integer;
+    FMonsterCurCount    : Integer;
+    FMonsterRunCount    : Integer;
+    FMonsterCurRunCount : Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -24,7 +30,10 @@ type
     function AddCreature(AMap: String; X, Y, ARace: Integer; AMonsterName: String): TCreature;
     procedure Initialize;
     function GetMonsterRace(AMonsterName: String): Integer;
+    function GetRealUserCount: Integer;
+    function GetUserCount: Integer;
     procedure ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
+    procedure ProcessUserMessage(AHuman: TUserHuman; ADefMessage: PDefaultMessage; ABody: PChar);
     { StdItem function }
     function GetStdItemName(AItemIndex: Integer): String;
     function GetStdItemIndex(AItemName: String): Integer;
@@ -34,14 +43,20 @@ type
     function CopyToUserItem(AItemIndex: Integer; var AUserItem: TUserItem): Boolean;
     function CopyToUserItemFromName(AItemName: String; var AUserItem: TUserItem): Boolean;
   public
-    property StdItemList    : TList<PStdItem>     read FStdItemList     write FStdItemList;
-    property MerchantList   : TList<TCreature>    read FMerchantList    write FMerchantList;
-    property NpcList        : TList<TCreature>    read FNpcList         write FNpcList;
-    property MonsterList    : TList<PZenInfo>     read FMonsterList     write FMonsterList;
-    property MonsterDefList : TList<PMonsterInfo> read FMonsterDefList  write FMonsterDefList;
-    property RunUserList    : TStringList         read FRunUserList     write FRunUserList;
-    property ReadyList      : TStringList         read FReadyList       write FReadyList;
-    property AdminList      : TStringList         read FAdminList       write FAdminList;
+    property StdItemList        : TList<PStdItem>     read FStdItemList        write FStdItemList;
+    property MerchantList       : TList<TCreature>    read FMerchantList       write FMerchantList;
+    property NpcList            : TList<TCreature>    read FNpcList            write FNpcList;
+    property MonsterList        : TList<PZenInfo>     read FMonsterList        write FMonsterList;
+    property MonsterDefList     : TList<PMonsterInfo> read FMonsterDefList     write FMonsterDefList;
+    property RunUserList        : TStringList         read FRunUserList        write FRunUserList;
+    property ReadyList          : TStringList         read FReadyList          write FReadyList;
+    property AdminList          : TStringList         read FAdminList          write FAdminList;
+    property OtherUserNameList  : TStringList         read FOtherUserNameList  write FOtherUserNameList;
+    property FreeUserCount      : Integer             read FFreeUserCount      write FFreeUserCount;
+    property MonsterCount       : Integer             read FMonsterCount       write FMonsterCount;
+    property MonsterCurCount    : Integer             read FMonsterCurCount    write FMonsterCurCount;
+    property MonsterRunCount    : Integer             read FMonsterRunCount    write FMonsterRunCount;
+    property MonsterCurRunCount : Integer             read FMonsterCurRunCount write FMonsterCurRunCount;
   end;
 
 implementation
@@ -49,21 +64,28 @@ implementation
 uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
      Mir3.Objects.Monster_1, Mir3.Objects.Monster_2, Mir3.Objects.Monster_3,
      Mir3.Objects.Monster_4, Mir3.Objects.Monster_5, Mir3.Objects.Monster_6,
-     Mir3.Objects.Animal, Mir3.Objects.NPC;
+     Mir3.Objects.Animal, Mir3.Objects.NPC, Mir3.Server.Protocol, Mir3.Server.Crypto;
 
   (* class TUserEngine *)
 
 {$REGION ' - TUserEngine Constructor / Destructor '}
   constructor TUserEngine.Create;
   begin
-    FStdItemList    := TList<PStdItem>.Create;
-    FMerchantList   := TList<TCreature>.Create;
-    FNpcList        := TList<TCreature>.Create;
-    FMonsterList    := TList<PZenInfo>.Create;
-    FMonsterDefList := TList<PMonsterInfo>.Create;
-    FRunUserList    := TStringList.Create;
-    FReadyList      := TStringList.Create;
-    FAdminList      := TStringList.Create;
+    FStdItemList        := TList<PStdItem>.Create;
+    FMerchantList       := TList<TCreature>.Create;
+    FNpcList            := TList<TCreature>.Create;
+    FMonsterList        := TList<PZenInfo>.Create;
+    FMonsterDefList     := TList<PMonsterInfo>.Create;
+    FRunUserList        := TStringList.Create;
+    FReadyList          := TStringList.Create;
+    FAdminList          := TStringList.Create;
+    FOtherUserNameList  := TStringList.Create;
+
+    FFreeUserCount      := 0;
+    FMonsterCount       := 0;
+    FMonsterCurCount    := 0;
+    FMonsterRunCount    := 0;
+    FMonsterCurRunCount := 0;
   end;
 
   destructor TUserEngine.Destroy;
@@ -93,6 +115,7 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
     FreeAndNil(FRunUserList);
     FreeAndNil(FReadyList);
     FreeAndNil(FAdminList);
+    FreeAndNil(FOtherUserNameList);
     inherited Destroy;
   end;
 {$ENDREGION}
@@ -301,6 +324,16 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
     end;
   end;
 
+  function TUserEngine.GetRealUserCount: Integer;
+  begin
+    Result := RunUserList.Count;
+  end;
+
+  function TUserEngine.GetUserCount: Integer;
+  begin
+    Result := RunUserList.Count + OtherUserNameList.Count;
+  end;
+
   procedure TUserEngine.ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
   var
     I           : Integer;
@@ -348,6 +381,154 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
       end;
     end;
   end;
+
+  procedure TUserEngine.ProcessUserMessage(AHuman: TUserHuman; ADefMessage: PDefaultMessage; ABody: PChar);
+  var
+    FBody : String;
+    FHead : String;
+    FDesc : String;
+   //  head, body, desc : string;
+  begin
+     try
+       if ADefMessage = nil then exit;
+       if ABody       = nil then
+         FBody := ''
+       else FBody := StrPas(ABody);
+
+       case ADefMessage.RIdent of
+         CM_TURN          ,
+         CM_WALK          ,
+         CM_RUN           ,
+         CM_HIT           ,
+         CM_POWERHIT      ,
+         CM_LONGHIT       ,
+         CM_WIDEHIT       ,
+         CM_HEAVYHIT      ,
+         CM_BIGHIT        ,
+         CM_FIREHIT       ,
+         CM_CROSSHIT      ,
+         CM_TWINHIT       ,
+         CM_SITDOWN       : begin
+           AHuman.SendMsg(AHuman, ADefMessage.RIdent, ADefMessage.RTag, LoWord(ADefMessage.RRecog), HiWord(ADefMessage.RRecog), 0, '');
+         end;
+         CM_SPELL         : begin
+           AHuman.SendMsg(AHuman, ADefMessage.RIdent, ADefMessage.RTag, LoWord(ADefMessage.RRecog), HiWord(ADefMessage.RRecog), MakeLong(ADefMessage.RParam, ADefMessage.RSeries), '');
+         end;
+         CM_QUERYUSERNAME : begin
+           AHuman.SendMsg(AHuman, ADefMessage.RIdent, 0, ADefMessage.RRecog, ADefMessage.RParam{x}, ADefMessage.RTag{y}, '');
+         end;
+         CM_SAY           : begin
+           AHuman.SendMsg(AHuman, CM_SAY, 0, 0, 0, 0, DecodeString(FBody));
+         end;
+         CM_DROPITEM,
+         CM_TAKEONITEM,
+         CM_TAKEOFFITEM,
+         CM_EXCHGTAKEONITEM,
+         CM_MERCHANTDLGSELECT,
+         CM_MERCHANTQUERYSELLPRICE,
+         CM_MERCHANTQUERYREPAIRCOST,
+         CM_USERSELLITEM,
+         CM_USERREPAIRITEM,
+         CM_USERSTORAGEITEM,
+         CM_USERBUYITEM,
+         CM_USERGETDETAILITEM,
+         CM_CREATEGROUP,
+         CM_CREATEGROUPREQ_OK,
+         CM_CREATEGROUPREQ_FAIL,
+         CM_ADDGROUPMEMBER,
+         CM_ADDGROUPMEMBERREQ_OK,
+         CM_ADDGROUPMEMBERREQ_FAIL,
+         CM_DELGROUPMEMBER,
+         CM_DEALTRY,
+         CM_DEALADDITEM,
+         CM_DEALDELITEM,
+         CM_USERTAKEBACKSTORAGEITEM,
+         CM_USERMAKEDRUGITEM,
+         CM_GUILDADDMEMBER,
+         CM_GUILDDELMEMBER,
+         CM_GUILDUPDATENOTICE,
+         CM_GUILDUPDATERANKINFO,
+         CM_LM_DELETE,
+         CM_LM_DELETE_REQ_OK,
+         CM_LM_DELETE_REQ_FAIL,
+         CM_UPGRADEITEM,
+         CM_DROPCOUNTITEM,
+         CM_USERMAKEITEMSEL,
+         CM_USERMAKEITEM,
+         CM_ITEMSUMCOUNT,
+         CM_MARKET_LIST,
+         CM_MARKET_SELL,
+         CM_MARKET_BUY,
+         CM_MARKET_CANCEL,
+         CM_MARKET_GETPAY,
+         CM_MARKET_CLOSE,
+         CM_GUILDAGITLIST,
+         CM_GUILDAGIT_TAG_ADD,
+         CM_GABOARD_LIST,
+         CM_GABOARD_READ,
+         CM_GABOARD_ADD,
+         CM_GABOARD_EDIT,
+         CM_GABOARD_DEL,
+         CM_GABOARD_NOTICE_CHECK,
+         CM_DECOITEM_BUY        : begin
+           AHuman.SendMsg(AHuman, ADefMessage.RIdent, ADefMessage.RSeries, ADefMessage.RRecog, ADefMessage.RParam, ADefMessage.RTag, DecodeString(FBody));
+         end;
+         CM_ADJUST_BONUS        : begin
+           AHuman.SendMsg(AHuman, ADefMessage.RIdent, ADefMessage.RSeries, ADefMessage.RRecog, ADefMessage.RParam, ADefMessage.RTag, FBody);
+         end;
+
+
+         CM_FRIEND_ADD          ,
+         CM_FRIEND_DELETE       ,
+         CM_FRIEND_EDIT         ,
+         CM_FRIEND_LIST         ,
+         CM_TAG_ADD             ,
+         CM_TAG_DELETE          ,
+         CM_TAG_SETINFO         ,
+         CM_TAG_LIST            ,
+         CM_TAG_NOTREADCOUNT    ,
+         CM_TAG_REJECT_LIST     ,
+         CM_TAG_REJECT_ADD      ,
+         CM_TAG_REJECT_DELETE   : begin
+           if ADefMessage.RIdent = CM_FRIEND_DELETE then
+           begin
+             //if AHuman.Lover.GetLoverName <> DecodeString(FBody) then
+             //begin
+               //GUserMgrEngine.ExternSendMsg(stInterServer, GServerIndex, AHuman.GateIndex ,AHuman.UserGateIndex, AHuman.UserHandle, AHuman.UserName, ADefMessage^, DecodeString(FBody));
+             //end else begin
+               //AHuman.BoxMessage('A lovers'' relationship cannot be deleted.', 0);
+             //end;
+           end else begin                  //CMDMgr
+             //GUserMgrEngine.ExternSendMsg(stInterServer, GServerIndex, AHuman.GateIndex, AHuman.UserGateIndex, AHuman.UserHandle, AHuman.UserName, ADefMessage^, DecodeString(FBody));
+           end;
+         end;
+         else AHuman.SendMsg(AHuman, ADefMessage.RIdent, ADefMessage.RSeries, ADefMessage.RRecog, ADefMessage.RParam, ADefMessage.RTag, '');
+       end;
+
+       if AHuman.ReadyRun then
+       begin
+         case ADefMessage.RIdent of
+           CM_TURN,
+           CM_WALK,
+           CM_RUN,
+           CM_HIT,
+           CM_POWERHIT,
+           CM_LONGHIT,
+           CM_WIDEHIT,
+           CM_HEAVYHIT,
+           CM_BIGHIT,
+           CM_FIREHIT,
+           CM_CROSSHIT,
+           CM_TWINHIT,
+           CM_SITDOWN : AHuman.RunTime := AHuman.RunTime - 100;
+         end;
+        end;
+     except
+       ServerLogMessage('[Exception] ProcessUserMessage..');
+     end;
+  end;
+
+
 
   { StdItem function }
 

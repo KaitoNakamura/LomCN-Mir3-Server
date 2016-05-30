@@ -8,6 +8,10 @@ const
   MIR3_MAX_GATE                     = 20;
   MIR3_MAX_PUBLIC_ADDR              = 30;
   MIR3_STATUS_ARRAY_SIZE            = 16;
+  MIR3_SEND_BLOCK                   = 1024;
+  MIR3_SEND_CHECK_BLOCK             = 4096;
+  MIR3_SEND_AVAILABLE_BLOCK         = 7999;
+  MIR3_DEFAULT_BLOCK_SIZE           = 16;
 
   GM_OPEN                           = 1;
   GM_CLOSE                          = 2;
@@ -56,6 +60,36 @@ const
   RM_FIREHIT                        = 10014;
   RM_RUSH                           = 10015;
   RM_RUSHKUNG                       = 10016;
+  RM_CROSSHIT                       = 10017;
+  RM_TWINHIT                        = 10019;
+  RM_DECREFOBJCOUNT                 = 10018;
+  RM_STRUCK                         = 10020;
+  RM_DEATH                          = 10021;
+  RM_DISAPPEAR                      = 10022;
+  RM_HEAR                           = 10030;
+  RM_WHISPER                        = 10031;
+  RM_CRY                            = 10032;
+  RM_SYS_MESSAGE                    = 10100;
+  RM_REFMESSAGE                     = 10101;
+  RM_GROUPMESSAGE                   = 10102;
+  RM_SYS_MESSAGE2                   = 10103;
+  RM_GUILDMESSAGE                   = 10104;
+  RM_SYS_MSG_BLUE                   = 10105;
+  RM_SYS_MESSAGE3                   = 10106;
+  RM_SYS_MSG_REMARK                 = 10107;
+  RM_SYS_MSG_PINK                   = 10108;
+  RM_SYS_MSG_GREEN                  = 10109;
+  RM_MAKEPOISON                     = 10300;
+  RM_CHANGEGUILDNAME                = 10301;
+  RM_SUBABILITY                     = 10302;
+  RM_BUILDGUILD_OK                  = 10303;
+  RM_BUILDGUILD_FAIL                = 10304;
+  RM_DONATE_FAIL                    = 10305;
+  RM_DONATE_OK                      = 10306;
+  RM_MYSTATUS                       = 10307;
+  RM_TRANSPARENT                    = 10308;
+  RM_MENU_OK                        = 10309;
+
 
   (* Skript Command Idents (QA) *)
   QA_SET                            = $1;

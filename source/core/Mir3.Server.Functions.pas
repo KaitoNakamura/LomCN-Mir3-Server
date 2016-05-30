@@ -12,6 +12,7 @@ function CompareLStr(AStr, ATarget: String; ACount: Integer): Boolean;
 function CaptureString(ASource: String; var ADest: string): String;
 function GetItemServerIndex: Integer;
 function GetGoldLooks(AGoldCount: Integer): Integer;
+function CharCount(AStr: String; AChr: Char): Integer;
 
 implementation
 
@@ -254,5 +255,14 @@ begin
   if AGoldCount >= 1000 then Result := 116;
 end;
 
+function CharCount(AStr: String; AChr: Char): Integer;
+var
+  I : Integer;
+begin
+  Result := 0;
+  for i:=1 to Length(AStr) do
+    if AStr[i] = AChr then
+      Inc(Result);
+end;
 
 end.

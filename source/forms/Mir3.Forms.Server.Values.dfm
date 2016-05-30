@@ -49,7 +49,7 @@ object FrmServerValue: TFrmServerValue
     Height = 13
     Caption = 'NPC Limit Time'
   end
-  object CheckBox1: TCheckBox
+  object cbViewHackMessage: TCheckBox
     Left = 23
     Top = 155
     Width = 138
@@ -57,7 +57,7 @@ object FrmServerValue: TFrmServerValue
     Caption = 'View 1100X message'
     TabOrder = 0
   end
-  object SpinEdit1: TSpinEdit
+  object spHumLimit: TSpinEdit
     Left = 107
     Top = 11
     Width = 56
@@ -66,9 +66,8 @@ object FrmServerValue: TFrmServerValue
     MinValue = 0
     TabOrder = 1
     Value = 0
-    OnKeyPress = SpinEdit1KeyPress
   end
-  object SpinEdit2: TSpinEdit
+  object spMonLimit: TSpinEdit
     Left = 107
     Top = 39
     Width = 56
@@ -78,7 +77,7 @@ object FrmServerValue: TFrmServerValue
     TabOrder = 2
     Value = 0
   end
-  object SpinEdit3: TSpinEdit
+  object spZenLimit: TSpinEdit
     Left = 107
     Top = 67
     Width = 56
@@ -88,7 +87,7 @@ object FrmServerValue: TFrmServerValue
     TabOrder = 3
     Value = 0
   end
-  object SpinEdit4: TSpinEdit
+  object spSocLimit: TSpinEdit
     Left = 107
     Top = 95
     Width = 56
@@ -98,7 +97,7 @@ object FrmServerValue: TFrmServerValue
     TabOrder = 4
     Value = 0
   end
-  object SpinEdit5: TSpinEdit
+  object spNPCLimit: TSpinEdit
     Left = 107
     Top = 123
     Width = 56
@@ -115,5 +114,6 @@ object FrmServerValue: TFrmServerValue
     Height = 25
     Caption = 'OK'
     TabOrder = 6
+    OnClick = BitBtn1Click
   end
 end
