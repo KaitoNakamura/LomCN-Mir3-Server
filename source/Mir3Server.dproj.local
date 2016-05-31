@@ -1,26 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <BorlandProject>
 	<Transactions>
-    <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.298,C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.992,D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3.Objects.Monster_1.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.635,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\ObjBase.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.467,D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.IDServer.Client.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.949,D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\forms\Mir3.Forms.Inter.Message.Client.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\Unit1.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.659,C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit2.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.050,C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Project2.dproj=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3Server.dproj</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.352,D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Local.DB.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.659,C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit2.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.dfm</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.298,C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.352,D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Local.DB.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.pas</Transaction>
-    <Transaction>1899.12.30 00:00:00.000.204,D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\forms\Mir3.Forms.Server.Values.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.992,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3.Objects.Monster_1.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\objects\Mir3.Objects.Monster_1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.659,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.dfm=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit2.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.352,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Local.DB.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.467,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.IDServer.Client.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.635,D:\06_Entwicklung\05_Mir3_GSP_Server\source\ObjBase.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.352,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Local.DB.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.659,D:\06_Entwicklung\05_Mir3_GSP_Server\source\LocalDB.pas=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit2.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.050,D:\06_Entwicklung\05_Mir3_GSP_Server\source\Mir3Server.dproj=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Project2.dproj</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.558,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\source\forms\Mir3.Forms.Main.System.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.298,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.dfm=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.298,D:\06_Entwicklung\05_Mir3_GSP_Server\source\svMain.pas=C:\Users\Bjoern_Reissig\Documents\Embarcadero\Studio\Projekte\Unit1.pas</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.204,D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\Unit1.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\forms\Mir3.Forms.Server.Values.dfm</Transaction>
+    <Transaction>1899.12.30 00:00:00.000.949,D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\Unit1.dfm=D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\forms\Mir3.Forms.Inter.Message.Client.dfm</Transaction>
+    <Transaction>2016.05.29 14:50:09.544,D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\core\Mir3.Server.XMLResourceReader.pas=D:\06_Entwicklung\05_Mir3_GSP_Server\Mir3_Server_LomCN\LomCN-Mir3-Server.git\source\Unit1.pas</Transaction>
   </Transactions>
 	<ProjectSortOrder AutoSort="0" SortType="0">
     <File Path="core"/>
     <File Path="core\Mir3.Server.Constants.pas"/>
     <File Path="core\Mir3.Server.Core.pas"/>
-    <File Path="core\Mir3.Server.Envirnoment.pas"/>
+    <File Path="core\Mir3.Server.Core.Share.pas"/>
+    <File Path="core\Mir3.Server.Environment.pas"/>
     <File Path="core\Mir3.Server.Events.pas"/>
     <File Path="core\Mir3.Server.FrontEngine.pas"/>
     <File Path="core\Mir3.Server.Functions.pas"/>
@@ -28,6 +30,9 @@
     <File Path="core\Mir3.Server.RunSocket.pas"/>
     <File Path="core\Mir3.Server.UserEngine.pas"/>
     <File Path="core\Mir3.Server.UserManagerEngine.pas"/>
+    <File Path="core\Mir3.Server.Crypto.pas"/>
+    <File Path="core\Mir3.Server.Protocol.pas"/>
+    <File Path="core\Mir3.Server.XMLResourceReader.pas"/>
     <File Path="forms"/>
     <File Path="forms\Mir3.Forms.IDServer.Client.pas"/>
     <File Path="forms\Mir3.Forms.IDServer.Client.dfm"/>

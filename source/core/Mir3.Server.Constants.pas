@@ -432,6 +432,8 @@ const
   OS_GATE_OBJECT                    = 4;
   OS_SWITCH_OBJECT                  = 5;
   OS_MAP_EVENT                      = 6;
+  OS_DROP_ITEM                      = 7;
+  OS_PICKUP_ITEM                    = 8;
 
   EVENT_MINE                        = 2;
   EVENT_MINE2                       = 8;

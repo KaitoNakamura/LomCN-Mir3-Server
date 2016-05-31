@@ -552,6 +552,38 @@ type
     FUNpcDataList           : TList<TXMLUNpcNode>;
     FMonGenDataList         : TList<TXMLMonGenNode>;
     FSaleItemsDataList      : TList<TXMLSaleItemsNode>;
+    FCountArtisanLevelNodes : Integer;
+    FCountEtcScriptNodes    : Integer;
+    FCountGuardListNodes    : Integer;
+    FCountMagicNodes        : Integer;
+    FCountMapInfoNodes      : Integer;
+    FCountMapLinkNodes      : Integer;
+    FCountMapQuestNodes     : Integer;
+    FCountMethodeListNodes  : Integer;
+    FCountMNpcNodes         : Integer;
+    FCountMNpcStandNodes    : Integer;
+    FCountMonAINodes        : Integer;
+    FCountMonClassNodes     : Integer;
+    FCountMonItemsNodes     : Integer;
+    FCountMonsterNodes      : Integer;
+    FCountPetNodes          : Integer;
+    FCountPetExpNodes       : Integer;
+    FCountPetSkillNodes     : Integer;
+    FCountProItemsNodes     : Integer;
+    FCountQItemDropNodes    : Integer;
+    FCountQuestNodes        : Integer;
+    FCountQuestCompNodes    : Integer;
+    FCountQuestItemNodes    : Integer;
+    FCountQuestReactionNodes: Integer;
+    FCountQuestRewardNodes  : Integer;
+    FCountRandomBoxNodes    : Integer;
+    FCountRareItemsNodes    : Integer;
+    FCountStartPointNodes   : Integer;
+    FCountStdItemsNodes     : Integer;
+    FCountStringSNodes      : Integer;
+    FCountUNpcNodes         : Integer;
+    FCountMonGenNodes       : Integer;
+    FCountSaleItemsNodes    : Integer;
   public
     constructor Create;
     destructor Destroy; override;
@@ -626,7 +658,7 @@ type
     procedure LoadSaleItems(var ADataList: TList<TXMLSaleItemsNode>); overload;
     {$ENDREGION}
   public
-    {$REGION ' - TXMLResourceReader Load Functions '}
+    {$REGION ' - TXMLResourceReader List Propertys '}
     property ArtisanLevelDataList : TList<TXMLArtisanLevelNode>  read FArtisanLevelDataList;
     property EtcSrciptDataList    : TList<TXMLEtcSrciptNode>     read FEtcSrciptDataList;
     property GuardListDataList    : TList<TXMLGuardListNode>     read FGuardListDataList;
@@ -660,9 +692,45 @@ type
     property MonGenDataList       : TList<TXMLMonGenNode>        read FMonGenDataList;
     property SaleItemsDataList    : TList<TXMLSaleItemsNode>     read FSaleItemsDataList;
     {$ENDREGION}
+    {$REGION ' - TXMLResourceReader List Counter Propertys '}
+    property CountArtisanLevelNodes : Integer read FCountArtisanLevelNodes;
+    property CountEtcScriptNodes    : Integer read FCountEtcScriptNodes;
+    property CountGuardListNodes    : Integer read FCountGuardListNodes;
+    property CountMagicNodes        : Integer read FCountMagicNodes;
+    property CountMapInfoNodes      : Integer read FCountMapInfoNodes;
+    property CountMapLinkNodes      : Integer read FCountMapLinkNodes;
+    property CountMapQuestNodes     : Integer read FCountMapQuestNodes;
+    property CountMethodeListNodes  : Integer read FCountMethodeListNodes;
+    property CountMNpcNodes         : Integer read FCountMNpcNodes;
+    property CountMNpcStandNodes    : Integer read FCountMNpcStandNodes;
+    property CountMonAINodes        : Integer read FCountMonAINodes;
+    property CountMonClassNodes     : Integer read FCountMonClassNodes;
+    property CountMonItemsNodes     : Integer read FCountMonItemsNodes;
+    property CountMonsterNodes      : Integer read FCountMonsterNodes;
+    property CountPetNodes          : Integer read FCountPetNodes;
+    property CountPetExpNodes       : Integer read FCountPetExpNodes;
+    property CountPetSkillNodes     : Integer read FCountPetSkillNodes;
+    property CountProItemsNodes     : Integer read FCountProItemsNodes;
+    property CountQItemDropNodes    : Integer read FCountQItemDropNodes;
+    property CountQuestNodes        : Integer read FCountQuestNodes;
+    property CountQuestCompNodes    : Integer read FCountQuestCompNodes;
+    property CountQuestItemNodes    : Integer read FCountQuestItemNodes;
+    property CountQuestReactionNodes: Integer read FCountQuestReactionNodes;
+    property CountQuestRewardNodes  : Integer read FCountQuestRewardNodes;
+    property CountRandomBoxNodes    : Integer read FCountRandomBoxNodes;
+    property CountRareItemsNodes    : Integer read FCountRareItemsNodes;
+    property CountStartPointNodes   : Integer read FCountStartPointNodes;
+    property CountStdItemsNodes     : Integer read FCountStdItemsNodes;
+    property CountStringSNodes      : Integer read FCountStringSNodes;
+    property CountUNpcNodes         : Integer read FCountUNpcNodes;
+    property CountMonGenNodes       : Integer read FCountMonGenNodes;
+    property CountSaleItemsNodes    : Integer read FCountSaleItemsNodes;
+    {$ENDREGION}
   end;
 
 implementation
+
+uses Mir3.Forms.Main.System;
 
   (* class TXMLResourceReader *)
 
@@ -843,6 +911,7 @@ implementation
 
   procedure TXMLResourceReader.LoadArtisanLevel;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Artisan Level');
     LoadArtisanLevel(FArtisanLevelDataList);
   end;
 
@@ -886,6 +955,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountArtisanLevelNodes);
           end;
           Break;
         end;
@@ -898,6 +968,7 @@ implementation
 
   procedure TXMLResourceReader.LoadEtcScript;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Etc Srcipt');
     LoadEtcScript(FEtcSrciptDataList);
   end;
 
@@ -939,6 +1010,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountEtcScriptNodes);
           end;
           Break;
         end;
@@ -951,6 +1023,7 @@ implementation
 
   procedure TXMLResourceReader.LoadGuardList;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Guard List');
     LoadGuardList(FGuardListDataList);
   end;
 
@@ -996,6 +1069,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountGuardListNodes);
           end;
           Break;
         end;
@@ -1008,6 +1082,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMagic;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Magic List');
     LoadMagic(FMagicDataList);
   end;
 
@@ -1099,6 +1174,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMagicNodes);
           end;
           Break;
         end;
@@ -1111,6 +1187,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMapInfo;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read MapInfo List');
     LoadMapInfo(FMapInfoDataList);
   end;
 
@@ -1192,6 +1269,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMapInfoNodes);
           end;
           Break;
         end;
@@ -1204,6 +1282,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMapLink;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read MapLink List');
     LoadMapLink(FMapLinkDataList);
   end;
 
@@ -1253,6 +1332,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMapLinkNodes);
           end;
           Break;
         end;
@@ -1265,6 +1345,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMapQuest;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read MapQuest List');
     LoadMapQuest(FMapQuestDataList);
   end;
 
@@ -1320,6 +1401,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMapQuestNodes);
           end;
           Break;
         end;
@@ -1332,6 +1414,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMethodeList;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Methode List');
     LoadMethodeList(FMethodeListDataList);
   end;
 
@@ -1397,6 +1480,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMethodeListNodes);
           end;
           Break;
         end;
@@ -1409,6 +1493,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMNpc;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read M-NPC List');
     LoadMNpc(FMNpcDataList);
   end;
 
@@ -1456,6 +1541,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMNpcNodes);
           end;
           Break;
         end;
@@ -1468,6 +1554,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMNpcStand;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read M-NPC-Stand List');
     LoadMNpcStand(FMNpcStandDataList);
   end;
 
@@ -1519,6 +1606,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMNpcStandNodes);
           end;
           Break;
         end;
@@ -1531,6 +1619,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMonAI;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read MonAI List');
     LoadMonAI(FMonAIDataList);
   end;
 
@@ -1570,6 +1659,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMonAINodes);
           end;
           Break;
         end;
@@ -1582,6 +1672,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMonClass;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster Class List');
     LoadMonClass(FMonClassDataList);
   end;
 
@@ -1651,6 +1742,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMonClassNodes);
           end;
           Break;
         end;
@@ -1663,6 +1755,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMonItems;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster Item List');
     LoadMonItems(FMonItemsDataList);
   end;
 
@@ -1718,6 +1811,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMonItemsNodes);
           end;
           Break;
         end;
@@ -1730,6 +1824,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMonster;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster List');
     LoadMonster(FMonsterDataList);
   end;
 
@@ -1847,6 +1942,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMonsterNodes);
           end;
           Break;
         end;
@@ -1859,6 +1955,7 @@ implementation
 
   procedure TXMLResourceReader.LoadPet;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pet´s List');
     LoadPet(FPetDataList);
   end;
 
@@ -1906,6 +2003,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountPetNodes);
           end;
           Break;
         end;
@@ -1918,6 +2016,7 @@ implementation
 
   procedure TXMLResourceReader.LoadPetExp;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pet Exp List');
     LoadPetExp(FPetExpDataList);
   end;
 
@@ -1961,6 +2060,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountPetExpNodes);
           end;
           Break;
         end;
@@ -1973,6 +2073,7 @@ implementation
 
   procedure TXMLResourceReader.LoadPetSkill;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pet Skills List');
     LoadPetSkill(FPetSkillDataList);
   end;
 
@@ -2020,6 +2121,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountPetSkillNodes);
           end;
           Break;
         end;
@@ -2032,6 +2134,7 @@ implementation
 
   procedure TXMLResourceReader.LoadProItems;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pro Item List');
     LoadProItems(FProItemsDataList);
   end;
 
@@ -2087,6 +2190,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountProItemsNodes);
           end;
           Break;
         end;
@@ -2099,6 +2203,7 @@ implementation
 
   procedure TXMLResourceReader.LoadQItemDrop;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Drop Item List');
     LoadQItemDrop(FQItemDropDataList);
   end;
 
@@ -2142,6 +2247,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountQItemDropNodes);
           end;
           Break;
         end;
@@ -2154,6 +2260,7 @@ implementation
 
   procedure TXMLResourceReader.LoadQuest;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest List');
     LoadQuest(FQuestDataList);
   end;
 
@@ -2239,6 +2346,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountQuestNodes);
           end;
           Break;
         end;
@@ -2251,6 +2359,7 @@ implementation
 
   procedure TXMLResourceReader.LoadQuestComp;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Comps List');
     LoadQuestComp(FQuestCompDataList);
   end;
 
@@ -2294,6 +2403,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountQuestCompNodes);
           end;
           Break;
         end;
@@ -2306,6 +2416,7 @@ implementation
 
   procedure TXMLResourceReader.LoadQuestItem;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Item List');
     LoadQuestItem(FQuestItemDataList);
   end;
 
@@ -2345,6 +2456,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountQuestItemNodes);
           end;
           Break;
         end;
@@ -2357,6 +2469,7 @@ implementation
 
   procedure TXMLResourceReader.LoadQuestReaction;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Reaction List');
     LoadQuestReaction(FQuestReactionDataList);
   end;
 
@@ -2412,6 +2525,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountQuestReactionNodes);
           end;
           Break;
         end;
@@ -2424,6 +2538,7 @@ implementation
 
   procedure TXMLResourceReader.LoadQuestReward;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Reward List');
     LoadQuestReward(FQuestRewardDataList);
   end;
 
@@ -2467,6 +2582,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountQuestRewardNodes);
           end;
           Break;
         end;
@@ -2479,6 +2595,7 @@ implementation
 
   procedure TXMLResourceReader.LoadRandomBox;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Random Box List');
     LoadRandomBox(FRandomBoxDataList);
   end;
 
@@ -2536,6 +2653,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountRandomBoxNodes);
           end;
           Break;
         end;
@@ -2548,6 +2666,7 @@ implementation
 
   procedure TXMLResourceReader.LoadRareItems;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Rare Items List');
     LoadRareItems(FRareItemsDataList);
   end;
 
@@ -2589,6 +2708,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountRareItemsNodes);
           end;
           Break;
         end;
@@ -2601,6 +2721,7 @@ implementation
 
   procedure TXMLResourceReader.LoadStartPoint;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Start Point List');
     LoadStartPoint(FStartPointDataList);
   end;
 
@@ -2644,6 +2765,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountStartPointNodes);
           end;
           Break;
         end;
@@ -2656,6 +2778,7 @@ implementation
 
   procedure TXMLResourceReader.LoadStdItems;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Std Items List');
     LoadStdItems(FStdItemsDataList);
   end;
 
@@ -2849,6 +2972,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountStdItemsNodes);
           end;
           Break;
         end;
@@ -2861,6 +2985,7 @@ implementation
 
   procedure TXMLResourceReader.LoadStringS;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Strings List');
     LoadStringS(FStringSDataList);
   end;
 
@@ -2902,6 +3027,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountStringSNodes);
           end;
           Break;
         end;
@@ -2914,6 +3040,7 @@ implementation
 
   procedure TXMLResourceReader.LoadUNpc;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read U-NPC List');
     LoadUNpc(FUNpcDataList);
   end;
 
@@ -2971,6 +3098,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountUNpcNodes);
           end;
           Break;
         end;
@@ -2983,6 +3111,7 @@ implementation
 
   procedure TXMLResourceReader.LoadMonGen;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster Gen List');
     LoadMonGen(FMonGenDataList);
   end;
 
@@ -3042,6 +3171,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountMonGenNodes);
           end;
           Break;
         end;
@@ -3054,6 +3184,7 @@ implementation
 
   procedure TXMLResourceReader.LoadSaleItems;
   begin
+    FrmMain.InfoWindow.Lines.Add('[XML] - Read Sales Items List');
     LoadSaleItems(FSaleItemsDataList);
   end;
 
@@ -3157,6 +3288,7 @@ implementation
           begin
             FXMLNodeEx := FXMLNode.childNodes.item[I];
             ProcessNode(FXMLNodeEx);
+            Inc(FCountSaleItemsNodes);
           end;
           Break;
         end;

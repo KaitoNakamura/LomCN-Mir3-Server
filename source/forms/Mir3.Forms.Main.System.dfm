@@ -16,7 +16,7 @@ object FrmMain: TFrmMain
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13
-  object Memo1: TMemo
+  object InfoWindow: TMemo
     Left = 0
     Top = 0
     Width = 439
@@ -25,7 +25,7 @@ object FrmMain: TFrmMain
     ImeName = #199#209#177#185#190#238'('#199#209#177#219') (MS-IME95)'
     ScrollBars = ssBoth
     TabOrder = 0
-    OnDblClick = Memo1DblClick
+    OnDblClick = InfoWindowDblClick
   end
   object Panel1: TPanel
     Left = 0

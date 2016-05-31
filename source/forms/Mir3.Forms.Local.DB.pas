@@ -491,7 +491,7 @@ begin
           FreeAndNil(FZenList);
         end;
       end else begin
-        FrmMain.Memo1.Lines.Add('[MonGen] File : ' + FTempString + ' not found..');
+        FrmMain.InfoWindow.Lines.Add('[MonGen] File : ' + FTempString + ' not found..');
       end;
     end;
     if Assigned(FZenList) then

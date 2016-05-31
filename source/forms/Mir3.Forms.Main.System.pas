@@ -15,7 +15,7 @@ uses
 
 type
   TFrmMain = class(TForm)
-    Memo1: TMemo;
+    InfoWindow: TMemo;
     Panel1: TPanel;
     Panel2: TPanel;
     Panel3: TPanel;
@@ -41,7 +41,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Memo1DblClick(Sender: TObject);
+    procedure InfoWindowDblClick(Sender: TObject);
     procedure Panel1DblClick(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
@@ -90,23 +90,20 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
   var
     FSetupFileName : String;
     FIniFile       : TIniFile;
-    FTestList      : TList<TXMLArtisanLevelNode>;
   begin
-
-    GRunSocket     := TRunSocket.Create;
-    GItemUnit      := TItemUnit.Create;
-    GEnvirnoment   := TEnvirList.Create;
-    GFrontEngine   := TFrontEngine.Create;
-    GUserEngine    := TUserEngine.Create;
-    GUserMgrEngine := TUserMgrEngine.Create;
-    (* XML Reading *)
-    FXMLReader     := TXMLResourceReader.Create;
+    GRunSocket     := TRunSocket.Create;          // Socket Communication
+    GItemUnit      := TItemUnit.Create;           // Item things
+    GEnvirnoment   := TEnvirList.Create;          // Map things
+    GFrontEngine   := TFrontEngine.Create;        // Player Start / Close etc. Processing
+    GUserEngine    := TUserEngine.Create;         // Handle the Game things
+    GUserMgrEngine := TUserMgrEngine.Create;      //
+    FXMLReader     := TXMLResourceReader.Create;  // Mir3Rex.xml Reader
 
     (* Setup Ini Init *)
 
     {$REGION ' - INI Loading... '}
 
-    Memo1.Lines.Add ('ready to load ini file..');
+    InfoWindow.Lines.Add ('ready to load ini file..');
     FSetupFileName := ExtractFilePath(ParamStr(0)) + '\Setup\Setup.ini';
     if FileExists(FSetupFileName) then
     begin
@@ -167,7 +164,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
           GDir_Map          := ReadString('Share' , 'MapDir'      , '.\Map\');
           GBlanceLogDir     := ReadString('Share' , 'BlanceLogDir', '.\Share\');
 
-          Memo1.Lines.Add ('Setup.ini loaded..');
+          InfoWindow.Lines.Add ('Setup.ini loaded..');
         end;
       end;
       FIniFile.Free;
@@ -212,7 +209,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
           TrialLevel      := ReadInteger('EVENT', 'TrialLevel', 1);
           ServerUserLimit := ReadInteger('EVENT', 'ServerUserLimit', 1);
         end;
-        Memo1.Lines.Add ('EventSetup.ini loaded..');
+        InfoWindow.Lines.Add ('EventSetup.ini loaded..');
       end;
       FIniFile.Free;
     end else ShowMessage('Setup\EventSetup.ini not found. fatal error..');
@@ -231,7 +228,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
           TestServer := Boolean(ReadInteger('MODE', 'TestServer', 0));
           FreeMode   := Boolean(ReadInteger('MODE', 'FreeMode'  , 0));
         end;
-        Memo1.Lines.Add ('TestMode.ini loaded..');
+        InfoWindow.Lines.Add ('TestMode.ini loaded..');
       end;
       FIniFile.Free;
     end else ShowMessage('Setup\TestMode.ini not found. fatal error..');
@@ -239,7 +236,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
     {$ENDREGION}
 
 
-    Caption                 := GServerName + ' [ ' + DateToStr(Date) + ' - ' + TimeToStr(Time) + ' ]';
+    Caption                 := GServerName + '['+'] - ( ' + DateToStr(Date) + ' - ' + TimeToStr(Time) + ' )';
     LbServerVersion.Caption := GServerVersion;
 
     ConnectTimer.Enabled    := True;
@@ -311,7 +308,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
   begin
     try
       FErrorMessage := 'DBSocket Error Code = ' + IntToStr(ErrorCode);
-      Memo1.Lines.Add(FErrorMessage);
+      InfoWindow.Lines.Add(FErrorMessage);
       ServerLogMessage(FErrorMessage);
       ErrorCode := 0;
       Socket.Close;
@@ -402,73 +399,74 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
   begin
     StartTimer.Enabled := False;
     try
-      Memo1.Lines.Add('loading Mir3Res.xml...');
+      InfoWindow.Lines.Add('loading Mir3Res.xml... (this need some time))');
+      Application.ProcessMessages;
       FXMLReader.ReadXMLResource(ExtractFilePath(ParamStr(0))+GDir_Envir+'Mir3Res.xml');
       FXMLReader.ParseAllLists;
-      Memo1.Lines.Add('Mir3Res.xml information loaded...');
+      InfoWindow.Lines.Add('Mir3Res.xml information loaded...');
 
       (* Begin Load Mini Map *)
-      Memo1.Lines.Add('loading MiniMap.txt...');
+      InfoWindow.Lines.Add('loading MiniMap.txt...');
       FError := FrmDB.LoadMiniMapInfos;
       if FError < 0 then
       begin
         ShowMessage('Read error (MiniMap.txt). code=' + IntToStr(FError));
         close;
         exit;
-      end else Memo1.Lines.Add('MiniMap information loaded.');
+      end else InfoWindow.Lines.Add('MiniMap information loaded.');
 
 
       (* Begin Load Map Files *)
-      Memo1.Lines.Add('loading MapFiles...');
+      InfoWindow.Lines.Add('loading MapFiles...');
       FError := FrmDB.LoadMapFiles;
       if FError < 0 then
       begin
         ShowMessage('Read error (Map Files). code=' + IntToStr(FError));
         close;
         exit;
-      end else Memo1.Lines.Add('Mapfile loaded.');
+      end else InfoWindow.Lines.Add('Mapfile loaded.');
 
 
       (* Begin Load Mon AI *)
-      Memo1.Lines.Add('loading MonAIs.txt...');
+      InfoWindow.Lines.Add('loading MonAIs.txt...');
       FError := FrmDB.LoadMonAI;
       if FError < 0 then
       begin
         ShowMessage('Read error (MonAIs.txt). code=' + IntToStr(FError));
         close;
         exit;
-      end else Memo1.Lines.Add('MonAIs.txt loaded.');
+      end else InfoWindow.Lines.Add('MonAIs.txt loaded.');
 
 
       (* Begin Load Mon Gen *)
-      Memo1.Lines.Add ('loading MonGen.txt...');
+      InfoWindow.Lines.Add ('loading MonGen.txt...');
       FError := FrmDB.LoadMonGen;
       if FError < 0 then
       begin
         ShowMessage('Read error (MonGen.txt). code=' + IntToStr(FError));
         close;
         exit;
-      end else Memo1.Lines.Add('MonGen.txt loaded.');
+      end else InfoWindow.Lines.Add('MonGen.txt loaded.');
 
 
       (* Begin Load Map Quests *)
-      Memo1.Lines.Add ('loading MapQuest.txt...');
+      InfoWindow.Lines.Add ('loading MapQuest.txt...');
       FError := FrmDB.LoadMapQuest;
       if FError < 0 then
       begin
         ShowMessage ('Read error (MapQuest.txt). code=' + IntToStr(FError));
         close;
         exit;
-      end else Memo1.Lines.Add('Map Quest information loaded.');
+      end else InfoWindow.Lines.Add('Map Quest information loaded.');
 
 
       (* Begin Load Admin List *)
-      Memo1.Lines.Add ('loading AdminList.txt...');
+      InfoWindow.Lines.Add ('loading AdminList.txt...');
       FError := FrmDB.LoadAdminFile;
       if FError <= 0 then
       begin
-        Memo1.Lines.Add('Error : AdminList loading failure...');
-      end else Memo1.Lines.Add('AdminList loaded..');
+        InfoWindow.Lines.Add('Error : AdminList loading failure...');
+      end else InfoWindow.Lines.Add('AdminList loaded..');
 
       if GServerIndex = 0 then
       begin
@@ -490,7 +488,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
   end;
 {$ENDREGION}
 
-procedure TFrmMain.Memo1DblClick(Sender: TObject);
+procedure TFrmMain.InfoWindowDblClick(Sender: TObject);
 begin
   //
 end;
@@ -540,18 +538,18 @@ var
 begin
   try
     FrmIDSoc.Initialize;
-    Memo1.Lines.Add('IDSoc Initialized..');
+    InfoWindow.Lines.Add('IDSoc Initialized..');
 
     GEnvirnoment.InitEnvironment;
-    Memo1.Lines.Add('GEnvirnoment loaded..');
+    InfoWindow.Lines.Add('GEnvirnoment loaded..');
 
     MakeStoneMines;
-    Memo1.Lines.Add('MakeStoneMines...');
+    InfoWindow.Lines.Add('MakeStoneMines...');
 
     FError := FrmDB.LoadMerchants;
     if FError < 0 then
     begin
-      ShowMessage ('merchant.txt' + ' : Failure was occurred while reading this file. code=' + IntToStr(error));
+      ShowMessage('merchant.txt' + ' : Failure was occurred while reading this file. code=' + IntToStr(error));
       Close;
     end;
 
