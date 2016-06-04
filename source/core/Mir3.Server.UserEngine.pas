@@ -730,7 +730,7 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
 
   procedure TUserEngine.ExecuteRun;
   var
-    I            : Integer;
+    //I            : Integer;
     FTempRunTime : Cardinal;
   begin
     FTempRunTime := GetTickCount;

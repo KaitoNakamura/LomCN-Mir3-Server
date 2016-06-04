@@ -814,7 +814,6 @@ end;
 ////////////////////////////////////////////////////////////////////////////////
 function TRunSocket.SendGateBuffers(AGateIndex: Integer; AGate: PRunGateInfo; AList: TList): Boolean;
 var
-  I           : Integer;
   FSendLen    : Integer;
   FWorkLen    : Integer;
   FNewLen     : Integer;
@@ -892,7 +891,6 @@ begin
            try
              FreeMem(FSendBuffer);
            except
-             FSendBuffer := nil;
            end;
            FSendBuffer := nil;
          end else begin
@@ -960,7 +958,7 @@ var
   FGateInfo : PRunGateInfo;
 begin
   FStart := GetTickCount;
-  FFull := FALSE;
+  FFull  := False;
   if GServerReady then
   begin
     try

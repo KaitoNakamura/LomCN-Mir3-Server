@@ -113,8 +113,8 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
     GFrontEngine   := TFrontEngine.Create;        // Player Start / Close etc. Processing
     GUserEngine    := TUserEngine.Create;         // Handle the Game things
     GUserMgrEngine := TUserMgrEngine.Create;      //
-    GCastleManager := TCastleManager.Create;
-    GGroupManager  := TGroupManager.Create;
+    GCastleManager := TCastleManager.Create;      // Handle all Castles (Sabuk / Taosung)
+    GGroupManager  := TGroupManager.Create;       // Handle all Groups
 
     (* Setup Ini Init *)
 
