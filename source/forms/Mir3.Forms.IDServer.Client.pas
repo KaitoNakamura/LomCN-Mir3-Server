@@ -37,6 +37,7 @@ type
   public
     procedure Initialize;
     procedure SendUserClose(AUserID: String);
+    procedure SendUserCount(AUserCount: Integer);
     function GetAdmission(uid, ipaddr: String; ACertification : Integer; var availmode, clversion: integer): integer;
   end;
 
@@ -58,7 +59,7 @@ begin
   FShareIPList   := TStringList.Create;
 
   IDSocket.Address := '';
-  FSetupFileName   := '.\Setup\Setup.txt';
+  FSetupFileName   := '.\Setup\Setup.ini';
   if FileExists(FSetupFileName) then
   begin
     FSetupIni := TIniFile.Create(FSetupFileName);
@@ -137,6 +138,12 @@ procedure TFrmIDSoc.SendUserClose(AUserID: String);
 begin
   if IDSocket.Socket.Connected then
     IDSocket.Socket.SendText(AnsiString('(' + IntToStr(ISM_USER_CLOSED) + '/' + AUserID + ')'));
+end;
+
+procedure TFrmIDSoc.SendUserCount(AUserCount: Integer);
+begin
+  if IDSocket.Socket.Connected then
+    IDSocket.Socket.SendText('(' + IntToStr(ISM_USER_COUNT) + '/' + GServerName + '/' + IntToStr(GServerIndex) + '/' + IntToStr(AUserCount) + ')');
 end;
 
 procedure TFrmIDSoc.Timer1Timer(Sender: TObject);

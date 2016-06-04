@@ -5,7 +5,7 @@ interface
 uses System.SysUtils, System.Classes, System.SyncObjs;
 
 var
-  GServerVersion     : String  = 'Ver : LomCN v 0.0.1 build 00005';
+  GServerVersion     : String  = 'Server Version : LomCN - 0.0.0.1';
 
   GServerReady       : Boolean = False;
   GServiceMode       : Boolean = True;
@@ -62,7 +62,7 @@ var
   GMsgSrvPort        : Integer;
   GLogServerPort     : Integer;
   GItemNumber        : Integer = 0;
-  GServerName        : String  = 'Lom3';
+  GServerName        : String  = 'LomCN ';
   GLatestGenMessage  : String = '';
   GLatestMonMessage  : String = '';
   GSqlDBLoc          : String;
@@ -76,16 +76,12 @@ var
   GDir_MonDef        : String  = 'Mon_Def\';
   GDir_Map           : String  = '.\Map\';
   GDir_Guild         : String  = '.\GuildBase\';
+  GLogFile           : String  = '';
   GBlanceLogDir      : String  = '\ShareL\';
   GConLogDir         : String  = '\ShareL\Conlog\';
-  GFile_MiniMap      : String  = 'MiniMap.txt';
   GFile_Guild        : String  = 'Guildlist.txt';
   GFile_Merchant     : String  = 'Merchant.txt';
-  GFile_Map_Quest    : String  = 'MapQuest.txt';
-  GFile_Mon_Gen      : String  = 'MonGen.txt';
   GFile_Zen_Message  : String  = 'GenMsg.txt';
-  GFile_Map_Info     : String  = 'MapInfo.txt';
-  GFile_AdminList    : String  = 'AdminList.txt';
 
 
   { Global Critical Sections }
@@ -107,6 +103,8 @@ var
   GMiniMapList       : TStringList;
 
 type
+  TServerModes = (smTestMode, smPublicMode, smServiceMode);
+
   PMsgHeader = ^TMsgHeader;
   TMsgHeader = record
     RCode               : LongWord;  //$aa55aa55;
@@ -125,6 +123,13 @@ type
     RParam:   Word;
     RTag:     Word;
     RSeries:  Word;
+  end;
+
+  TQuestActionInfo = record//size=24
+    f4:string;//f4
+    fC:string;//fC
+    f14:string;//f14
+    f1C:string;//f1C
   end;
 
   PChangeUserInfo = ^TChangeUserInfo;
@@ -249,10 +254,9 @@ type
     ServerUserLimit  : Integer;
   end;
 
-  PTestMode = ^TTestMode;
-  TTestMode = record
-    TestServer : Boolean;
-    FreeMode   : Boolean;
+  PServerMode = ^TServerMode;
+  TServerMode = record
+    RServerMode : TServerModes;
   end;
 
   PUserItem = ^TUserItem;
@@ -423,7 +427,7 @@ type
 
 var
   GEventSetupInfo : TEventSetupInfo;
-  GTestMode       : TTestMode;
+  GServerMode     : TServerMode;
 
 
 procedure ServerLogMessage(ALogMessage: String);
@@ -454,6 +458,10 @@ begin
 end;
 
 procedure InitGlobalCoreCode;
+var
+  FFileHandle                    : TextFile;
+  Date, FYear, FMon, FDay        : Word;
+  Time, FHour, FMin, FSec, FMSec : Word;
 begin
   // Global Critical Sections
   GCS_MessageLock           := TCriticalSection.Create;
@@ -472,6 +480,19 @@ begin
   GUserConLogList     := TStringList.Create;
   GUserChatLogList    := TStringList.Create;
   GMiniMapList        := TStringList.Create;
+
+  // Inite Log File
+  if not DirectoryExists(ExtractFilePath(ParamStr(0))+'Logs') then
+    MkDir(ExtractFilePath(ParamStr(0))+'Logs');
+
+  DecodeDate(now, FYear, FMon, FDay);
+  DecodeTime(now, FHour, FMin, FSec, FMSec);
+  GLogFile := ExtractFilePath(ParamStr(0)) + 'Logs\' +
+                              IntToStr(FYear) + '-' + IntToStr(FMon) + '-' + IntToStr(FDay) +
+                              '.' + IntToStr(FHour) + '-' + IntToStr(FMin) +  '-' + IntToStr(FSec) +'.log';
+  AssignFile(FFileHandle, GLogFile);
+  Rewrite(FFileHandle);
+  CloseFile(FFileHandle);
 end;
 
 procedure FreeGlobalCoreCode;

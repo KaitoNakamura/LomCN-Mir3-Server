@@ -289,7 +289,7 @@ var
   FHour, FMin ,
   FSec, FMSec : Word;
 begin
-   DecodeTime (Time, FHour, FMin, FSec, FMSec);
+   DecodeTime(Time, FHour, FMin, FSec, FMSec);
    case FHour of
      23, 11 : GMir3DayTime := 2;
      4, 15  : GMir3DayTime := 0;

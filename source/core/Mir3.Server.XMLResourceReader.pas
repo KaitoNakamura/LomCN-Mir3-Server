@@ -8,19 +8,22 @@ uses WinAPI.Windows, System.SysUtils, System.StrUtils, System.Classes,
      WinAPI.msxml, Mir3.Server.Core;
 
 type
-  TXMLArtisanLevelNode = record
+  PXMLArtisanLevelNode = ^TXMLArtisanLevelNode;
+  TXMLArtisanLevelNode = record  //Craftsman
     RArtisanLevel : Integer;
     RAccuEXP      : Integer;
     RNeedEXP      : Integer;
     RMax_AP       : Integer;
   end;
 
+  PXMLEtcSrciptNode = ^TXMLEtcSrciptNode;
   TXMLEtcSrciptNode = record
     REtcID        : Integer;
     RName         : String;
     RKoreaName    : String;
   end;
 
+  PXMLGuardListNode = ^TXMLGuardListNode;
   TXMLGuardListNode = record
     RMonID        : Integer;
     RMapID        : Integer;
@@ -29,6 +32,7 @@ type
     RDirection    : Integer;
   end;
 
+  PXMLMagicNode = ^TXMLMagicNode;
   TXMLMagicNode = record
     RMagicID      : Integer;
     RMagicName    : String;
@@ -60,6 +64,7 @@ type
     RToolTip      : String;
   end;
 
+  PXMLMapInfoNode = ^TXMLMapInfoNode;
   TXMLMapInfoNode = record
     RMapID        : Integer;
     RMapName      : String;
@@ -86,6 +91,7 @@ type
     ROrderList    : Integer; //Int or Bool?
   end;
 
+  PXMLMapLinkNode = ^TXMLMapLinkNode;
   TXMLMapLinkNode = record
     RSMapID       : Integer;
     RSMapX        : Integer;
@@ -96,6 +102,7 @@ type
     RVersion      : Integer;
   end;
 
+  PXMLMapQuestNode = ^TXMLMapQuestNode;
   TXMLMapQuestNode = record
     RMapID        : Integer;
     RQFlag        : Integer;
@@ -109,6 +116,7 @@ type
     RVersion      : Integer;
   end;
 
+  PXMLMethodeListNode = ^TXMLMethodeListNode;
   TXMLMethodeListNode = record
     RItemID       : Integer;
     RDesc         : String;
@@ -127,6 +135,7 @@ type
     RNeedCount_6  : Integer;
   end;
 
+  PXMLMNpcNode = ^TXMLMNpcNode;
   TXMLMNpcNode = record
     RNpcID        : Integer;
     RName         : String;
@@ -136,6 +145,7 @@ type
     RVersion      : Integer;
   end;
 
+  PXMLMNpcStandNode = ^TXMLMNpcStandNode;
   TXMLMNpcStandNode = record
     RNpcID        : Integer;
     RName         : String;
@@ -147,11 +157,13 @@ type
     RVersion      : Integer;
   end;
 
+  PXMLMonAINode = ^TXMLMonAINode;
   TXMLMonAINode = record
     RMonID        : Integer;
     RMonAIFile    : String;
   end;
 
+  PXMLMonClassNode = ^TXMLMonClassNode;
   TXMLMonClassNode = record
     RMonClassID   : Integer;
     RGrade        : String;
@@ -172,6 +184,7 @@ type
     RAddExpMax    : Integer;
   end;
 
+  PXMLMonItemsNode = ^TXMLMonItemsNode;
   TXMLMonItemsNode = record
     RMonID        : Integer;
     RStartLevel   : Integer;
@@ -185,6 +198,7 @@ type
     RVersion      : Integer;
   end;
 
+  PXMLMonsterNode = ^TXMLMonsterNode;
   TXMLMonsterNode = record
     RMonID        : Integer;
     RUsed         : Boolean;
@@ -229,6 +243,7 @@ type
     RMonserGradeID: Integer;
   end;
 
+  PXMLPetNode = ^TXMLPetNode;
   TXMLPetNode = record
     RPetID        : Integer;
     RMonID        : Integer;
@@ -238,6 +253,7 @@ type
     RDescription  : String;
   end;
 
+  PXMLPetExpNode = ^TXMLPetExpNode;
   TXMLPetExpNode = record
     RPetLevel     : Integer;
     RNeedExp      : Integer;
@@ -245,6 +261,7 @@ type
     RDimiStatis   : Integer;
   end;
 
+  PXMLPetSkillNode = ^TXMLPetSkillNode;
   TXMLPetSkillNode = record
     RPetSkillID   : Integer;
     RSkillName    : String;
@@ -254,6 +271,7 @@ type
     RKoreaName    : String;
   end;
 
+  PXMLProItemsNode = ^TXMLProItemsNode;
   TXMLProItemsNode = record
     RItemID       : Integer;
     RDescription  : String;
@@ -267,6 +285,7 @@ type
     RUseTime      : Integer;
   end;
 
+  PXMLQItemDropNode = ^TXMLQItemDropNode;
   TXMLQItemDropNode = record
     RQuestID      : Integer;
     RMonID        : Integer;
@@ -274,6 +293,7 @@ type
     RRate         : Single;
   end;
 
+  PXMLQuestNode = ^TXMLQuestNode;
   TXMLQuestNode = record
     RQuestID      : Integer;
     RStoryCode    : Integer;
@@ -302,6 +322,7 @@ type
     RApplyRow     : Integer;
   end;
 
+  PXMLQuestCompNode = ^TXMLQuestCompNode;
   TXMLQuestCompNode = record
     RQuestID      : Integer;
     RQuestMark    : Integer;
@@ -309,11 +330,13 @@ type
     RCount        : Integer;
   end;
 
+  PXMLQuestItemNode = ^TXMLQuestItemNode;
   TXMLQuestItemNode = record
     RQuestID      : Integer;
     RQuestItemName: String;
   end;
 
+  PXMLQuestReactionNode = ^TXMLQuestReactionNode;
   TXMLQuestReactionNode = record
     RQuestID        : Integer;
     RReactionNum    : Integer;
@@ -327,6 +350,7 @@ type
     RSummonRadius   : Integer;
   end;
 
+  PXMLQuestRewardNode = ^TXMLQuestRewardNode;
   TXMLQuestRewardNode = record
     RQuestID        : Integer;
     RRewardType     : Integer;
@@ -334,6 +358,7 @@ type
     RCount          : Integer;
   end;
 
+  PXMLRandomBoxNode = ^TXMLRandomBoxNode;
   TXMLRandomBoxNode = record
     RUseItemID      : Integer;
     RNeedJob        : Integer;
@@ -348,12 +373,14 @@ type
     RRewardAmount   : Integer;
   end;
 
+  PXMLRareItemsNode = ^TXMLRareItemsNode;
   TXMLRareItemsNode = record
     RItemID         : Integer;
     RUPGProb        : Integer;
     RDropHour       : Integer;
   end;
 
+  PXMLStartPointNode = ^TXMLStartPointNode;
   TXMLStartPointNode = record
     RMapID          : Integer;
     RMapX           : Integer;
@@ -361,6 +388,7 @@ type
     RVersion        : Integer;
   end;
 
+  PXMLStdItemsNode = ^TXMLStdItemsNode;
   TXMLStdItemsNode = record
     RItemID            : Integer;
     RItemName          : String;
@@ -443,12 +471,14 @@ type
     RTradeEntrust      : Boolean; // Bool??
   end;
 
+  PXMLStringSNode = ^TXMLStringSNode;
   TXMLStringSNode = record
     RStringID       : Integer;
     RText           : String;
     RType           : String;
   end;
 
+  PXMLUNpcNode = ^TXMLUNpcNode;
   TXMLUNpcNode = record
     RNpcID          : Integer;
     RName           : String;
@@ -463,6 +493,7 @@ type
     RApplyRow       : Integer;
   end;
 
+  PXMLMonGenNode = ^TXMLMonGenNode;
   TXMLMonGenNode = record
     RMapID          : Integer;
     RMapX           : Integer;
@@ -478,6 +509,7 @@ type
     RVersion        : Integer;
   end;
 
+  PXMLSaleItemsNode = ^TXMLSaleItemsNode;
   TXMLSaleItemsNode = record
     RTemp           : String;
     RIdentifer      : String;
@@ -515,6 +547,15 @@ type
     RBuffImage      : Integer;
   end;
 
+  PXMLAdminListNode = ^TXMLAdminListNode;
+  TXMLAdminListNode = record
+    RAdminID        : Integer;
+    RDBUserID       : String;
+    RAdminRole      : String;
+    RRoleLevel      : Integer;
+  end;
+
+  PXMLResourceReader = ^TXMLResourceReader;
   TXMLResourceReader = class
   private
     FXMLDomDoc  : IXMLDocument;
@@ -552,6 +593,7 @@ type
     FUNpcDataList           : TList<TXMLUNpcNode>;
     FMonGenDataList         : TList<TXMLMonGenNode>;
     FSaleItemsDataList      : TList<TXMLSaleItemsNode>;
+    FAdminListDataList      : TList<TXMLAdminListNode>;
     FCountArtisanLevelNodes : Integer;
     FCountEtcScriptNodes    : Integer;
     FCountGuardListNodes    : Integer;
@@ -584,12 +626,13 @@ type
     FCountUNpcNodes         : Integer;
     FCountMonGenNodes       : Integer;
     FCountSaleItemsNodes    : Integer;
+    FCountAdminListNodes    : Integer;
   public
     constructor Create;
     destructor Destroy; override;
   public
     function ReadXMLResource(AFileName: String): Boolean;
-    procedure ParseAllLists;
+    procedure FullXMLListReload;
   public
     {$REGION ' - TXMLResourceReader Load Functions '}
     procedure LoadArtisanLevel; overload;
@@ -656,6 +699,8 @@ type
     procedure LoadMonGen(var ADataList: TList<TXMLMonGenNode>); overload;
     procedure LoadSaleItems; overload;
     procedure LoadSaleItems(var ADataList: TList<TXMLSaleItemsNode>); overload;
+    procedure LoadAdminList; overload;
+    procedure LoadAdminList(var ADataList: TList<TXMLAdminListNode>); overload;
     {$ENDREGION}
   public
     {$REGION ' - TXMLResourceReader List Propertys '}
@@ -691,6 +736,7 @@ type
     property UNpcDataList         : TList<TXMLUNpcNode>          read FUNpcDataList;
     property MonGenDataList       : TList<TXMLMonGenNode>        read FMonGenDataList;
     property SaleItemsDataList    : TList<TXMLSaleItemsNode>     read FSaleItemsDataList;
+    property AdminListDataList    : TList<TXMLAdminListNode>     read FAdminListDataList;
     {$ENDREGION}
     {$REGION ' - TXMLResourceReader List Counter Propertys '}
     property CountArtisanLevelNodes : Integer read FCountArtisanLevelNodes;
@@ -725,8 +771,12 @@ type
     property CountUNpcNodes         : Integer read FCountUNpcNodes;
     property CountMonGenNodes       : Integer read FCountMonGenNodes;
     property CountSaleItemsNodes    : Integer read FCountSaleItemsNodes;
+    property CountAdminListNodes    : Integer read FCountAdminListNodes;
     {$ENDREGION}
   end;
+
+var
+  GXMLResourceReader : TXMLResourceReader;
 
 implementation
 
@@ -772,7 +822,7 @@ uses Mir3.Forms.Main.System;
     FUNpcDataList           := TList<TXMLUNpcNode>.Create;
     FMonGenDataList         := TList<TXMLMonGenNode>.Create;
     FSaleItemsDataList      := TList<TXMLSaleItemsNode>.Create;
-
+    FAdminListDataList      := TList<TXMLAdminListNode>.Create;
   end;
 
   destructor TXMLResourceReader.Destroy;
@@ -809,6 +859,7 @@ uses Mir3.Forms.Main.System;
     FUNpcDataList.Clear;
     FMonGenDataList.Clear;
     FSaleItemsDataList.Clear;
+    FAdminListDataList.Clear;
     (* Free and Nil *)
     FreeAndNil(FArtisanLevelDataList);
     FreeAndNil(FEtcSrciptDataList);
@@ -842,6 +893,7 @@ uses Mir3.Forms.Main.System;
     FreeAndNil(FUNpcDataList);
     FreeAndNil(FMonGenDataList);
     FreeAndNil(FSaleItemsDataList);
+    FreeAndNil(FAdminListDataList);
     inherited Destroy;
   end;
 {$ENDREGION}
@@ -871,8 +923,9 @@ uses Mir3.Forms.Main.System;
     end;
   end;
 
-  procedure TXMLResourceReader.ParseAllLists;
+  procedure TXMLResourceReader.FullXMLListReload;
   begin
+    // TODO: Reload Option (User can say only this or this...)
     LoadArtisanLevel;
     LoadEtcScript;
     LoadGuardList;
@@ -905,14 +958,15 @@ uses Mir3.Forms.Main.System;
     LoadUNpc;
     LoadMonGen;
     LoadSaleItems;
+    LoadAdminList;
   end;
 
     (* Load Functions *)
 
   procedure TXMLResourceReader.LoadArtisanLevel;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Artisan Level');
     LoadArtisanLevel(FArtisanLevelDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Artisan Level - (' + IntToStr(FCountArtisanLevelNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadArtisanLevel(var ADataList: TList<TXMLArtisanLevelNode>);
@@ -968,8 +1022,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadEtcScript;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Etc Srcipt');
     LoadEtcScript(FEtcSrciptDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Etc Srcipt - (' + IntToStr(FCountEtcScriptNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadEtcScript(var ADataList: TList<TXMLEtcSrciptNode>);
@@ -1023,8 +1077,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadGuardList;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Guard List');
     LoadGuardList(FGuardListDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Guard List - (' + IntToStr(FCountGuardListNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadGuardList(var ADataList: TList<TXMLGuardListNode>);
@@ -1082,8 +1136,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMagic;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Magic List');
     LoadMagic(FMagicDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Magic List - (' + IntToStr(FCountMagicNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMagic(var ADataList: TList<TXMLMagicNode>);
@@ -1187,8 +1241,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMapInfo;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read MapInfo List');
     LoadMapInfo(FMapInfoDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read MapInfo List - (' + IntToStr(FCountMapInfoNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMapInfo(var ADataList: TList<TXMLMapInfoNode>);
@@ -1282,8 +1336,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMapLink;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read MapLink List');
     LoadMapLink(FMapLinkDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read MapLink List - (' + IntToStr(FCountMapLinkNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMapLink(var ADataList: TList<TXMLMapLinkNode>);
@@ -1345,8 +1399,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMapQuest;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read MapQuest List');
     LoadMapQuest(FMapQuestDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read MapQuest List - (' + IntToStr(FCountMapQuestNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMapQuest(var ADataList: TList<TXMLMapQuestNode>);
@@ -1414,8 +1468,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMethodeList;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Methode List');
     LoadMethodeList(FMethodeListDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Methode List - (' + IntToStr(FCountMethodeListNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMethodeList(var ADataList: TList<TXMLMethodeListNode>);
@@ -1493,8 +1547,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMNpc;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read M-NPC List');
     LoadMNpc(FMNpcDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read M-NPC List - (' + IntToStr(FCountMNpcNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMNpc(var ADataList: TList<TXMLMNpcNode>);
@@ -1554,8 +1608,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMNpcStand;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read M-NPC-Stand List');
     LoadMNpcStand(FMNpcStandDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read M-NPC-Stand List - (' + IntToStr(FCountMNpcStandNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMNpcStand(var ADataList: TList<TXMLMNpcStandNode>);
@@ -1619,8 +1673,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMonAI;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read MonAI List');
     LoadMonAI(FMonAIDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read MonAI List - (' + IntToStr(FCountMonAINodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMonAI(var ADataList: TList<TXMLMonAINode>);
@@ -1672,8 +1726,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMonClass;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster Class List');
     LoadMonClass(FMonClassDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Monster Class List - (' + IntToStr(FCountMonClassNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMonClass(var ADataList: TList<TXMLMonClassNode>);
@@ -1755,8 +1809,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMonItems;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster Item List');
     LoadMonItems(FMonItemsDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Monster Item List - (' + IntToStr(FCountMonItemsNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMonItems(var ADataList: TList<TXMLMonItemsNode>);
@@ -1824,8 +1878,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMonster;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster List');
     LoadMonster(FMonsterDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Monster List - (' + IntToStr(FCountMonsterNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMonster(var ADataList: TList<TXMLMonsterNode>);
@@ -1955,8 +2009,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadPet;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pet´s List');
     LoadPet(FPetDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Pet´s List - (' + IntToStr(FCountPetNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadPet(var ADataList: TList<TXMLPetNode>);
@@ -2016,8 +2070,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadPetExp;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pet Exp List');
     LoadPetExp(FPetExpDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Pet Exp List - (' + IntToStr(FCountPetExpNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadPetExp(var ADataList: TList<TXMLPetExpNode>);
@@ -2073,8 +2127,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadPetSkill;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pet Skills List');
     LoadPetSkill(FPetSkillDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Pet Skills List - (' + IntToStr(FCountPetSkillNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadPetSkill(var ADataList: TList<TXMLPetSkillNode>);
@@ -2134,8 +2188,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadProItems;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Pro Item List');
     LoadProItems(FProItemsDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Pro Item List - (' + IntToStr(FCountProItemsNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadProItems(var ADataList: TList<TXMLProItemsNode>);
@@ -2203,8 +2257,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadQItemDrop;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Drop Item List');
     LoadQItemDrop(FQItemDropDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Quest Drop Item List - (' + IntToStr(FCountQItemDropNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadQItemDrop(var ADataList: TList<TXMLQItemDropNode>);
@@ -2260,8 +2314,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadQuest;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest List');
     LoadQuest(FQuestDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Quest List - (' + IntToStr(FCountQuestNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadQuest(var ADataList: TList<TXMLQuestNode>);
@@ -2359,8 +2413,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadQuestComp;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Comps List');
     LoadQuestComp(FQuestCompDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Quest Comps List - (' + IntToStr(FCountQuestCompNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadQuestComp(var ADataList: TList<TXMLQuestCompNode>);
@@ -2416,8 +2470,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadQuestItem;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Item List');
     LoadQuestItem(FQuestItemDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Quest Item List - (' + IntToStr(FCountQuestItemNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadQuestItem(var ADataList: TList<TXMLQuestItemNode>);
@@ -2469,8 +2523,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadQuestReaction;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Reaction List');
     LoadQuestReaction(FQuestReactionDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Quest Reaction List - (' + IntToStr(FCountQuestReactionNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadQuestReaction(var ADataList: TList<TXMLQuestReactionNode>);
@@ -2538,8 +2592,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadQuestReward;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Quest Reward List');
     LoadQuestReward(FQuestRewardDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Quest Reward List - (' + IntToStr(FCountQuestRewardNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadQuestReward(var ADataList: TList<TXMLQuestRewardNode>);
@@ -2595,8 +2649,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadRandomBox;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Random Box List');
     LoadRandomBox(FRandomBoxDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Random Box List - (' + IntToStr(FCountRandomBoxNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadRandomBox(var ADataList: TList<TXMLRandomBoxNode>);
@@ -2666,8 +2720,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadRareItems;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Rare Items List');
     LoadRareItems(FRareItemsDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Rare Items List - (' + IntToStr(FCountRareItemsNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadRareItems(var ADataList: TList<TXMLRareItemsNode>);
@@ -2721,8 +2775,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadStartPoint;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Start Point List');
     LoadStartPoint(FStartPointDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Start Point List - (' + IntToStr(FCountStartPointNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadStartPoint(var ADataList: TList<TXMLStartPointNode>);
@@ -2778,8 +2832,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadStdItems;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Std Items List');
     LoadStdItems(FStdItemsDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Std Items List - (' + IntToStr(FCountStdItemsNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadStdItems(var ADataList: TList<TXMLStdItemsNode>);
@@ -2985,8 +3039,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadStringS;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Strings List');
     LoadStringS(FStringSDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Strings List - (' + IntToStr(FCountStringSNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadStringS(var ADataList: TList<TXMLStringSNode>);
@@ -3040,8 +3094,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadUNpc;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read U-NPC List');
     LoadUNpc(FUNpcDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read U-NPC List - (' + IntToStr(FCountUNpcNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadUNpc(var ADataList: TList<TXMLUNpcNode>);
@@ -3111,8 +3165,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadMonGen;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Monster Gen List');
     LoadMonGen(FMonGenDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Monster Gen List - (' + IntToStr(FCountMonGenNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadMonGen(var ADataList: TList<TXMLMonGenNode>);
@@ -3184,8 +3238,8 @@ uses Mir3.Forms.Main.System;
 
   procedure TXMLResourceReader.LoadSaleItems;
   begin
-    FrmMain.InfoWindow.Lines.Add('[XML] - Read Sales Items List');
     LoadSaleItems(FSaleItemsDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Sales Items List - (' + IntToStr(FCountSaleItemsNodes)+')');
   end;
 
   procedure TXMLResourceReader.LoadSaleItems(var ADataList: TList<TXMLSaleItemsNode>);
@@ -3299,6 +3353,71 @@ uses Mir3.Forms.Main.System;
     end;
   end;
 
+  procedure TXMLResourceReader.LoadAdminList;
+  begin
+    LoadAdminList(FAdminListDataList);
+    FrmMain.lbServerMessage.Items.Add('[XML] - Read Admin List - (' + IntToStr(FCountAdminListNodes)+')');
+  end;
+
+  procedure TXMLResourceReader.LoadAdminList(var ADataList: TList<TXMLAdminListNode>);
+
+    procedure ProcessNode(AXMLNode: IDOMNode);
+    var
+      I     : Integer;
+      FNode : TXMLAdminListNode;
+    begin
+      if AXMLNode.NodeName = 'VALUE' then
+      begin
+        for I := 0 to AXMLNode.attributes.length-1 do
+        begin
+          if AXMLNode.attributes.item[I].nodeName = 'ADMIN_ID' then
+            FNode.RAdminID        := StrToIntDef(AXMLNode.attributes.item[I].nodeValue, 0);
+          if AXMLNode.attributes.item[I].nodeName = 'USER_NAME' then
+            FNode.RDBUserID       := AXMLNode.attributes.item[I].nodeValue;
+          if AXMLNode.attributes.item[I].nodeName = 'ADMIN_ROLE' then
+            FNode.RAdminRole      := AXMLNode.attributes.item[I].nodeValue;
+          if AXMLNode.attributes.item[I].nodeName = 'ROLE_LEVEL' then
+            FNode.RRoleLevel      := StrToIntDef(AXMLNode.attributes.item[I].nodeValue, 0);
+        end;
+      end;
+      ADataList.Add(FNode);
+    end;
+
+  var
+    I          : Integer;
+    FXMLNode   : IDOMNode;
+    FXMLNodeEx : IDOMNode;
+  begin
+    try
+      FXMLDomNode := FXMLDomDoc.documentElement.DOMNode;
+      FXMLNode    := FXMLDomNode.firstChild;
+      while Assigned(FXMLNode) do
+      begin
+        if FXMLNode.NodeName = 'RES_ADMIN_LIST' then
+        begin
+          for I := 0 to FXMLNode.childNodes.length-1 do
+          begin
+            FXMLNodeEx := FXMLNode.childNodes.item[I];
+            ProcessNode(FXMLNodeEx);
+            Inc(FCountMonGenNodes);
+          end;
+          Break;
+        end;
+        FXMLNode := FXMLNode.NextSibling;
+      end;
+    except
+      ServerLogMessage('Exception] - XMLResourceReader::LoadAdminList');
+    end;
+  end;
+
 {$ENDREGION}
+
+
+
+initialization
+  GXMLResourceReader := TXMLResourceReader.Create;
+
+finalization
+  FreeAndNil(GXMLResourceReader);
 
 end.

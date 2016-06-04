@@ -5,7 +5,7 @@ interface
 uses System.Classes, System.Generics.Collections, System.SyncObjs,
 
      Mir3.Server.Constants, Mir3.Server.Functions, Mir3.Server.Core,
-     Mir3.Objects.Base;
+     Mir3.Objects.Base, Mir3.Server.XMLResourceReader;
 
 type
 
@@ -68,18 +68,33 @@ type
 
   TEnvironment = class
   strict private
-    FMapName     : String;
-    FMapTitle    : String;
-    FMapWidth    : Integer;
-    FMapHeight   : Integer;
-    FMiniMap     : Integer;
-    FMineMap     : Integer;
-    FMapQuest    : TObject;
-    FServerIndex : Integer;
-    FCanGetItem  : Boolean;
-    FReconnectMap: String;
-    FMapInfoList : PMapInfoList;
-    FAttributes  : TMapAttributes;
+    FMapID         : Integer;
+    FMapName       : String;
+    FMapTitle      : String;
+    FMapWidth      : Integer;
+    FMapHeight     : Integer;
+    FMiniMap       : Integer;
+    FMapExpRatio   : Integer;
+    FMapDropRatio  : Integer;
+    FMapMoneyRatio : Integer;
+    FMapTime       : Integer;
+    FOrderList     : Integer;
+    FWeather       : Integer;
+    FVehicle       : Integer;
+    FNeedLevel     : Integer;
+    FEnterLevel    : Integer;
+    FEnterQuestID  : Integer;
+    FEnterItemID   : Integer;
+    FMineMap       : Boolean;
+    FPVPMap        : Boolean;
+    FMapQuest      : TObject;
+    FServerIndex   : Integer;
+    FCanGetItem    : Boolean;
+    FReconnectMap  : String;
+    FReconnectEnvir: TEnvironment;
+    FMapInfoList   : PMapInfoList;
+    FAttributes    : TMapAttributes;
+    FMapQuestFile  : TList<TXMLMapQuestNode>;
   private
     procedure ResizeMap(X, Y: Integer);
   public
@@ -107,16 +122,31 @@ type
     function AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
     function DeleteFromMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Integer;
   public
-    property MapName     : String         read FMapName      write FMapName;
-    property MapTitle    : String         read FMapTitle     write FMapTitle;
-    property MapWidth    : Integer        read FMapWidth     write FMapWidth;
-    property MapHeight   : Integer        read FMapHeight    write FMapHeight;
-    property MiniMap     : Integer        read FMiniMap      write FMiniMap;
-    property MineMap     : Integer        read FMineMap      write FMineMap;
-    property MapQuest    : TObject        read FMapQuest     write FMapQuest;
-    property ServerIndex : Integer        read FServerIndex  write FServerIndex;
-    property Attributes  : TMapAttributes read FAttributes   write FAttributes;
-    property ReconnectMap: String         read FReconnectMap write FReconnectMap;
+    property MapID          : Integer                  read FMapID          write FMapID;
+    property MapName        : String                   read FMapName        write FMapName;
+    property MapTitle       : String                   read FMapTitle       write FMapTitle;
+    property MapWidth       : Integer                  read FMapWidth       write FMapWidth;
+    property MapHeight      : Integer                  read FMapHeight      write FMapHeight;
+    property MiniMap        : Integer                  read FMiniMap        write FMiniMap;
+    property MapExpRatio    : Integer                  read FMapExpRatio    write FMapExpRatio;
+    property MapDropRatio   : Integer                  read FMapDropRatio   write FMapDropRatio;
+    property MapMoneyRatio  : Integer                  read FMapMoneyRatio  write FMapMoneyRatio;
+    property MapTime        : Integer                  read FMapTime        write FMapTime;
+    property MineMap        : Boolean                  read FMineMap        write FMineMap;
+    property MapQuest       : TObject                  read FMapQuest       write FMapQuest;
+    property OrderList      : Integer                  read FOrderList      write FOrderList;
+    property Weather        : Integer                  read FWeather        write FWeather;
+    property Vehicle        : Integer                  read FVehicle        write FVehicle;
+    property NeedLevel      : Integer                  read FNeedLevel      write FNeedLevel;
+    property EnterLevel     : Integer                  read FEnterLevel     write FEnterLevel;
+    property EnterQuestID   : Integer                  read FEnterQuestID   write FEnterQuestID;
+    property EnterItemID    : Integer                  read FEnterItemID    write FEnterItemID;
+    property PVPMap         : Boolean                  read FPVPMap         write FPVPMap;
+    property ServerIndex    : Integer                  read FServerIndex    write FServerIndex;
+    property Attributes     : TMapAttributes           read FAttributes     write FAttributes;
+    property ReconnectMap   : String                   read FReconnectMap   write FReconnectMap;
+    property ReconnectEnvir : TEnvironment             read FReconnectEnvir write FReconnectEnvir;
+    property MapQuestFile   : TList<TXMLMapQuestNode>  read FMapQuestFile   write FMapQuestFile;
   end;
 
   (* class TEnvirList *)
@@ -128,8 +158,12 @@ type
     constructor Create;
     destructor Destroy; override;
   public
-    function AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
-    function AddGateToMap(AFromMap: String; FX, FY: integer; AToMap: string; TX, TY: Integer): Boolean;
+    //function AddMapToEnvironment();
+    //function AddMapQuestToEnvironment();
+    //function AddMapEnvironment
+    function AddEnvironment(AMapInfoNode: PXMLMapInfoNode): TEnvironment;
+    //function AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
+    function AddMapLinkToEnvironment(const AMapLinkNode: PXMLMapLinkNode; const AMapList: TList<TXMLMapInfoNode>): Boolean;
     function GetEnvironment(AMapName: String): TEnvironment;
     procedure InitEnvironment;
     function ServerGetEnvironment(AServerIndex: Integer; AMapName: String): TEnvironment;
@@ -148,16 +182,40 @@ uses
 {$REGION ' - TEnvironment Constructor / Destructor '}
   constructor TEnvironment.Create;
   begin
-    FMapName     := '';
-    FMapTitle    := '';
-    FMapWidth    := 0;
-    FMapHeight   := 0;
-    FMapInfoList := nil;
+    FMapName        := '';
+    FMapTitle       := '';
+    FMapWidth       := 0;
+    FMapHeight      := 0;
+    FMiniMap        := 0;
+    FMapExpRatio    := 0;
+    FMapDropRatio   := 0;
+    FMapMoneyRatio  := 0;
+    FMapTime        := 0;
+    FOrderList      := 0;
+    FWeather        := 0;
+    FVehicle        := 0;
+    FNeedLevel      := 0;
+    FEnterLevel     := 0;
+    FEnterQuestID   := 0;
+    FEnterItemID    := 0;
+    FAttributes     := [];
+    FMineMap        := False;
+    FPVPMap         := False;
+    FMapQuest       := nil;
+    FServerIndex    := 0;
+    FCanGetItem     := False;
+    FReconnectMap   := '';
+    FMapInfoList    := nil;
+    FReconnectEnvir := nil;
+    FMapQuestFile   := TList<TXMLMapQuestNode>.Create;
   end;
 
   destructor TEnvironment.Destroy;
   begin
-
+    FMapInfoList    := nil;
+    FReconnectEnvir := nil;
+    MapQuestFile.Clear;
+    FreeAndNil(FMapQuestFile);
     inherited Destroy;
   end;
 {$ENDREGION}
@@ -403,7 +461,7 @@ uses
                Result := PMapItem(FMapInfo.RObjectList[I].RObject);
                break;
              end;
-             if (FMapInfo.RObjectList[I].RShape = OS_GATE_OBJECT) then
+             if (FMapInfo.RObjectList[I].RShape = OS_MAP_LINK_OBJECT) then
              begin
                FCanGetItem := False;
              end;
@@ -446,7 +504,7 @@ uses
                Result := PMapItem(FMapInfo.RObjectList[i].RObject);
                Inc(AItemCount);
              end;
-             if (FMapInfo.RObjectList[I].RShape = OS_GATE_OBJECT) then
+             if (FMapInfo.RObjectList[I].RShape = OS_MAP_LINK_OBJECT) then
              begin
                FCanGetItem := False;
              end;
@@ -863,50 +921,154 @@ uses
 {$ENDREGION}
 
 {$REGION ' - TEnvirList Public Function '}
-  function TEnvirList.AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
+  //****************************************************************************
+  // Add and Load a Map and the given Info to the Environment
+  // (function code done)
+  //function TEnvirList.AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
+  function TEnvirList.AddEnvironment(AMapInfoNode: PXMLMapInfoNode): TEnvironment;
   var
     I     : Integer;
     FEnvir: TEnvironment;
+
+    function GetMapAttribut(AControl: String): TMapAttributes;
+
+      procedure AddMapAttribut(var ADestAttribute: TMapAttributes; AAttribut: TMapAttribute);
+      begin
+        ADestAttribute := ADestAttribute + [AAttribut];
+      end;
+
+    var
+      FTempData : String;
+    begin
+      while True do
+      begin
+        if AControl = '' then break;
+
+        AControl := GetValidStr3(AControl, FTempData, ['/']);
+        if FTempData <> '' then
+        begin
+          if CompareText(FTempData, 'SAFE')            = 0 then AddMapAttribut(Result, maSafe);
+          if CompareText(FTempData, 'FIGHT')           = 0 then AddMapAttribut(Result, maFight);
+          if CompareText(FTempData, 'DARK')            = 0 then AddMapAttribut(Result, maDark);
+          if CompareText(FTempData, 'DAY')             = 0 then AddMapAttribut(Result, maDay);
+          if CompareText(FTempData, 'FOG')             = 0 then AddMapAttribut(Result, maFog);
+          if CompareText(FTempData, 'SNOW')            = 0 then AddMapAttribut(Result, maSnow);
+          if CompareText(FTempData, 'ASH')             = 0 then AddMapAttribut(Result, maAsh);
+          if CompareText(FTempData, 'ASHFOG')          = 0 then AddMapAttribut(Result, maAshFog);
+          if CompareText(FTempData, 'SOLO')            = 0 then AddMapAttribut(Result, maSolo);
+          if CompareText(FTempData, 'CLEAN')           = 0 then AddMapAttribut(Result, maClean);
+          if CompareText(FTempData, 'Clear')           = 0 then AddMapAttribut(Result, maClear);
+          if CompareText(FTempData, 'HORSE')           = 0 then AddMapAttribut(Result, maHorse);
+          if CompareText(FTempData, 'MINE')            = 0 then AddMapAttribut(Result, maMine);
+          if CompareText(FTempData, 'NEEDHOLE')        = 0 then AddMapAttribut(Result, maNeedHole);
+          if CompareText(FTempData, 'HIDECHARNAME')    = 0 then AddMapAttribut(Result, maHideCharName);
+          if CompareText(FTempData, 'PKFREE')          = 0 then AddMapAttribut(Result, maPKFree);
+          if CompareText(FTempData, 'TEAMCHAT')        = 0 then AddMapAttribut(Result, maTeamChat);
+          if CompareText(FTempData, 'TEAMFIGHT')       = 0 then AddMapAttribut(Result, maTeamFight);
+          if CompareText(FTempData, 'SNOWFIGHT')       = 0 then AddMapAttribut(Result, maSnowFight);
+          if CompareText(FTempData, 'FIGHTEVENTMAP')   = 0 then AddMapAttribut(Result, maFightEventMap);
+          if CompareText(FTempData, 'ONLY75OVER')      = 0 then AddMapAttribut(Result, maOnly75Over);
+          if CompareText(FTempData, 'NOSPACEMOVE')     = 0 then AddMapAttribut(Result, maNoSpaceMove);
+          if CompareText(FTempData, 'NORANDOMMOVE')    = 0 then AddMapAttribut(Result, maNoRandomMove);
+          if CompareText(FTempData, 'NOSPELLMOVE')     = 0 then AddMapAttribut(Result, maNoSpellMove);
+          if CompareText(FTempData, 'NOITEMMOVE')      = 0 then AddMapAttribut(Result, maNoItemMove);
+          if CompareText(FTempData, 'NOPOSITIONMOVE')  = 0 then AddMapAttribut(Result, maNoPositionMove);
+          if CompareText(FTempData, 'NOCASTLEMOVE')    = 0 then AddMapAttribut(Result, maNoCastleMove);
+          if CompareText(FTempData, 'NOSCRIPTMOVE')    = 0 then AddMapAttribut(Result, maNoScriptMove);
+          if CompareText(FTempData, 'NOFLY')           = 0 then AddMapAttribut(Result, maNoFly);
+          if CompareText(FTempData, 'NORFLY')          = 0 then AddMapAttribut(Result, maNoRFly);
+          if CompareText(FTempData, 'NOFREEFLY')       = 0 then AddMapAttribut(Result, maNoFreeFly);
+          if CompareText(FTempData, 'NOUNIQUEITEM')    = 0 then AddMapAttribut(Result, maNoUniqueItem);
+          if CompareText(FTempData, 'NODRUG')          = 0 then AddMapAttribut(Result, maNoDrug);
+          if CompareText(FTempData, 'NORECALL')        = 0 then AddMapAttribut(Result, moNoRecall);
+          if CompareText(FTempData, 'NOSLAVE')         = 0 then AddMapAttribut(Result, maNoSlave);
+          if CompareText(FTempData, 'NOPOISON')        = 0 then AddMapAttribut(Result, maNoPoison);
+          if CompareText(FTempData, 'NOGUILD')         = 0 then AddMapAttribut(Result, maNoGuild);
+          if CompareText(FTempData, 'NOGROUP')         = 0 then AddMapAttribut(Result, maNoGroup);
+          if CompareText(FTempData, 'NOSPELL')         = 0 then AddMapAttribut(Result, maNoSpell);
+          if CompareText(FTempData, 'NOGUILDWAR')      = 0 then AddMapAttribut(Result, maNoGuildWar);
+          if CompareText(FTempData, 'NOARMOR')         = 0 then AddMapAttribut(Result, maNoArmor);
+          if CompareText(FTempData, 'NOCHAT')          = 0 then AddMapAttribut(Result, maNoChat);
+          if CompareText(FTempData, 'NOLUCK')          = 0 then AddMapAttribut(Result, maNoLuck);
+          if CompareText(FTempData, 'NORECOVERY')      = 0 then AddMapAttribut(Result, maNoRecovery);
+          if CompareText(FTempData, 'NOREVIVAL')       = 0 then AddMapAttribut(Result, maNoRevival);
+          if CompareText(FTempData, 'NONECKLACEMOVE')  = 0 then AddMapAttribut(Result, maNoNecklaceMove);
+          if CompareText(FTempData, 'NOPROTECTRING')   = 0 then AddMapAttribut(Result, maNoProtectRing);
+        end;
+        if Pos('/',AControl) = 0 then break;
+      end;
+    end;
+
   begin
     Result := nil;
     FEnvir := TEnvironment.Create;
     with FEnvir do
     begin
-      MapName      := AMapName;
-      MapTitle     := AMapTitel;
-      ServerIndex  := AServerIndex;
-      Attributes   := AAttributes;
-      ReconnectMap := AReconnectMap;
-      MapQuest     := ANpc;
+      MapName        := AMapInfoNode^.RMapName;
+      MapTitle       := AMapInfoNode^.RMapTitle;
+      ServerIndex    := AMapInfoNode^.RServerID;
+      MiniMap        := AMapInfoNode^.RMiniMap;
+      MineMap        := AMapInfoNode^.RMine;
+      MapExpRatio    := AMapInfoNode^.RMapExpRatio;
+      MapDropRatio   := AMapInfoNode^.RMapDropRatio;
+      MapMoneyRatio  := AMapInfoNode^.RMapMoneyRatio;
+      Weather        := AMapInfoNode^.RWeather;
+      OrderList      := AMapInfoNode^.ROrderList;
+      Vehicle        := AMapInfoNode^.RVehicle;
+      NeedLevel      := AMapInfoNode^.RNeedLevel;
+      EnterLevel     := AMapInfoNode^.REnterLevel;
+      EnterQuestID   := AMapInfoNode^.REnterQuest;
+      EnterItemID    := AMapInfoNode^.REnterItem;
+      PVPMap         := AMapInfoNode^.RPVP;
+      ReconnectMap   := AMapInfoNode^.RNoReconnect;   //Ist die ID von der Map
+      Attributes     := GetMapAttribut(AMapInfoNode^.RControl);
+      //MapQuest     := ANpc;
 
-      for I := 0 to GMiniMapList.Count-1 do
+      if not FileExists(GDir_Map + ReconnectMap + '.map') then
       begin
-        if CompareText(GMiniMapList[i], AMapName) = 0 then
-        begin
-          MiniMap := Integer(GMiniMapList.Objects[I]);
-          break;
-        end;
+        ServerLogMessage('Reconnect Map file not found..  ' + GDir_Map + ReconnectMap + '.map');
+      end else begin
+        //TODO : If NIL  then add to a wait list and check this later
+        ReconnectEnvir := GetEnvironment(ReconnectMap);
       end;
 
-      if LoadMap(GDir_Map + AMapName + '.map') then
+      if LoadMap(GDir_Map + MapName + '.map') then
       begin
         Result := FEnvir;
         Add(FEnvir);
       end else begin
-        ServerLogMessage('file not found..  ' + GDir_Map + AMapName + '.map');
+        ServerLogMessage('file not found..  ' + GDir_Map + MapName + '.map');
       end;
     end;
   end;
 
-  function TEnvirList.AddGateToMap(AFromMap: String; FX, FY: integer; AToMap: String; TX, TY: Integer): Boolean;
+  //****************************************************************************
+  // Add a Map Link to the Given both Environments
+  // (function code done)
+  function TEnvirList.AddMapLinkToEnvironment(const AMapLinkNode: PXMLMapLinkNode; const AMapList: TList<TXMLMapInfoNode>): Boolean;
   var
     FFromMap  : TEnvironment;
     FToMap    : TEnvironment;
     FGateInfo : PGateInfo;
+
+    function GetMapNameFromID(AMapID: Integer): String;
+    var
+      I: Integer;
+    begin
+      for I := 0 to AMapList.Count-1 do
+      begin
+        if AMapID = AMapList.Items[I].RMapID then
+        begin
+          Result := AMapList.Items[I].RMapName;
+          Break;
+        end;
+      end;
+    end;
+
   begin
     Result   := False;
-    FFromMap := GeTEnvironment(AFromMap);
-    FToMap   := GeTEnvironment(AToMap);
+    FFromMap := GetEnvironment(GetMapNameFromID(AMapLinkNode^.RSMapID));
+    FToMap   := GetEnvironment(GetMapNameFromID(AMapLinkNode^.RDMapID));
     if (FFromMap <> nil) and (FToMap <> nil) then
     begin
       New(FGateInfo);
@@ -914,10 +1076,10 @@ uses
       begin
         RGateType   := 0;
         REnterEnvir := FToMap;
-        REnterX     := TX;
-        REnterY     := TY;
+        REnterX     := AMapLinkNode^.RDMapX;
+        REnterY     := AMapLinkNode^.RDMapY;
       end;
-      if ( nil <> FFromMap.AddToMap(FX, FY, OS_GATE_OBJECT, TObject(FGateInfo))) then
+      if ( nil <> FFromMap.AddToMap(AMapLinkNode^.RSMapX, AMapLinkNode^.RSMapY, OS_MAP_LINK_OBJECT, TObject(FGateInfo))) then
       begin
         Result := True;
       end else begin
@@ -928,7 +1090,7 @@ uses
     end;
   end;
 
-  function TEnvirList.GeTEnvironment(AMapName: String): TEnvironment;
+  function TEnvirList.GetEnvironment(AMapName: String): TEnvironment;
   var
     I: Integer;
   begin

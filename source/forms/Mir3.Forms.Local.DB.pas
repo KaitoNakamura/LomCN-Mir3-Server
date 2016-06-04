@@ -7,7 +7,7 @@ uses
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.Win.ADODB, Data.DB,
   Vcl.ExtCtrls,
 
-  Mir3.Server.Constants, Mir3.Server.Functions;
+  Mir3.Server.Constants, Mir3.Server.Functions, Mir3.Server.XMLResourceReader;
 
 type
   TFrmDB = class(TForm)
@@ -22,11 +22,9 @@ type
   public
 
     (* Load Functions *)
-    function LoadMiniMapInfos: Integer;
-    function LoadMapFiles: Integer;
+    function LoadAndSetupMapFiles: Integer;
     function LoadMonAI: Integer;
     function LoadMonGen: Integer;
-    function LoadMapQuest: Integer;
     function LoadMerchants: Integer;
     function LoadAdminFile: Integer;
   end;
@@ -137,44 +135,14 @@ begin
 //  end;
 end;
 
-function TFrmDB.LoadMiniMapInfos: Integer;
-var
-  I           : Integer;
-  FIndex      : Integer;
-  FTempList   : TStringList;
-  FFileName   : String;
-  FTempString : String;
-  FMap        : String;
-  FIndexString: String;
-begin
-  Result := 0;
-  FFileName := GDir_Envir + GFile_MiniMap;
-  if FileExists(FFileName) then
-  begin
-    FTempList := TStringList.Create;
-    FTempList.LoadFromFile(FFileName);
-    for I := 0 to FTempList.Count-1 do
-    begin
-      FTempString := FTempList[I];
-      if FTempString    = ''  then continue;
-      if FTempString[1] = ';' then continue;
-      if FTempString[1] = '[' then continue;
-      FTempString := GetValidStr3(FTempString, FMap        , [' ', #9]);
-      FTempString := GetValidStr3(FTempString, FIndexString, [' ', #9]);
-      FIndex      := StrToIntDef(FIndexString, 0);
-      if FIndex > 0 then
-      begin
-        GMiniMapList.AddObject(FMap, TObject(FIndex));
-      end;
-    end;
-    FTempList.Clear;
-    FreeAndNil(FTempList);
-  end;
-end;
-
-function TFrmDB.LoadMapFiles: Integer;
+function TFrmDB.LoadAndSetupMapFiles: Integer;
 var
   I             : Integer;
+  FXMLMapInfo   : TXMLMapInfoNode;
+  FXMLMapQuest  : TXMLMapQuestNode;
+  FXMLMapLink   : TXMLMapLinkNode;
+
+
   FNeedLevel    : Integer;
   FServerIndex  : Integer;
   FStartX       : Integer;
@@ -194,7 +162,7 @@ var
   FMapAttribute : TMapAttributes;
   FTempEnvir    : TEnvironment;
 
-  function GetMapNpc(AMapQuestFile: String): TNormNpc;
+  function GetMapNpc(AMapQuestNode: PXMLMapQuestNode): TNormNpc;
   var
     FNPC : TMerchant;
   begin
@@ -204,37 +172,93 @@ var
      MapName         := '0';
      CX              := 0;
      CY              := 0;
-     UserName        := AMapQuestFile;
+     UserName        := AMapQuestNode.RQFileName;
      NpcFace         := 0;
      Appearance      := 0;
-     DefineDirectory := GFile_Map_Quest;
+     //DefineDirectory := GFile_Map_Quest;
      Invisible       := True;
-     UseMapFileName  := FALSE;
+     UseMapFileName  := False;
     end;
     GUserEngine.NpcList.Add(FNPC);
+
     Result := FNPC;
   end;
+
+//  TXMLMapQuestNode = record
+//    RMapID        : Integer;
+//    RQFlag        : Integer;
+//    RState        : Integer;
+//    RSituation    : String;
+//    RMonID        : Integer;
+//    RItemID       : Integer;
+//    RQFileName    : String;
+//    RHeader       : String;
+//    RGroup        : Boolean;
+//    RVersion      : Integer;
+//  end;
 
   procedure AddMapAttribut(AAttribut: TMapAttribute);
   begin
     FMapAttribute := FMapAttribute + [AAttribut];
   end;
 
-begin
-  FTempCaption := FrmMain.Caption;
-  Result       := -1;
-  FFileName    := GDir_Envir + GFile_Map_Info;
-  if not FileExists(FFileName) then
+  function FindMapQuest(ANode: TXMLMapInfoNode): TXMLMapQuestNode;
+  var
+    X         : Integer;
+    FTempNode : TXMLMapQuestNode;
   begin
-    ServerLogMessage(GFile_Map_Info + ' not found..');
-    exit;
+    with GXMLResourceReader do
+    begin
+      for X := 0 to MapQuestDataList.Count-1 do
+      begin
+        if MapQuestDataList.Items[X].RMapID = ANode.RMapID then
+        begin
+          Result := MapQuestDataList.Items[X];
+          Break;
+        end;
+      end;
+    end;
   end;
+
+begin
+
+  with GXMLResourceReader do
+  begin
+    (* Load basic Map Information *)
+    for I := 0 to MapInfoDataList.Count-1 do
+    begin
+      FXMLMapInfo  := MapInfoDataList.Items[I];
+      FXMLMapQuest := FindMapQuest(FXMLMapInfo);
+
+      //GEnvirnoment.AddEnvironment;
+    end;
+
+    (* Load and Add Map Links *)
+    for I := 0 to MapLinkDataList.Count-1 do
+    begin
+      FXMLMapLink := MapLinkDataList[I];
+      GEnvirnoment.AddMapLinkToEnvironment(@FXMLMapLink, MapInfoDataList);
+    end;
+  end;
+
+  //FXMLMapInfo   : TXMLMapInfoNode;
+  //FXMLMapQuest  : TXMLMapQuestNode;
+
+
+//  FTempCaption := FrmMain.Caption;
+//  Result       := -1;
+//  FFileName    := GDir_Envir + GFile_Map_Info;
+//  if not FileExists(FFileName) then
+//  begin
+//    ServerLogMessage(GFile_Map_Info + ' not found..');
+//    exit;
+//  end;
 
   FMapInfoList := TStringList.Create;
   FMapInfoList.LoadFromFile(FFileName);
   if FMapInfoList.Count < 1 then
   begin
-    FMapInfoList.Free;
+    //FMapInfoList.Free;
     exit;
   end;
 
@@ -332,13 +356,13 @@ begin
             end else break;
           end;
 
-          FTempEnvir := GEnvirnoment.AddEnvironment(UpperCase(FMapName),
-                                                    FMapTitle,
-                                                    FReconnectMap,
-                                                    nil,
-                                                    FServerIndex,
-                                                    FNeedLevel,
-                                                    FMapAttribute);
+//          FTempEnvir := GEnvirnoment.AddEnvironment(UpperCase(FMapName),
+//                                                    FMapTitle,
+//                                                    FReconnectMap,
+//                                                    nil,
+//                                                    FServerIndex,
+//                                                    FNeedLevel,
+//                                                    FMapAttribute);
           if FTempEnvir = nil then
           begin
             Result := -10;
@@ -349,36 +373,6 @@ begin
         FrmMain.Caption := 'Map loading.. ' + IntToStr(I+1) + '/' + IntToStr(FMapInfoList.Count);
         FrmMain.Refresh;
 
-      end;
-    end;
-  end;
-
-  for I := 0 to FMapInfoList.Count-1 do
-  begin
-    FTempString := FMapInfoList[i];
-    if FTempString <> '' then
-    begin
-      if (FTempString[1] = '[') or (FTempString[1] = ';') then continue;
-
-      // Start Map
-      FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', #9]);
-      FMapName    := FTempData;
-      FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', #9]);
-      FStartX     := StrToIntDef(FTempData, 0);
-      FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', #9]);
-      FStartY     := StrToIntDef(FTempData, 0);
-
-      // Enter Map
-      FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', '-', '>',  #9]);
-      FEnterMap   := FTempData;
-      FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', #9]);
-      FEnterX     := StrToIntDef(FTempData, 0);
-      FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', ';', #9]);
-      FEnterY     := StrToIntDef(FTempData, 0);
-
-      if not (GEnvirnoment.AddGateToMap(UpperCase(FMapName), FStartX, FStartY, FEnterMap, FEnterX, FEnterY))then
-      begin
-        ServerLogMessage('Error Add Map Gate :[' + IntToStr(I+1)+']' + FMapInfoList[I]);
       end;
     end;
   end;
@@ -406,7 +400,7 @@ var
   FZenList     : TStringList;
   FZenInfo     : PZenInfo;
 begin
-  FFileNameGen := GDir_Envir + GFile_Mon_Gen;
+  //FFileNameGen := GDir_Envir + GFile_Mon_Gen;
   if FileExists(FFileNameGen) then
   begin
     FMonGenList := TStringList.Create;
@@ -491,7 +485,7 @@ begin
           FreeAndNil(FZenList);
         end;
       end else begin
-        FrmMain.InfoWindow.Lines.Add('[MonGen] File : ' + FTempString + ' not found..');
+        FrmMain.lbServerMessage.Items.Add('[MonGen] File : ' + FTempString + ' not found..');
       end;
     end;
     if Assigned(FZenList) then
@@ -503,12 +497,6 @@ begin
   end else begin
     Result := -1;
   end;
-end;
-
-function TFrmDB.LoadMapQuest: Integer;
-begin
-
-  Result := 1;
 end;
 
 function TFrmDB.LoadMerchants: Integer;
@@ -579,7 +567,7 @@ var
   FAdminList : TStringList;
 begin
   Result    := 0;
-  FFileName := GDir_Envir + GFile_AdminList;
+  //FFileName := GDir_Envir + GFile_AdminList;
   GUserEngine.AdminList.Clear;
   if FileExists(FFileName) then
   begin

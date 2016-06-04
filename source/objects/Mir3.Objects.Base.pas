@@ -54,9 +54,14 @@ type
     FNextHitTime        : Integer;
     FTame               : Integer;
     FBodyLuckLevel      : Integer;
-    FRunTime            : Integer;
     FLuck               : Integer;
+    FRunNextTick        : Integer;
+    FRefObjCount        : Integer;
     FGhostTime          : Cardinal;
+    FSearchTime         : Cardinal;
+    FRunTime            : Cardinal;
+    FSearchRate         : Cardinal;
+    FPoisonTime         : Cardinal;
     FGold               : Int64;
     FGhost              : Boolean;
     FDeath              : Boolean;
@@ -90,13 +95,18 @@ type
     procedure SetAbility(AValue: TAbility);
     procedure SetWAbility(AValue: TAbility);
     function Appear: Boolean;
+    procedure Alive;
     procedure AddBodyLuck(AValue: Real);
     function GetCharStatus: Integer;
+    procedure SearchViewRange;
+  public
+    procedure RunMessage(AMessage: TMessageInfo); dynamic;
+    procedure RunCreature; dynamic;
   public
     procedure SendFastMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String);
     procedure SendMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String);
     procedure SendDelayMsg(ASender: TCreature; AIdent, WParam: Word; LParam1, LParam2, LParam3: Longint; AMessage: String; ADelay: Integer{ms});
-    procedure SendRefMsg(AMessage, WParam: Word; LParam1, LParam2, LParam3: Longint; AStringValue: String);
+    procedure SendRefMsg(AMessage, WParam: Word; LParam1, LParam2, LParam3: Integer; AStringValue: String);
   public
     procedure Say(ASayMessage: String);
     procedure SysMsg(ASysMessage: String; AMode: Integer);
@@ -122,6 +132,9 @@ type
     property ViewFixedHide  : Boolean  read FViewFixedHide   write FViewFixedHide;
     property ErrorOnInit    : Boolean  read FErrorOnInit     write FErrorOnInit;
     property GhostTime      : Cardinal read FGhostTime       write FGhostTime;
+    property SearchTime     : Cardinal read FSearchTime      write FSearchTime;
+    property RunTime        : Cardinal read FRunTime         write FRunTime;
+    property SearchRate     : Cardinal read FSearchRate      write FSearchRate;
     property Gold           : Int64    read FGold            write FGold;
     property Direction      : Byte     read FDirection       write FDirection;
     property Gender         : Byte     read FGender          write FGender;
@@ -160,8 +173,9 @@ type
     property SizeRate       : Integer  read FSizeRate        write FSizeRate;
     property AntiStop       : Integer  read FAntiStop        write FAntiStop;
     property BodyLuckLevel  : Integer  read FBodyLuckLevel   write FBodyLuckLevel;
-    property RunTime        : Integer  read FRunTime         write FRunTime;
     property Luck           : Integer  read FLuck            write FLuck;
+    property RunNextTick    : Integer  read FRunNextTick     write FRunNextTick;
+    property RefObjCount    : Integer  read FRefObjCount     write FRefObjCount;
     property BodyLuck       : Real     read FBodyLuck        write FBodyLuck;
     property ItemList       : TList    read FItemList        write FItemList;
     property DealList       : TList    read FDealList        write FDealList;
@@ -178,6 +192,9 @@ type
   public
     constructor Create;
     destructor Destroy; override;
+  public
+    procedure RunMessage(AMessage: TMessageInfo); override;
+    procedure RunCreature; override;
   public
 
   end;
@@ -255,6 +272,8 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
     FBodyLuck          := 0;
     FLuck              := 0;
     FViewRange         := 0;
+    FGhostTime         := 0;
+    FPoisonTime        := GetTickCount;
     FRaceServer        := RACE_ANIMAL;
     FItemList          := TList.Create;
     FDealList          := TList.Create;
@@ -334,7 +353,7 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
     begin
       if Appear then
       begin
-         ErrorOnInit := False;
+        ErrorOnInit := False;
       end;
     end;
     CharStatus := GetCharStatus;
@@ -416,6 +435,11 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
       SendRefMsg(RM_TURN, Direction, CX, CY, 0, '');
   end;
 
+  procedure TCreature.Alive;
+  begin
+    SendRefMsg(RM_ALIVE, Direction, CX, CY, 0, '');
+  end;
+
   procedure TCreature.AddBodyLuck(AValue: Real);
   var
     I : Integer;
@@ -441,6 +465,78 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
         C := LongWord(C) or ($80000000 shr I);
     end;
     Result := C or (CharStatusEx and $0000FFFF);
+  end;
+
+  procedure TCreature.SearchViewRange;
+  begin
+
+  end;
+
+  procedure TCreature.RunMessage(AMessage: TMessageInfo);
+  begin
+
+  end;
+
+  procedure TCreature.RunCreature;
+  begin
+    {$REGION ' - TCreature RunCreature 0'}
+    try
+
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 0');
+    end;
+    {$ENDREGION}
+    {$REGION ' - TCreature RunCreature 1'}
+    try
+
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 1');
+    end;
+    {$ENDREGION}
+    {$REGION ' - TCreature RunCreature 2'}
+    try
+
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 2');
+    end;
+    {$ENDREGION}
+    {$REGION ' - TCreature RunCreature 3'}
+    try
+
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 3');
+    end;
+    {$ENDREGION}
+    {$REGION ' - TCreature RunCreature 4'}
+    try
+
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 4');
+    end;
+    {$ENDREGION}
+    {$REGION ' - TCreature RunCreature 5'}
+    try
+
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 5');
+    end;
+    {$ENDREGION}
+    {$REGION ' - TCreature RunCreature 6'}
+    try
+      if GetTickCount - FPoisonTime > 2500 then
+      begin
+        FPoisonTime := GetTickCount;
+        if FAnimal then
+        begin
+
+        end;
+
+
+      end;
+    except
+    	ServerLogMessage('[Exception] TCreature.RunCreature 6');
+    end;
+    {$ENDREGION}
   end;
 
   procedure TCreature.Say(ASayMessage: String);
@@ -543,7 +639,7 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
     end;
   end;
 
-  procedure TCreature.SendRefMsg(AMessage, WParam: Word; LParam1, LParam2, LParam3: Longint; AStringValue: String);
+  procedure TCreature.SendRefMsg(AMessage, WParam: Word; LParam1, LParam2, LParam3: Integer; AStringValue: String);
   begin
     if SuperviserMode or HideMode then
     begin
@@ -622,6 +718,15 @@ uses Mir3.Forms.Main.System, Mir3.Server.Environment, WinAPI.Windows;
 {$ENDREGION}
 
 {$REGION ' - TAnimal Public Function '}
+  procedure TAnimal.RunMessage(AMessage: TMessageInfo);
+  begin
+
+  end;
+
+  procedure TAnimal.RunCreature;
+  begin
+
+  end;
 
 {$ENDREGION}
 

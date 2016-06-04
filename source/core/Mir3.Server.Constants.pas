@@ -79,6 +79,7 @@ const
   RM_SYS_MSG_REMARK                 = 10107;
   RM_SYS_MSG_PINK                   = 10108;
   RM_SYS_MSG_GREEN                  = 10109;
+  RM_ALIVE                          = 10153;
   RM_MAKEPOISON                     = 10300;
   RM_CHANGEGUILDNAME                = 10301;
   RM_SUBABILITY                     = 10302;
@@ -429,7 +430,7 @@ const
   OS_MOVING_OBJECT                  = 1;
   OS_ITEM_OBJECT                    = 2;
   OS_EVENT_OBJECT                   = 3;
-  OS_GATE_OBJECT                    = 4;
+  OS_MAP_LINK_OBJECT                = 4;
   OS_SWITCH_OBJECT                  = 5;
   OS_MAP_EVENT                      = 6;
   OS_DROP_ITEM                      = 7;
