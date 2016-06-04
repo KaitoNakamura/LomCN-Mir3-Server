@@ -1,0 +1,24 @@
+; script txt            map cords              npc name              npc wil number
+; PotShops
+04Potion_BanYaDo    12      168   237   -Potion Merchant-_Norman    0     1
+04Potion_Bichon      0      189   255   -Potion Merchant-_David     0     1
+04Potion_BichonSung 10      NEED CORDS  -Potion Merchant-_Dr. Kim   0     1
+04Potion_DoKwan     11_003   24    22   -Potion Merchant-_Adin      0     1
+04Potion_HalfNight   2       143  172   -Potion Merchant-_Kacy      0     1
+04Potion_Numa        4       169  126   -Potion Merchant-_Imari     0     1 
+04Potion_Sabuk       3       207   92   -Potion Merchant-_Perry     0     1
+04Potion_SabukWar    3       103  294   -Potion Merchant-_Tanner    0     1
+04Potion_SabukWar    3       148   52   -Potion Merchant-_Laisha    0     1
+04Potion_SabukWar    3       272  297   -Potion Merchant-_Samantha  0     1
+04Potion_Samak       5       242  144   -Potion Merchant-_Tasha     0     1
+04Potion_Silnak      1       180  216   -Potion Merchant-_Haylee    0     1
+04Potion_SinGiSun    D1403    66   53   -Potion Merchant-_Dalton    0     1
+04Potion_snow        8        208  75   -Potion Merchant-_Dr. Park  0     1
+04Potion_snowfield   D005    NEED CORDS -Potion Merchant-_Malcolm   0     1
+04Potion_BanYaDo     D2503   NEED CORDS  -Potion Merchant-_Gail      0     1
+
+;Books
+05Book_Bichon         0    170   246      -Bookstore-_Isaac            0       2 
+05Book_BichonSung     10    NEED CORDS    -Bookstore Clerk-_Tim        0       2
+05Book_HalfNight      2    154   165      -Bookstore-_Henry            0       2
+05Book_Silnak         1    172   167      -Bookstore-_Gresham          0       2

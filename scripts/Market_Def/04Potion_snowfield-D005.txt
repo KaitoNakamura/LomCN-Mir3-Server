@@ -1,0 +1,37 @@
+[@Main]
+#SAY
+Welcome to my drug stall\
+How may i help you?\
+Buy: <Potion/@Buy>\
+Sell: <Potion/@Sell>\
+<Leave/@Exit>\
+
+
+
+[@Buy]
+#SAY
+Please select what potion you want to buy.\
+
+<Leave/@Exit>\
+
+
+[@Sell]
+#SAY
+What potion would you like to sell ?\
+
+
+<Leave/@Exit>\
+
+
+[GOODS]
+HealingPotion
+HealingPotion(II)
+HealingPotion(III)
+ManaPotion
+ManaPotion(II)
+ManaPotion(III)
+ElixirOfDestruction
+ElixirOfNature
+ElixirOfSpirit
+ElixirOfLife
+ElixirOfMana
