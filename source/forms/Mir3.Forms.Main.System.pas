@@ -5,39 +5,54 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.Buttons, Vcl.StdCtrls, Vcl.ExtCtrls,
-  IdBaseComponent, IdComponent, IdUDPBase, IdUDPClient, System.Win.ScktComp,
-  System.IniFiles, System.Generics.Collections, System.UITypes,
+  IdBaseComponent, IdComponent, IdUDPBase, IdUDPClient, System.Win.ScktComp, Vcl.ComCtrls,
+  System.IniFiles, System.Generics.Collections, System.UITypes, System.SyncObjs,
 
   Mir3.Server.Core, Mir3.Forms.IDServer.Client, Mir3.Server.RunSocket,
   Mir3.Server.FrontEngine, Mir3.Server.UserEngine, Mir3.Server.Environment,
   Mir3.Server.UserManagerEngine, Mir3.Server.ItemUnit, Mir3.Forms.Inter.Message.Client,
-  Mir3.Server.XMLResourceReader;
+  Mir3.Server.XMLResourceReader, Mir3.Server.Castle, Mir3.Server.Group;
 
 type
   TFrmMain = class(TForm)
-    InfoWindow: TMemo;
-    Panel1: TPanel;
-    Panel2: TPanel;
-    Panel3: TPanel;
-    LbServerVersion: TLabel;
-    SpeedButton1: TSpeedButton;
-    LbRunTime: TLabel;
-    LbUserCount: TLabel;
-    Label1: TLabel;
-    Label2: TLabel;
-    LbTimeCount: TLabel;
-    Label4: TLabel;
-    Label5: TLabel;
-    Label7: TLabel;
     Timer1: TTimer;
     RunTimer: TTimer;
-    Label3: TLabel;
     ConnectTimer: TTimer;
     StartTimer: TTimer;
     CloseTimer: TTimer;
     LogUdp: TIdUDPClient;
     GateSocket: TServerSocket;
     DBSocket: TClientSocket;
+    PageControl1: TPageControl;
+    tsMainView: TTabSheet;
+    tsFastTools: TTabSheet;
+    lbServerMessage: TListBox;
+    stbServerInfo: TStatusBar;
+    GroupBox1: TGroupBox;
+    laServerRuntimeInfo: TLabel;
+    laServerModeInfo: TLabel;
+    laServerRuntimeValue: TLabel;
+    laServerModeValue: TLabel;
+    GroupBox2: TGroupBox;
+    laHumanCountInfo: TLabel;
+    laMonsterCountInfo: TLabel;
+    laHumanCountValue: TLabel;
+    laMonsterCountValue: TLabel;
+    GroupBox3: TGroupBox;
+    laRunTimeInfo: TLabel;
+    laSocketTimeInfo: TLabel;
+    laRunTimeValue: TLabel;
+    laSocketTimeValue: TLabel;
+    laUserEngineTimeInfo: TLabel;
+    laUserEngineTimeValue: TLabel;
+    laHumanTimeInfo: TLabel;
+    laHumanTimeValue: TLabel;
+    laMonsterTimeInfo: TLabel;
+    laMonsterTimeValue: TLabel;
+    laHumanRotateTimeInfo: TLabel;
+    laHumanRotateTimeValue: TLabel;
+    Label1: TLabel;
+    laMonsterProcessValue: TLabel;
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormDestroy(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -61,8 +76,7 @@ type
     procedure GateSocketClientRead(Sender: TObject; Socket: TCustomWinSocket);
     procedure GateSocketClientError(Sender: TObject; Socket: TCustomWinSocket;
       ErrorEvent: TErrorEvent; var ErrorCode: Integer);
-  private
-    FXMLReader : TXMLResourceReader;
+    procedure lbServerMessageClick(Sender: TObject);
   private
     procedure MakeStoneMines;
   public
@@ -77,6 +91,8 @@ var
   GEnvirnoment   : TEnvirList;
   GFrontEngine   : TFrontEngine;
   GUserMgrEngine : TUserMgrEngine;
+  GCastleManager : TCastleManager;
+  GGroupManager  : TGroupManager;
 
 implementation
 
@@ -97,14 +113,15 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
     GFrontEngine   := TFrontEngine.Create;        // Player Start / Close etc. Processing
     GUserEngine    := TUserEngine.Create;         // Handle the Game things
     GUserMgrEngine := TUserMgrEngine.Create;      //
-    FXMLReader     := TXMLResourceReader.Create;  // Mir3Rex.xml Reader
+    GCastleManager := TCastleManager.Create;
+    GGroupManager  := TGroupManager.Create;
 
     (* Setup Ini Init *)
 
     {$REGION ' - INI Loading... '}
 
-    InfoWindow.Lines.Add ('ready to load ini file..');
-    FSetupFileName := ExtractFilePath(ParamStr(0)) + '\Setup\Setup.ini';
+    lbServerMessage.Items.Add ('ready to load ini file..');
+    FSetupFileName := ExtractFilePath(ParamStr(0)) + 'Setup\Setup.ini';
     if FileExists(FSetupFileName) then
     begin
       FIniFile := TIniFile.Create(FSetupFileName);
@@ -164,7 +181,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
           GDir_Map          := ReadString('Share' , 'MapDir'      , '.\Map\');
           GBlanceLogDir     := ReadString('Share' , 'BlanceLogDir', '.\Share\');
 
-          InfoWindow.Lines.Add ('Setup.ini loaded..');
+          lbServerMessage.Items.Add ('Setup.ini loaded..');
         end;
       end;
       FIniFile.Free;
@@ -172,7 +189,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
 
     (* EventSetup Ini Init *)
 
-    FSetupFileName := ExtractFilePath(ParamStr(0)) + '\Setup\EventSetup.ini';
+    FSetupFileName := ExtractFilePath(ParamStr(0)) + 'Setup\EventSetup.ini';
     if FileExists(FSetupFileName) then
     begin
       FIniFile := TIniFile.Create(FSetupFileName);
@@ -209,40 +226,48 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
           TrialLevel      := ReadInteger('EVENT', 'TrialLevel', 1);
           ServerUserLimit := ReadInteger('EVENT', 'ServerUserLimit', 1);
         end;
-        InfoWindow.Lines.Add ('EventSetup.ini loaded..');
+        lbServerMessage.Items.Add ('EventSetup.ini loaded..');
       end;
       FIniFile.Free;
     end else ShowMessage('Setup\EventSetup.ini not found. fatal error..');
 
-    (* TestMode Ini Init *)
+    (* ServerMode Ini Init *)
 
-    FSetupFileName := ExtractFilePath(ParamStr(0)) + '\Setup\TestMode.ini';
+    FSetupFileName := ExtractFilePath(ParamStr(0)) + 'Setup\ServerMode.ini';
     if FileExists(FSetupFileName) then
     begin
       FIniFile := TIniFile.Create(FSetupFileName);
       if FIniFile <> nil then
       begin
-        with FIniFile, GTestMode do
+        with FIniFile, GServerMode do
         begin
           (* Mode *)
-          TestServer := Boolean(ReadInteger('MODE', 'TestServer', 0));
-          FreeMode   := Boolean(ReadInteger('MODE', 'FreeMode'  , 0));
+          case ReadInteger('MODE', 'ServerMode', 0) of
+            0 : RServerMode := smTestMode;
+            1 : RServerMode := smPublicMode;
+            2 : RServerMode := smServiceMode;
+          end;
         end;
-        InfoWindow.Lines.Add ('TestMode.ini loaded..');
+        lbServerMessage.Items.Add ('ServerMode.ini loaded..');
       end;
       FIniFile.Free;
-    end else ShowMessage('Setup\TestMode.ini not found. fatal error..');
+    end else ShowMessage('Setup\ServerMode.ini not found. fatal error..');
 
     {$ENDREGION}
 
+    stbServerInfo.Panels.Items[0].Text := GServerVersion;
+    Caption                   := GServerName + '['+'] - ( ' + DateToStr(Date) + ' - ' + TimeToStr(Time) + ' )';
 
-    Caption                 := GServerName + '['+'] - ( ' + DateToStr(Date) + ' - ' + TimeToStr(Time) + ' )';
-    LbServerVersion.Caption := GServerVersion;
+    case GServerMode.RServerMode of
+      smTestMode    : laServerModeValue.Caption := 'Offline - [TestMode]';
+      smPublicMode  : laServerModeValue.Caption := 'Offline - [PublicMode]';
+      smServiceMode : laServerModeValue.Caption := 'Offline - [ServiceMode]';
+    end;
 
-    ConnectTimer.Enabled    := True;
-    GServerRunTime          := GetTickCount;
-    StartTimer.Enabled      := True;
-    Timer1.Enabled          := True;
+    ConnectTimer.Enabled      := True;
+    GServerRunTime            := GetTickCount;
+    StartTimer.Enabled        := True;
+    Timer1.Enabled            := True;
   end;
 
   procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
@@ -265,7 +290,8 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
     FreeAndNil(GRunSocket);
     FreeAndNil(GUserEngine);
     FreeAndNil(GEnvirnoment);
-    FreeAndNil(FXMLReader);
+    FreeAndNil(GCastleManager);
+    FreeAndNil(GGroupManager);
   end;
 {$ENDREGION}
 
@@ -308,7 +334,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
   begin
     try
       FErrorMessage := 'DBSocket Error Code = ' + IntToStr(ErrorCode);
-      InfoWindow.Lines.Add(FErrorMessage);
+      lbServerMessage.Items.Add(FErrorMessage);
       ServerLogMessage(FErrorMessage);
       ErrorCode := 0;
       Socket.Close;
@@ -325,25 +351,84 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
 
 {$REGION ' - Timer Section '}
   procedure TFrmMain.Timer1Timer(Sender: TObject);
+  var
+    FFileHandle       : TextFile;
+    FDays             : Extended;
+    FTime, I          : Integer;
+    FHour, FMin, FSec : Word;
   begin
     try
+      try
+        GCS_TimerLock.Enter;
+        if lbServerMessage.Items.Count > 500 then
+          lbServerMessage.Items.Clear;
 
+        if GServerLogList.Count > 0 then
+        begin
+          try
+            GCS_MessageLock.Enter;
 
+            (* Check if Logfile Exist and or create and Append*)
+            if not FileExists(GLogFile) then
+            begin
+              AssignFile(FFileHandle, GLogFile);
+              Rewrite(FFileHandle);
+            end else begin
+              AssignFile(FFileHandle, GLogFile);
+              Append(FFileHandle);
+            end;
 
-      LbUserCount.Caption := '(' + IntToStr(GUserEngine.MonsterRunCount) + '/' +
-                             IntToStr(GUserEngine.MonsterCount) + ')   ' +
-                             IntToStr(GUserEngine.GetRealUserCount) +
-                             '/' + IntToStr(GUserEngine.GetUserCount) +
-                             '/' + IntToStr(GUserEngine.FreeUserCount);
-      Label1.Caption      := 'Run' + IntToStr(GCurRunCount)    + '/' + IntToStr(GMinRunCount)    + ' ' +
-                             'Soc' + IntToStr(GCurSocketTime)  + '/' + IntToStr(GMaxSocketTime)  + ' ' +
-                             'Usr' + IntToStr(GCurUserEngTime) + '/' + IntToStr(GMaxUserEngTime);
-      Label2.Caption      := 'Hum' + IntToStr(GCurHumenTime)   + '/' + IntToStr(GMaxHumenTime)   + ' ' +
-                             'Mon' + IntToStr(GCurMonsterTime) + '/' + IntToStr(GMaxMonsterTime) + ' ' +
-                             'UsrRot' + IntToStr(GCurHumRotateTime) + '/' + IntToStr(GMaxHumRotateTime) +
-                             '(' + IntToStr(GHumanRotateCount) + ')';
+            (* Add to Log File *)
+            for I := 0 to GServerLogList.Count-1 do
+            begin
+              lbServerMessage.Items.Add(GServerLogList[I]);
+              WriteLn(FFileHandle, GServerLogList[I]);
+            end;
+            GServerLogList.Clear;
+            CloseFile(FFileHandle);
 
-      Label5.Caption      := GLatestGenMessage + ' - ' + GLatestMonMessage + '    ';
+          finally
+            GCS_MessageLock.Leave;
+          end;
+        end;
+
+        (* User Info Log / UDP Message *)
+
+        (* Con Log *)
+
+        (* Chat Log *)
+
+      finally
+        GCS_TimerLock.Leave;
+      end;
+
+      FTime := (GetTickCount - GServerRunTime) div 1000;
+      FHour :=  FTime div 3600;
+      FMin  := (FTime mod 3600) div 60;
+      FSec  :=  FTime mod 60;
+      FDays := GetTickCount / (1000 * 60 * 60 * 24);
+
+      if FDays >= 36 then
+        laServerRuntimeValue.Font.Color := clRed
+      else laServerRuntimeValue.Font.Color := clBlack;
+
+      laServerRuntimeValue.Caption    := FormatFloat('##0', FDays) + ':' + IntToStr(FHour) + ':' + IntToStr(FMin) + ':' + IntToStr(FSec);
+      (* Human *)
+      laHumanCountValue.Caption       := '(All:' +IntToStr(GUserEngine.GetUserCount)    +') - ' +
+                                         '(Real:'+IntToStr(GUserEngine.GetRealUserCount)+') - ' +
+                                         '(Free:'+IntToStr(GUserEngine.FreeUserCount)   +')';
+      (* Monster *)
+      laMonsterCountValue.Caption     := '(All:' +IntToStr(GUserEngine.MonsterCount)    +') - ' +
+                                         '(Run:' +IntToStr(GUserEngine.MonsterRunCount) +')';
+      (* Counter / Timer *)
+      laRunTimeValue.Caption          := '( ' + IntToStr(GCurRunCount)      + ' / ' + IntToStr(GMinRunCount)      + ' )';
+      laSocketTimeValue.Caption       := '( ' + IntToStr(GCurSocketTime)    + ' / ' + IntToStr(GMaxSocketTime)    + ' )';
+      laUserEngineTimeValue.Caption   := '( ' + IntToStr(GCurUserEngTime)   + ' / ' + IntToStr(GMaxUserEngTime)   + ' )';
+      laHumanTimeValue.Caption        := '( ' + IntToStr(GCurHumenTime)     + ' / ' + IntToStr(GMaxHumenTime)     + ' )';
+      laMonsterTimeValue.Caption      := '( ' + IntToStr(GCurMonsterTime)   + ' / ' + IntToStr(GMaxMonsterTime)   + ' )';
+      laHumanRotateTimeValue.Caption  := '( ' + IntToStr(GCurHumRotateTime) + ' / ' + IntToStr(GMaxHumRotateTime) + ' ) - ['+IntToStr(GHumanRotateCount)+']';
+
+      laMonsterProcessValue.Caption   := 'Gen:' + GLatestGenMessage + ' - ' + GLatestMonMessage + ' ';
 
       Inc(GMinRunCount);
     except
@@ -358,7 +443,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
       begin
         GRunSocket.RunRunSocket;
         //FrmIDSoc.DecodeSocStr;
-        //GUserEngine.ExecuteRun;
+        GUserEngine.ExecuteRun;
         //SqlEngine.ExecuteRun;
         //GEventMan.Run;
         if GServerIndex = 0 then
@@ -399,74 +484,96 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
   begin
     StartTimer.Enabled := False;
     try
-      InfoWindow.Lines.Add('loading Mir3Res.xml... (this need some time))');
+      lbServerMessage.Items.Add('loading Mir3Res.xml... (this need some time))');
       Application.ProcessMessages;
-      FXMLReader.ReadXMLResource(ExtractFilePath(ParamStr(0))+GDir_Envir+'Mir3Res.xml');
-      FXMLReader.ParseAllLists;
-      InfoWindow.Lines.Add('Mir3Res.xml information loaded...');
+      GXMLResourceReader.ReadXMLResource(ExtractFilePath(ParamStr(0))+GDir_Envir+'Mir3Res.xml');
+
+      with GXMLResourceReader do
+      begin
+        (* Begin Load Map Things *)
+        LoadMapQuest;
+        LoadMapLink;
+        LoadMapInfo;
+
+        //TODO : Finish the xml changes in FrmDB.LoadAndSetupMapFiles
+        lbServerMessage.Items.Add('add Map Info to Environment...');
+        //FError := FrmDB.LoadAndSetupMapFiles;
+        if FError < 0 then
+        begin             //FError := FrmDB.LoadMiniMapInfos;
+          ServerLogMessage('Read error (Map Files). code=' + IntToStr(FError));
+          lbServerMessage.Items.Add('Read error (Map Files). code=' + IntToStr(FError));
+          lbServerMessage.Items.Add('~~ Server has stopped work!!~~');
+          exit;
+        end else lbServerMessage.Items.Add('Map Environment loaded.');
+
+        (* Begin Load Monster things *)
+        LoadMonAI;
+        LoadMonClass;
+        LoadMonItems;
+        LoadMonster;
+        LoadMonGen;
+        lbServerMessage.Items.Add('add Monster Info to Environment...');
+
+      end;
+
+
+
+      lbServerMessage.Items.Add('Mir3Res.xml information loaded...');
 
       (* Begin Load Mini Map *)
-      InfoWindow.Lines.Add('loading MiniMap.txt...');
-      FError := FrmDB.LoadMiniMapInfos;
-      if FError < 0 then
-      begin
-        ShowMessage('Read error (MiniMap.txt). code=' + IntToStr(FError));
-        close;
-        exit;
-      end else InfoWindow.Lines.Add('MiniMap information loaded.');
+//      lbServerMessage.Items.Add('loading MiniMap.txt...');
+//
+//      if FError < 0 then
+//      begin
+//        ShowMessage('Read error (MiniMap.txt). code=' + IntToStr(FError));
+//        close;
+//        exit;
+//      end else lbServerMessage.Items.Add('MiniMap information loaded.');
 
 
-      (* Begin Load Map Files *)
-      InfoWindow.Lines.Add('loading MapFiles...');
-      FError := FrmDB.LoadMapFiles;
-      if FError < 0 then
-      begin
-        ShowMessage('Read error (Map Files). code=' + IntToStr(FError));
-        close;
-        exit;
-      end else InfoWindow.Lines.Add('Mapfile loaded.');
 
 
-      (* Begin Load Mon AI *)
-      InfoWindow.Lines.Add('loading MonAIs.txt...');
-      FError := FrmDB.LoadMonAI;
-      if FError < 0 then
-      begin
-        ShowMessage('Read error (MonAIs.txt). code=' + IntToStr(FError));
-        close;
-        exit;
-      end else InfoWindow.Lines.Add('MonAIs.txt loaded.');
 
-
-      (* Begin Load Mon Gen *)
-      InfoWindow.Lines.Add ('loading MonGen.txt...');
-      FError := FrmDB.LoadMonGen;
-      if FError < 0 then
-      begin
-        ShowMessage('Read error (MonGen.txt). code=' + IntToStr(FError));
-        close;
-        exit;
-      end else InfoWindow.Lines.Add('MonGen.txt loaded.');
+//      (* Begin Load Mon AI *)
+//      lbServerMessage.Items.Add('loading MonAIs.txt...');
+//      FError := FrmDB.LoadMonAI;
+//      if FError < 0 then
+//      begin
+//        ShowMessage('Read error (MonAIs.txt). code=' + IntToStr(FError));
+//        close;
+//        exit;
+//      end else lbServerMessage.Items.Add('MonAIs.txt loaded.');
+//
+//
+//      (* Begin Load Mon Gen *)
+//      lbServerMessage.Items.Add ('loading MonGen.txt...');
+//      FError := FrmDB.LoadMonGen;
+//      if FError < 0 then
+//      begin
+//        ShowMessage('Read error (MonGen.txt). code=' + IntToStr(FError));
+//        close;
+//        exit;
+//      end else lbServerMessage.Items.Add('MonGen.txt loaded.');
 
 
       (* Begin Load Map Quests *)
-      InfoWindow.Lines.Add ('loading MapQuest.txt...');
-      FError := FrmDB.LoadMapQuest;
-      if FError < 0 then
-      begin
-        ShowMessage ('Read error (MapQuest.txt). code=' + IntToStr(FError));
-        close;
-        exit;
-      end else InfoWindow.Lines.Add('Map Quest information loaded.');
+//      lbServerMessage.Items.Add ('loading MapQuest.txt...');
+//      FError := FrmDB.LoadMapQuest;
+//      if FError < 0 then
+//      begin
+//        ShowMessage ('Read error (MapQuest.txt). code=' + IntToStr(FError));
+//        close;
+//        exit;
+//      end else lbServerMessage.Items.Add('Map Quest information loaded.');
 
 
-      (* Begin Load Admin List *)
-      InfoWindow.Lines.Add ('loading AdminList.txt...');
-      FError := FrmDB.LoadAdminFile;
-      if FError <= 0 then
-      begin
-        InfoWindow.Lines.Add('Error : AdminList loading failure...');
-      end else InfoWindow.Lines.Add('AdminList loaded..');
+//      (* Begin Load Admin List *)
+//      lbServerMessage.Items.Add ('loading AdminList.txt...');
+//      FError := FrmDB.LoadAdminFile;
+//      if FError <= 0 then
+//      begin
+//        lbServerMessage.Items.Add('Error : AdminList loading failure...');
+//      end else lbServerMessage.Items.Add('AdminList loaded..');
 
       if GServerIndex = 0 then
       begin
@@ -475,6 +582,8 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
         FrmMsgClient.Initialize;
       end;
 
+      GCurHumRotateTime := GetTickCount;
+      RunTimer.Enabled  := True;
 
     except
       ServerLogMessage('Start Timer Exception...');
@@ -493,6 +602,11 @@ begin
   //
 end;
 
+procedure TFrmMain.lbServerMessageClick(Sender: TObject);
+begin
+  GServerReady := True;
+end;
+
 procedure TFrmMain.Panel1DblClick(Sender: TObject);
 var
   FIniFile  : TIniFile;
@@ -500,7 +614,7 @@ var
 begin
   if FrmServerValue.Execute then
   begin
-    FFileName := ExtractFilePath(ParamStr(0)) + '\Setup\Setup.ini';
+    FFileName := ExtractFilePath(ParamStr(0)) + 'Setup\Setup.ini';
     FIniFile  := TIniFile.Create (FFileName);
     if FIniFile <> nil then
     begin
@@ -538,13 +652,13 @@ var
 begin
   try
     FrmIDSoc.Initialize;
-    InfoWindow.Lines.Add('IDSoc Initialized..');
+    lbServerMessage.Items.Add('IDSoc Initialized..');
 
     GEnvirnoment.InitEnvironment;
-    InfoWindow.Lines.Add('GEnvirnoment loaded..');
+    lbServerMessage.Items.Add('GEnvirnoment loaded..');
 
     MakeStoneMines;
-    InfoWindow.Lines.Add('MakeStoneMines...');
+    lbServerMessage.Items.Add('MakeStoneMines...');
 
     FError := FrmDB.LoadMerchants;
     if FError < 0 then

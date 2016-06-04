@@ -30,7 +30,11 @@ uses
   Mir3.Server.Core.Share in 'core\Mir3.Server.Core.Share.pas',
   Mir3.Server.Crypto in 'core\Mir3.Server.Crypto.pas',
   Mir3.Server.Protocol in 'core\Mir3.Server.Protocol.pas',
-  Mir3.Server.XMLResourceReader in 'core\Mir3.Server.XMLResourceReader.pas';
+  Mir3.Server.XMLResourceReader in 'core\Mir3.Server.XMLResourceReader.pas',
+  Mir3.Server.Guild in 'core\Mir3.Server.Guild.pas',
+  Mir3.Server.Castle in 'core\Mir3.Server.Castle.pas',
+  Mir3.Server.Group in 'core\Mir3.Server.Group.pas',
+  Mir3.Server.Friend.BlockUser in 'core\Mir3.Server.Friend.BlockUser.pas';
 
 {$R *.res}
 

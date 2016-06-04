@@ -18,10 +18,17 @@ type
     FAdminList          : TStringList;
     FOtherUserNameList  : TStringList;
     FFreeUserCount      : Integer;
+    FMonsterSubCurrent  : Integer;
+    FMonsterCurrent     : Integer;
     FMonsterCount       : Integer;
     FMonsterCurCount    : Integer;
     FMonsterRunCount    : Integer;
     FMonsterCurRunCount : Integer;
+    FGenCurrent         : Integer;
+    FFirstZenTime       : Cardinal;
+    FExecutionTime1     : Cardinal;
+    FExecutionTime2     : Cardinal;
+    FExecutionTime3     : Cardinal;
   public
     constructor Create;
     destructor Destroy; override;
@@ -32,8 +39,12 @@ type
     function GetMonsterRace(AMonsterName: String): Integer;
     function GetRealUserCount: Integer;
     function GetUserCount: Integer;
+    function GetMonsterCount(AZenInfo: PZenInfo): Integer;
+    function RegenMonsters(AZenInfo: PZenInfo; ACount: Integer): Boolean;
     procedure ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
     procedure ProcessUserMessage(AHuman: TUserHuman; ADefMessage: PDefaultMessage; ABody: PChar);
+    procedure ProcessMonsters;
+    procedure ExecuteRun;
     { StdItem function }
     function GetStdItemName(AItemIndex: Integer): String;
     function GetStdItemIndex(AItemName: String): Integer;
@@ -64,7 +75,8 @@ implementation
 uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
      Mir3.Objects.Monster_1, Mir3.Objects.Monster_2, Mir3.Objects.Monster_3,
      Mir3.Objects.Monster_4, Mir3.Objects.Monster_5, Mir3.Objects.Monster_6,
-     Mir3.Objects.Animal, Mir3.Objects.NPC, Mir3.Server.Protocol, Mir3.Server.Crypto;
+     Mir3.Objects.Animal, Mir3.Objects.NPC, Mir3.Server.Protocol, Mir3.Server.Crypto,
+     Mir3.Forms.IDServer.Client, Mir3.Server.Guild;
 
   (* class TUserEngine *)
 
@@ -86,6 +98,11 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
     FMonsterCurCount    := 0;
     FMonsterRunCount    := 0;
     FMonsterCurRunCount := 0;
+    FGenCurrent         := 0;
+    FExecutionTime1     := GetTickCount;
+    FExecutionTime2     := GetTickCount;
+    FExecutionTime3     := GetTickCount;
+    FFirstZenTime       := GetTickCount;
   end;
 
   destructor TUserEngine.Destroy;
@@ -334,6 +351,26 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
     Result := RunUserList.Count + OtherUserNameList.Count;
   end;
 
+  function TUserEngine.GetMonsterCount(AZenInfo: PZenInfo): Integer;
+  var
+    I, C : Integer;
+  begin
+    C := 0;
+    for I := 0 to AZenInfo.RMons.Count-1 do
+    begin
+      if not TCreature(AZenInfo.RMons[I]).Death and not TCreature(AZenInfo.RMons[I]).Ghost then
+        Inc(C);
+    end;
+    Result := C;
+  end;
+
+  function TUserEngine.RegenMonsters(AZenInfo: PZenInfo; ACount: Integer): Boolean;
+  begin
+    Result := False;
+
+
+  end;
+
   procedure TUserEngine.ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
   var
     I           : Integer;
@@ -528,7 +565,245 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
      end;
   end;
 
+  procedure TUserEngine.ProcessMonsters;
 
+    function GetZenTime(AZenTime: Cardinal): Cardinal;
+    var
+      I : Real;
+    begin
+      if AZenTime < 30 * 60 * 1000 then
+      begin
+        I := (GetUserCount - GUserFull) / GZenFastStep;
+        if I > 0 then
+        begin
+          if I > 6 then
+            I := 6;
+          Result := AZenTime - Round((AZenTime / 10) * I);
+        end else Result := AZenTime;
+      end else Result := AZenTime;
+    end;
+
+  var
+    I, C        : Integer;
+    FZenCount   : Integer;
+    FCount      : Integer;
+    FStart      : Cardinal;
+    FCreature   : TCreature;
+    FZenInfo    : PZenInfo;
+    FLack       : Boolean;
+    FCheckGen   : Boolean;
+  begin
+    FStart := GetTickCount;
+    try
+      FLack  := False;
+      FCount := GetCurrentTime;
+      FZenInfo := nil;
+
+      if GetTickCount - FFirstZenTime > 200 then
+      begin
+        FFirstZenTime := GetTickCount;
+        if FGenCurrent < FMonsterList.Count then
+          FZenInfo := FMonsterList[FGenCurrent];
+
+        if FGenCurrent < FMonsterList.Count-1 then
+          Inc(FGenCurrent)
+        else FGenCurrent := 0;
+
+        if FZenInfo <> nil then
+        begin
+          if (FZenInfo.RMonName <> '') then
+          begin
+            if (FZenInfo.RStartTime = 0) or (GetTickCount - FZenInfo.RStartTime > GetZenTime(FZenInfo.RMonZenTime)) then
+            begin
+              FZenCount := GetMonsterCount(FZenInfo);
+              FCheckGen := True;
+
+              if FZenInfo.RCount > FZenCount then
+                FCheckGen := RegenMonsters(FZenInfo, FZenInfo.RCount - FZenCount);
+
+              if FCheckGen then
+              begin
+                if FZenInfo.RMonZenTime = 180 then
+                begin
+                  if GetTickCount >= 60 * 60 * 1000 then
+                     FZenInfo.RStartTime := GetTickCount - (60 * 60 * 1000) + Longword(Random(120 * 60 * 1000))
+                  else FZenInfo.RStartTime := GetTickCount;
+                end else begin
+                  FZenInfo.RStartTime := GetTickCount;
+                end;
+              end;
+
+            end;
+            GLatestGenMessage := FZenInfo.RMonName + ',' + IntToStr(FGenCurrent) + '/' + IntToStr(FMonsterList.Count);
+          end;
+        end;
+      end;
+
+      FMonsterCurRunCount := 0;
+
+      for I := FMonsterCurrent to FMonsterList.Count-1 do
+      begin
+        FZenInfo := FMonsterList[i];
+
+         if FMonsterSubCurrent < FZenInfo.RMons.Count then
+           C := FMonsterSubCurrent
+         else C := 0;
+
+         FMonsterSubCurrent := 0;
+
+         while True do
+         begin
+           if C >= FZenInfo.RMons.Count then break;
+
+           FCreature := TCreature(FZenInfo.RMons[C]);
+
+           if not FCreature.Ghost then
+           begin
+             if FCount - FCreature.RunTime > FCreature.RunNextTick then
+             begin
+               FCreature.RunTime := FCount;
+               if GetTickCount  > (FCreature.SearchRate + FCreature.SearchTime )then
+               begin
+                 FCreature.SearchTime := GetTickCount;
+                 if(FCreature.RefObjCount > 0) or (FCreature.HideMode) then
+                   FCreature.SearchViewRange
+                 else FCreature.RefObjCount := 0;
+               end;
+
+               try
+                 FCreature.RunCreature;
+                 Inc(FMonsterCurRunCount);
+               except
+                 FZenInfo.RMons.Delete(C);
+                 FCreature := nil;
+               end;
+             end;
+             Inc(FMonsterCurCount);
+           end else begin
+             if( GetTickCount > (5 * 60 * 1000 + FCreature.GhostTime))then
+             begin
+               FZenInfo.RMons.Delete(C);
+               FCreature.Free;
+               FCreature := nil;
+               continue;
+             end;
+           end;
+
+           Inc(C);
+
+           if (FCreature <> nil) and (GetTickCount - FStart > GMonLimit) then
+           begin
+             GLatestMonMessage  := FCreature.UserName + '/' + IntToStr(I) + '/' + IntToStr(C);
+             FLack              := True;
+             FMonsterSubCurrent := C;
+             break;
+           end;
+         end;
+
+         if FLack then break;
+      end;
+
+      if i >= FMonsterList.Count then
+      begin
+        FMonsterCurrent  := 0;
+        FMonsterCount    := FMonsterCurCount;
+        FMonsterCurCount := 0;
+        FMonsterRunCount := (FMonsterRunCount + FMonsterCurRunCount) div 2;
+      end;
+
+      if not FLack then
+        FMonsterCurrent := 0
+      else FMonsterCurrent := I;
+
+    except
+      if FZenInfo <> nil then
+        ServerLogMessage('[UsrEngn] ProcessMonsters : ' + FZenInfo.RMonName + '/' + FZenInfo.RMapName + '/' + IntToStr(FZenInfo.RX) + ',' + IntToStr(FZenInfo.RY) )
+      else ServerLogMessage('[UsrEngn] ProcessMonsters');
+    end;
+
+    GCurMonsterTime := GetTickCount - FStart;
+    if GMaxMonsterTime < GCurMonsterTime then
+    begin
+      GMaxMonsterTime := GCurMonsterTime;
+    end;
+  end;
+
+  procedure TUserEngine.ExecuteRun;
+  var
+    I            : Integer;
+    FTempRunTime : Cardinal;
+  begin
+    FTempRunTime := GetTickCount;
+    try
+      //ProcessUserHumans;
+      ProcessMonsters;
+      //ProcessMerchants;
+      //ProcessNpcs;
+
+//        if GetTickCount - missiontime > 1000 then
+//        begin
+//           missiontime := GetTickCount;
+//
+//           //ProcessMissions;
+//
+//           //CheckServerWaitTimeOut;
+//
+//           //CheckHolySeizeValid;
+//
+//        end;//if
+
+        if GetTickCount - FExecutionTime1 > 10 * 60 * 1000 then
+        begin
+          FExecutionTime1 := GetTickCount;
+//          NoticeMan.RefreshNoticeList;
+//          MainOutMessage (TimeToStr(Time) + ' User = ' + IntToStr(GetUserCount));
+//          UserCastle.SaveAll;
+//
+//          Inc(gaDecoItemCount);
+//          if gaDecoItemCount >= 6 then gaDecoItemCount := 0;
+//          if gaDecoItemCount = 0 then
+//          begin
+//            GuildAgitMan.DecreaseDecoMonDurability;
+//          end;
+        end;//if
+
+        if GetTickCount - FExecutionTime2 > 10 * 1000 then
+        begin
+          FExecutionTime2 := GetTickCount;
+          FrmIDSoc.SendUserCount(GetRealUserCount);
+//          GuildMan.CheckGuildWarTimeOut;
+//          UserCastle.Run;
+//
+//          if GetTickCount - FExecutionTime3 > 60 * 1000 then
+//          begin
+//            FExecutionTime3 := GetTickCount;
+//            Inc(gaCount);
+//            if gaCount >= 10 then gaCount := 0;
+//            if GuildAgitMan.CheckGuildAgitTimeOut(gaCount) then
+//            begin
+//              GuildAgitBoardMan.LoadAllGaBoardList('');
+//            end;
+//          end;
+//
+//          for i:=ShutUpList.Count-1 downto 0 do
+//          begin
+//            if GetCurrentTime > integer(FShutUpList.Objects[I]) then
+//              FShutUpList.Delete(I);
+//          end;
+        end;//if
+
+         // gFireDragon.Run;
+
+    except
+      ServerLogMessage('[UsrEngn] Raise Exception..');
+    end;
+
+    GCurUserEngTime := GetTickCount - FTempRunTime;
+    if GMaxUserEngTime < GCurUserEngTime then
+    begin
+      GMaxUserEngTime := GCurUserEngTime;
+    end;
+  end;
 
   { StdItem function }
 
