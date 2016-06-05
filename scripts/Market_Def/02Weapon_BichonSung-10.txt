@@ -1,0 +1,39 @@
+[@Main]
+#SAY
+Welcome to my shop.\
+I Buy and Sell Weapons, How may I help you?\
+Buy: <Weapons/@Buy>\
+Sell: <Weapons/@Sell>\
+
+<Leave/@Exit>\
+
+
+
+
+[@Buy]
+#SAY
+Please select what Weapon you wish to buy.\
+
+<Leave/@Exit>\
+
+
+
+[@Sell]
+#SAY
+Please select what you wish to sell.\
+
+<Leave/@Exit>\
+
+
+
+
+
+[GOODS]
+WoodSword
+IronSword
+BronzeSword
+BronzeAxe
+Dagger
+Trident
+SteelSword
+Apprentice'sSword
