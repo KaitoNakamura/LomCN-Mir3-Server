@@ -80,7 +80,7 @@ type
     REnterLevel   : Integer;
     REnterQuest   : Integer;
     REnterItem    : Integer;
-    RNoReconnect  : String;
+    RNoReconnect  : Integer;
     RMiniMap      : Integer;
     RControl      : String;
     RVersion      : Integer;
@@ -701,6 +701,9 @@ type
     procedure LoadSaleItems(var ADataList: TList<TXMLSaleItemsNode>); overload;
     procedure LoadAdminList; overload;
     procedure LoadAdminList(var ADataList: TList<TXMLAdminListNode>); overload;
+    function GetMonsterNameByID(const AIndex: Integer): String;
+    function GetStdItemNameByID(const AIndex: Integer): String;
+    function GetMapNameByID(const AIndex: Integer): String;
     {$ENDREGION}
   public
     {$REGION ' - TXMLResourceReader List Propertys '}
@@ -1287,7 +1290,7 @@ uses Mir3.Forms.Main.System;
           if AXMLNode.attributes.item[I].nodeName = 'ENTERITEM' then
             FNode.REnterItem    := StrToIntDef(AXMLNode.attributes.item[I].nodeValue, 0);
           if AXMLNode.attributes.item[I].nodeName = 'NORECONNECT' then
-            FNode.RNoReconnect  := AXMLNode.attributes.item[I].nodeValue;
+            FNode.RNoReconnect  := StrToIntDef(AXMLNode.attributes.item[I].nodeValue, 0);
           if AXMLNode.attributes.item[I].nodeName = 'MINIMAP' then
             FNode.RMiniMap      := StrToIntDef(AXMLNode.attributes.item[I].nodeValue, 0);
           if AXMLNode.attributes.item[I].nodeName = 'VER' then
@@ -3407,6 +3410,48 @@ uses Mir3.Forms.Main.System;
       end;
     except
       ServerLogMessage('Exception] - XMLResourceReader::LoadAdminList');
+    end;
+  end;
+
+  function TXMLResourceReader.GetMonsterNameByID(const AIndex: Integer): String;
+  var
+    I: Integer;
+  begin
+    for I := 0 to FMonsterDataList.Count-1 do
+    begin
+      if AIndex = FMonsterDataList.Items[I].RMonID then
+      begin
+        Result := FMonsterDataList.Items[I].RName;
+        Break;
+      end;
+    end;
+  end;
+
+  function TXMLResourceReader.GetStdItemNameByID(const AIndex: Integer): String;
+  var
+    I: Integer;
+  begin
+    for I := 0 to FStdItemsDataList.Count-1 do
+    begin
+      if AIndex = FStdItemsDataList.Items[I].RItemID then
+      begin
+        Result := FStdItemsDataList.Items[I].RItemName;
+        Break;
+      end;
+    end;
+  end;
+
+  function TXMLResourceReader.GetMapNameByID(const AIndex: Integer): String;
+  var
+    I: Integer;
+  begin
+    for I := 0 to FMapInfoDataList.Count-1 do
+    begin
+      if AIndex = FMapInfoDataList.Items[I].RMapID then
+      begin
+        Result := FMapInfoDataList.Items[I].RMapName;
+        Break;
+      end;
     end;
   end;
 

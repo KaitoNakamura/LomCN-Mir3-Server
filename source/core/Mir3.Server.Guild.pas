@@ -36,11 +36,16 @@ type
     constructor Create;
     destructor Destroy; override;
   public
+    function IsMember(AMemberName: String): Boolean;
+    function IsAllyGuild(AGuild: TGuild): Boolean;
+    function IsHostileGuild(AGuild: TGuild): Boolean;
+  public
     property GuildName       : String            read FGuildName       write FGuildName;
     property GuildMasterName : String            read FGuildMasterName write FGuildMasterName;
     property NoticeList      : TStringList       read FNoticeList      write FNoticeList;
     property AllyGuilds      : TStringList       read FAllyGuilds      write FAllyGuilds;
     property FightMemberList : TStringList       read FFightMemberList write FFightMemberList;
+    property EnemyGuildList  : TStringList       read FEnemyGuildList  write FEnemyGuildList;
     property MemberList      : TList<PGuildRank> read FMemberList      write FMemberList;
   end;
 
@@ -91,6 +96,49 @@ implementation
 
 
 {$REGION ' - TGuild Public Function '}
+  function TGuild.IsMember(AMemberName: String): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for I := 0 to FMemberList.Count-1 do
+    begin
+//      if FMemberList.Items[I]^.RMemberList.Strings[I] = AMemberName then
+//      begin
+//        //TODO : need to check if it made sende to have a nother list in list...
+//      end;
+    end;
+  end;
+
+  function TGuild.IsAllyGuild(AGuild: TGuild): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for I := 0 to AllyGuilds.Count-1 do
+    begin
+      if AllyGuilds.Objects[i] = AGuild then
+      begin
+        Result := True;
+        exit;
+      end;
+    end;
+  end;
+
+  function TGuild.IsHostileGuild(AGuild: TGuild): Boolean;
+  var
+    I: Integer;
+  begin
+    Result := False;
+    for i:=0 to FEnemyGuildList.Count-1 do
+    begin
+      if PGuildWarInfo(FEnemyGuildList.Objects[I]).RWarGuild = AGuild then
+      begin
+        Result := True;
+        break;
+      end;
+    end;
+  end;
 
 {$ENDREGION}
 

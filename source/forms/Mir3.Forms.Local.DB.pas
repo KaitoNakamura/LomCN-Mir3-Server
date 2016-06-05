@@ -141,85 +141,6 @@ var
   FXMLMapInfo   : TXMLMapInfoNode;
   FXMLMapQuest  : TXMLMapQuestNode;
   FXMLMapLink   : TXMLMapLinkNode;
-
-
-  FNeedLevel    : Integer;
-  FServerIndex  : Integer;
-  FStartX       : Integer;
-  FStartY       : Integer;
-  FEnterX       : Integer;
-  FEnterY       : Integer;
-  FFileName     : String;
-  FTempString   : String;
-  FTempData     : String;
-  FMapName      : String;
-  FEnterMap     : String;
-  FMapTitle     : String;
-  FServerNumber : String;
-  FReconnectMap : String;
-  FTempCaption  : String;
-  FMapInfoList  : TStringList;
-  FMapAttribute : TMapAttributes;
-  FTempEnvir    : TEnvironment;
-
-  function GetMapNpc(AMapQuestNode: PXMLMapQuestNode): TNormNpc;
-  var
-    FNPC : TMerchant;
-  begin
-    FNPC := TMerchant.Create;
-    with FNPC do
-    begin
-     MapName         := '0';
-     CX              := 0;
-     CY              := 0;
-     UserName        := AMapQuestNode.RQFileName;
-     NpcFace         := 0;
-     Appearance      := 0;
-     //DefineDirectory := GFile_Map_Quest;
-     Invisible       := True;
-     UseMapFileName  := False;
-    end;
-    GUserEngine.NpcList.Add(FNPC);
-
-    Result := FNPC;
-  end;
-
-//  TXMLMapQuestNode = record
-//    RMapID        : Integer;
-//    RQFlag        : Integer;
-//    RState        : Integer;
-//    RSituation    : String;
-//    RMonID        : Integer;
-//    RItemID       : Integer;
-//    RQFileName    : String;
-//    RHeader       : String;
-//    RGroup        : Boolean;
-//    RVersion      : Integer;
-//  end;
-
-  procedure AddMapAttribut(AAttribut: TMapAttribute);
-  begin
-    FMapAttribute := FMapAttribute + [AAttribut];
-  end;
-
-  function FindMapQuest(ANode: TXMLMapInfoNode): TXMLMapQuestNode;
-  var
-    X         : Integer;
-    FTempNode : TXMLMapQuestNode;
-  begin
-    with GXMLResourceReader do
-    begin
-      for X := 0 to MapQuestDataList.Count-1 do
-      begin
-        if MapQuestDataList.Items[X].RMapID = ANode.RMapID then
-        begin
-          Result := MapQuestDataList.Items[X];
-          Break;
-        end;
-      end;
-    end;
-  end;
-
 begin
 
   with GXMLResourceReader do
@@ -227,11 +148,17 @@ begin
     (* Load basic Map Information *)
     for I := 0 to MapInfoDataList.Count-1 do
     begin
-      FXMLMapInfo  := MapInfoDataList.Items[I];
-      FXMLMapQuest := FindMapQuest(FXMLMapInfo);
-
-      //GEnvirnoment.AddEnvironment;
+      FXMLMapInfo := MapInfoDataList.Items[I];
+      GEnvirnoment.AddEnvironment(@FXMLMapInfo);
     end;
+    FrmMain.lbServerMessage.Items.Add('Map Info Load done...');
+
+    for I := 0 to MapQuestDataList.Count-1 do
+    begin
+      FXMLMapQuest := MapQuestDataList.Items[I];
+      GEnvirnoment.AddMapQuestToEnvironment(@FXMLMapQuest, MapInfoDataList);
+    end;
+    FrmMain.lbServerMessage.Items.Add('Map Quest Load done...');
 
     (* Load and Add Map Links *)
     for I := 0 to MapLinkDataList.Count-1 do
@@ -239,147 +166,11 @@ begin
       FXMLMapLink := MapLinkDataList[I];
       GEnvirnoment.AddMapLinkToEnvironment(@FXMLMapLink, MapInfoDataList);
     end;
+    FrmMain.lbServerMessage.Items.Add('Map Links Load done...');
+
+    //TODO : Check Reconnect Maps
   end;
 
-  //FXMLMapInfo   : TXMLMapInfoNode;
-  //FXMLMapQuest  : TXMLMapQuestNode;
-
-
-//  FTempCaption := FrmMain.Caption;
-//  Result       := -1;
-//  FFileName    := GDir_Envir + GFile_Map_Info;
-//  if not FileExists(FFileName) then
-//  begin
-//    ServerLogMessage(GFile_Map_Info + ' not found..');
-//    exit;
-//  end;
-
-  FMapInfoList := TStringList.Create;
-  FMapInfoList.LoadFromFile(FFileName);
-  if FMapInfoList.Count < 1 then
-  begin
-    //FMapInfoList.Free;
-    exit;
-  end;
-
-  for I := 0 to FMapInfoList.Count-1 do
-  begin
-    FTempString := FMapInfoList[i];
-    if FTempString <> '' then
-    begin
-      if FTempString[1] = '[' then
-      begin
-        FMapName    := '';
-        FTempString := ArrestString(FTempString, '[', ']', FMapName);
-        FMapTitle   := GetValidStrCap(FMapName, FMapName, [' ', ',', #9]);
-        if FMapTitle <> '' then
-        begin
-          if FMapTitle[1] = '"' then
-            ArrestString(FMapTitle, '"', '"', FMapTitle);
-        end;
-        FServerNumber := Trim(GetValidStr3(FMapTitle, FMapTitle, [' ', ',', #9]));
-        FServerIndex  := StrToIntDef(FServerNumber, 0);
-        if FMapName <> '' then
-        begin
-          FReconnectMap  := '';
-          FNeedLevel     := 1;
-
-          while True do
-          begin
-            if FTempString = '' then break;
-
-            FTempString := GetValidStr3(FTempString, FTempData, [' ', ',', #9]);
-            if FTempData <> '' then
-            begin
-              if CompareText(FTempData, 'SAFE')            = 0 then AddMapAttribut(maSafe);
-              if CompareText(FTempData, 'FIGHT')           = 0 then AddMapAttribut(maFight);
-              if CompareText(FTempData, 'DARK')            = 0 then AddMapAttribut(maDark);
-              if CompareText(FTempData, 'DAY')             = 0 then AddMapAttribut(maDay);
-              if CompareText(FTempData, 'FOG')             = 0 then AddMapAttribut(maFog);
-              if CompareText(FTempData, 'SNOW')            = 0 then AddMapAttribut(maSnow);
-              if CompareText(FTempData, 'ASH')             = 0 then AddMapAttribut(maAsh);
-              if CompareText(FTempData, 'ASHFOG')          = 0 then AddMapAttribut(maAshFog);
-              if CompareText(FTempData, 'SOLO')            = 0 then AddMapAttribut(maSolo);
-              if CompareText(FTempData, 'CLEAN')           = 0 then AddMapAttribut(maClean);
-              if CompareText(FTempData, 'Clear')           = 0 then AddMapAttribut(maClear);
-              if CompareText(FTempData, 'HORSE')           = 0 then AddMapAttribut(maHorse);
-              if CompareText(FTempData, 'MINE')            = 0 then AddMapAttribut(maMine);
-              if CompareText(FTempData, 'NEEDHOLE')        = 0 then AddMapAttribut(maNeedHole);
-              if CompareText(FTempData, 'HIDECHARNAME')    = 0 then AddMapAttribut(maHideCharName);
-              if CompareText(FTempData, 'PKFREE')          = 0 then AddMapAttribut(maPKFree);
-              if CompareText(FTempData, 'TEAMCHAT')        = 0 then AddMapAttribut(maTeamChat);
-              if CompareText(FTempData, 'TEAMFIGHT')       = 0 then AddMapAttribut(maTeamFight);
-              if CompareText(FTempData, 'SNOWFIGHT')       = 0 then AddMapAttribut(maSnowFight);
-              if CompareText(FTempData, 'FIGHTEVENTMAP')   = 0 then AddMapAttribut(maFightEventMap);
-              if CompareText(FTempData, 'ONLY75OVER')      = 0 then AddMapAttribut(maOnly75Over);
-              if CompareText(FTempData, 'NOSPACEMOVE')     = 0 then AddMapAttribut(maNoSpaceMove);
-              if CompareText(FTempData, 'NORANDOMMOVE')    = 0 then AddMapAttribut(maNoRandomMove);
-              if CompareText(FTempData, 'NOSPELLMOVE')     = 0 then AddMapAttribut(maNoSpellMove);
-              if CompareText(FTempData, 'NOITEMMOVE')      = 0 then AddMapAttribut(maNoItemMove);
-              if CompareText(FTempData, 'NOPOSITIONMOVE')  = 0 then AddMapAttribut(maNoPositionMove);
-              if CompareText(FTempData, 'NOCASTLEMOVE')    = 0 then AddMapAttribut(maNoCastleMove);
-              if CompareText(FTempData, 'NOSCRIPTMOVE')    = 0 then AddMapAttribut(maNoScriptMove);
-              if CompareText(FTempData, 'NOFLY')           = 0 then AddMapAttribut(maNoFly);
-              if CompareText(FTempData, 'NORFLY')          = 0 then AddMapAttribut(maNoRFly);
-              if CompareText(FTempData, 'NOFREEFLY')       = 0 then AddMapAttribut(maNoFreeFly);
-              if CompareText(FTempData, 'NOUNIQUEITEM')    = 0 then AddMapAttribut(maNoUniqueItem);
-              if CompareText(FTempData, 'NODRUG')          = 0 then AddMapAttribut(maNoDrug);
-              if CompareText(FTempData, 'NORECALL')        = 0 then AddMapAttribut(moNoRecall);
-              if CompareText(FTempData, 'NOSLAVE')         = 0 then AddMapAttribut(maNoSlave);
-              if CompareText(FTempData, 'NOPOISON')        = 0 then AddMapAttribut(maNoPoison);
-              if CompareText(FTempData, 'NOGUILD')         = 0 then AddMapAttribut(maNoGuild);
-              if CompareText(FTempData, 'NOGROUP')         = 0 then AddMapAttribut(maNoGroup);
-              if CompareText(FTempData, 'NOSPELL')         = 0 then AddMapAttribut(maNoSpell);
-              if CompareText(FTempData, 'NOGUILDWAR')      = 0 then AddMapAttribut(maNoGuildWar);
-              if CompareText(FTempData, 'NOARMOR')         = 0 then AddMapAttribut(maNoArmor);
-              if CompareText(FTempData, 'NOCHAT')          = 0 then AddMapAttribut(maNoChat);
-              if CompareText(FTempData, 'NOLUCK')          = 0 then AddMapAttribut(maNoLuck);
-              if CompareText(FTempData, 'NORECOVERY')      = 0 then AddMapAttribut(maNoRecovery);
-              if CompareText(FTempData, 'NOREVIVAL')       = 0 then AddMapAttribut(maNoRevival);
-              if CompareText(FTempData, 'NONECKLACEMOVE')  = 0 then AddMapAttribut(maNoNecklaceMove);
-              if CompareText(FTempData, 'NOPROTECTRING')   = 0 then AddMapAttribut(maNoProtectRing);
-
-              if CompareLStr(FTempData, 'NORECONNECT', 8) then
-              begin
-                AddMapAttribut(maNoReconnect);
-                ArrestString(FTempData, '(', ')', FReconnectMap);
-                if FReconnectMap = '' then
-                begin
-                  Result := -11;
-                  exit;
-                end;
-              end;
-
-              if FTempData[1] = 'L' then
-                FNeedLevel := StrToIntDef(Copy(FTempData, 2, Length(FTempData)-1), 1);
-
-            end else break;
-          end;
-
-//          FTempEnvir := GEnvirnoment.AddEnvironment(UpperCase(FMapName),
-//                                                    FMapTitle,
-//                                                    FReconnectMap,
-//                                                    nil,
-//                                                    FServerIndex,
-//                                                    FNeedLevel,
-//                                                    FMapAttribute);
-          if FTempEnvir = nil then
-          begin
-            Result := -10;
-            Exit;
-          end;
-        end;
-
-        FrmMain.Caption := 'Map loading.. ' + IntToStr(I+1) + '/' + IntToStr(FMapInfoList.Count);
-        FrmMain.Refresh;
-
-      end;
-    end;
-  end;
-
-  FMapInfoList.Clear;
-  FMapInfoList.Free;
-  FrmMain.Caption := FTempCaption;
   Result := 1;
 end;
 

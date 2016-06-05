@@ -12,6 +12,12 @@ const
   MIR3_SEND_CHECK_BLOCK             = 4096;
   MIR3_SEND_AVAILABLE_BLOCK         = 7999;
   MIR3_DEFAULT_BLOCK_SIZE           = 16;
+  MIR3_MAX_QUEST_INDEX_BYTE         = 24;
+  MIR3_MAX_QUEST_BYTE               = 176;
+  MIR3_NON_PK_LEVEL                 = 10;
+  MIR3_MAX_BAG_ITEM                 = 46;
+  MIR3_MAX_HORSE_BAG                = 30;
+  MIR3_MAX_PET_BAG                  = 20;
 
   GM_OPEN                           = 1;
   GM_CLOSE                          = 2;
@@ -44,6 +50,19 @@ const
 
   SM_OUTOFCONNECTION                = 528;
 
+  U_DRESS                           = 0;
+  U_WEAPON                          = 1;
+  U_RIGHTHAND                       = 2;
+  U_NECKLACE                        = 3;
+  U_HELMET                          = 4;
+  U_ARMRINGL                        = 5;
+  U_ARMRINGR                        = 6;
+  U_RINGL                           = 7;
+  U_RINGR                           = 8;
+  U_SHOE                            = 10;
+  U_ROSE                            = 11;
+  U_CHARM                           = 12;
+
   RM_TURN                           = 10001;
   RM_WALK                           = 10002;
   RM_RUN                            = 10003;
@@ -66,6 +85,7 @@ const
   RM_STRUCK                         = 10020;
   RM_DEATH                          = 10021;
   RM_DISAPPEAR                      = 10022;
+  RM_MAG_STRUCK_MINE                = 10028;
   RM_HEAR                           = 10030;
   RM_WHISPER                        = 10031;
   RM_CRY                            = 10032;
@@ -79,6 +99,9 @@ const
   RM_SYS_MSG_REMARK                 = 10107;
   RM_SYS_MSG_PINK                   = 10108;
   RM_SYS_MSG_GREEN                  = 10109;
+  RM_MERCHANT_SAY                   = 10126;
+  RM_MERCHANT_DLG_CLOSE             = 10127;
+  RM_SEND_BUY_PRICE                 = 10130;
   RM_ALIVE                          = 10153;
   RM_MAKEPOISON                     = 10300;
   RM_CHANGEGUILDNAME                = 10301;
@@ -90,7 +113,8 @@ const
   RM_MYSTATUS                       = 10307;
   RM_TRANSPARENT                    = 10308;
   RM_MENU_OK                        = 10309;
-
+  RM_SPACE_MOVE_HIDE                = 10330;
+  RM_SPACE_MOVE_SHOW                = 10331;
 
   (* Skript Command Idents (QA) *)
   QA_SET                            = $1;
@@ -214,7 +238,7 @@ const
   QA_DIVORCE                        = $0BD;
   QA_CAPTURESAYING                  = $0BE;
   QA_CANCELMARRIAGERING             = $0BF;
-  QA_OPENUSERMARKET                 = $0C1;
+  QA_OPENUSERMARKET                 = $0C0;
   QA_SETTYPEUSERMARKET              = $0C1;
   QA_CHECKSOLIDITEMSUSERMARKET      = $0C2;
   QA_CHECKSOLIDITEMSUSERPOINTMARKET = $138;
@@ -426,6 +450,7 @@ const
   QI_CHECKBCITEMW                   = $84;
   QI_CHECKDEMESNE                   = $85;
 
+  (* Map Event Objects *)
 
   OS_MOVING_OBJECT                  = 1;
   OS_ITEM_OBJECT                    = 2;
@@ -436,13 +461,26 @@ const
   OS_DROP_ITEM                      = 7;
   OS_PICKUP_ITEM                    = 8;
 
+  (* Mine Events *)
+
   EVENT_MINE                        = 2;
   EVENT_MINE2                       = 8;
   EVENT_MINE3                       = 13;
 
+  (* HAM - Human Attack Mode *)
+
+  HAM_ALL                           = 0;
+  HAM_PEACE                         = 1;
+  HAM_GROUP                         = 2;
+  HAM_GUILD                         = 3;
+  HAM_PKATTACK                      = 4;
+  HAM_MAXCOUNT                      = 5;
+
+  (* MP - Map Param *)
+
   MP_CAN_MOVE                       = 0;
   MP_WALL			                      = 1;
-  MP_HIGHWALL                       = 2;
+  MP_HIGH_WALL                      = 2;
 
   NAME_OF_GOLD                      = 'Gold';
   MAX_GOLD                          = 2000000000;
@@ -463,8 +501,9 @@ const
 
   (* Race Type *)
 
-  RACE_USERHUMAN                    = 0;
+  RACE_USER_HUMAN                   = 0;
   RACE_DOOR_GUARD                   = 11;
+  RACE_PEACE_NPC                    = 15;
   RACE_CHICKEN                      = 31; //OK
 
   RACE_DEER                         = 52; //Pig, Deer, Cow , Sheep etc.

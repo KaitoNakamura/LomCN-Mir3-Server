@@ -229,8 +229,65 @@ uses System.SyncObjs, Mir3.Objects.Base, Mir3.Forms.Main.System,
 //  TODO : need Code here
 ////////////////////////////////////////////////////////////////////////////////
 procedure TRunSocket.ExecGateBuffers(AIndex: Integer; AGate: PRunGateInfo; ABuffer: PChar; ABufferLen: Integer);
+var
+   FLen       : Integer;
+   FTemp      : PChar;
+   FWork      : PChar;
+   FBody      : PChar;
+   FMsgHeader : PMsgHeader;
 begin
+  FWork := nil;
+  FLen  := 0;
 
+  try
+    if ABuffer <> nil then
+    begin
+      ReAllocMem(AGate^.RReceiveBuffer, AGate^.RReceiveLen + ABufferLen);
+      Move(ABuffer^, (@AGate^.RReceiveBuffer[AGate^.RReceiveLen])^, ABufferLen);
+    end;
+  except
+     ServerLogMessage('Exception] ExecGateBuffers->pBuffer');
+  end;
+
+  try
+    FLen  := AGate.RReceiveLen + ABufferLen;
+    FWork := AGate.RReceiveBuffer;
+
+    while FLen >= sizeof(TMsgHeader) do
+    begin
+      FMsgHeader := PMsgHeader(FWork);
+      if longword(FMsgHeader.RCode) = $aa55aa55 then
+      begin
+        if FLen < sizeof(TMsgHeader) + FMsgHeader.RLength then break;
+        FBody := @FWork[sizeof(TMsgHeader)];
+        ExecGateMsg(AIndex, AGate, FMsgHeader, FBody, FMsgHeader.RLength);
+        FWork := @FWork[sizeof(TMsgHeader) + FMsgHeader.RLength];
+        FLen := FLen - (SizeOf(TMsgHeader) + FMsgHeader.RLength);
+      end else begin
+        FWork := @FWork[1];
+        Dec(FLen);
+      end;
+    end;
+  except
+    ServerLogMessage('Exception] ExecGateBuffers->@pwork,ExecGateMsg , CGate.ReceiveLen = /');
+  end;
+
+  try
+    if FLen > 0 then
+    begin
+      GetMem(FTemp, FLen);
+      Move(FWork^, FTemp^, FLen);
+      FreeMem(AGate.RReceiveBuffer);
+      AGate.RReceiveBuffer := FTemp;
+      AGate.RReceiveLen    := FLen;
+    end else begin
+      FreeMem (AGate.RReceiveBuffer);
+      AGate.RReceiveBuffer := nil;
+      AGate.RReceiveLen    := 0;
+    end;
+  except
+    ServerLogMessage('Exception] ExecGateBuffers->FreeMem');
+  end;
 end;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -240,7 +297,6 @@ end;
 procedure TRunSocket.ExecGateMsg(AIndex: Integer; AGate: PRunGateInfo; AHeader: PMsgHeader; AData: PChar; ADataLen: Integer);
 var
   I          : Integer;
-  FLen       : Integer;
   FUserIndex : Integer;
   FUserInfo  : PUserInfo;
 begin
@@ -306,9 +362,9 @@ begin
           begin
             if FUserInfo.REnabled then
             begin
-              if FLen >= sizeof(TDefaultMessage) then
+              if ADataLen >= SizeOf(TDefaultMessage) then
               begin
-                if FLen = sizeof(TDefaultMessage) then
+                if ADataLen = SizeOf(TDefaultMessage) then
                   GUserEngine.ProcessUserMessage(TUserHuman(FUserInfo.RUserCreature), PDefaultMessage(AData), nil)
                 else GUserEngine.ProcessUserMessage(TUserHuman(FUserInfo.RUserCreature), PDefaultMessage(AData), @AData[SizeOf(TDefaultMessage)]);
               end;
@@ -892,7 +948,7 @@ begin
              FreeMem(FSendBuffer);
            except
            end;
-           FSendBuffer := nil;
+           //FSendBuffer := nil;
          end else begin
            SendGateCheck(AGate.RSocket, GM_RECEIVE_OK);
            AGate.RGateSyncMode := 1;

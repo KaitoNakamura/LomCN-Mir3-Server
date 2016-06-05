@@ -20,7 +20,11 @@ type
     FCastleStartY      : Integer;
     FCastleTotalGold   : Int64;
     FCastleTodayIncome : Integer;
+    FCastleWarChecked  : Boolean;
+    FCastleUnderAttack : Boolean;
     FCastleEnvir       : TEnvironment;
+    FCastleCoreEnvir   : TEnvironment;
+    FCastleBaseEnvir   : TEnvironment;
     FCastleManager     : TCastleManager;
   public
     constructor Create;
@@ -39,10 +43,13 @@ type
   private
     function FindCastle(ACastle: TCastle): Boolean;
     function GetCastleByName(ACastleName: String): TCastle;
+    function GetCastleByMapName(ACastleMapName: String): TCastle;
   public
     constructor Create;
     destructor Destroy; override;
   public
+    function IsCastleUnterAttack(ACastleMap: String): Boolean;
+    function IsCastleWarArea(AEnvironment: TEnvironment; X, Y: Integer): Boolean;
     function AddCastle(ACastleName, ACastleMap: String; ACastleStartX, ACastleStartY: Integer; ACastleEnvir: TEnvironment): Boolean;
     function UpdateOwnerGuild(ACastelName: String; AGuild: TGuild): Boolean;
     function UpdateCastleTotalGold(ACastelName: String; AGoldAmount: Int64): Boolean;
@@ -74,7 +81,12 @@ uses Mir3.Server.Core;
     FCastleStartY      := 0;
     FCastleTotalGold   := 0;
     FCastleTodayIncome := 0;
+    FCastleWarChecked  := False;
+    FCastleUnderAttack := False;
     FCastleEnvir       := nil;
+    FCastleCoreEnvir   := nil;
+    FCastleBaseEnvir   := nil;
+    FCastleManager     := nil;
   end;
 
   destructor TCastle.Destroy;
@@ -132,6 +144,29 @@ uses Mir3.Server.Core;
 {$ENDREGION}
 
 {$REGION ' - TCastleManager Public Function '}
+
+  function TCastleManager.IsCastleUnterAttack(ACastleMap: String): Boolean;
+  begin
+    Result := False;
+    if GetCastleByMapName(ACastleMap) <> nil then
+      Result := GetCastleByMapName(ACastleMap).FCastleUnderAttack;
+  end;
+
+  function TCastleManager.IsCastleWarArea(AEnvironment: TEnvironment; X, Y: Integer): Boolean;
+  var
+    FCastle : TCastle;
+  begin
+    Result  := False;
+    FCastle := GetCastleByMapName(AEnvironment.MapName);
+    if AEnvironment = FCastle.FCastleEnvir then
+    begin
+      if (Abs(FCastle.FCastleStartX - X) < 100) and (Abs(FCastle.FCastleStartY - Y) < 100) then
+        Result := True;
+    end;
+    if (AEnvironment = FCastle.FCastleCoreEnvir) or(AEnvironment = FCastle.FCastleBaseEnvir) then
+      Result := True;
+  end;
+
   function TCastleManager.AddCastle(ACastleName, ACastleMap: String; ACastleStartX, ACastleStartY: Integer; ACastleEnvir: TEnvironment): Boolean;
   var
     FCastle: TCastle;
@@ -212,6 +247,21 @@ uses Mir3.Server.Core;
     for I := 0 to Count-1 do
     begin
       if ACastleName = Items[I].FCastleName then
+      begin
+        Result := Items[I];
+        break;
+      end;
+    end;
+  end;
+
+  function TCastleManager.GetCastleByMapName(ACastleMapName: String): TCastle;
+  var
+    I: Integer;
+  begin
+    Result := nil;
+    for I := 0 to Count-1 do
+    begin
+      if ACastleMapName = Items[I].FCastleMap then
       begin
         Result := Items[I];
         break;

@@ -497,7 +497,7 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
 
         //TODO : Finish the xml changes in FrmDB.LoadAndSetupMapFiles
         lbServerMessage.Items.Add('add Map Info to Environment...');
-        //FError := FrmDB.LoadAndSetupMapFiles;
+        FError := FrmDB.LoadAndSetupMapFiles;
         if FError < 0 then
         begin             //FError := FrmDB.LoadMiniMapInfos;
           ServerLogMessage('Read error (Map Files). code=' + IntToStr(FError));
@@ -654,7 +654,6 @@ begin
     FrmIDSoc.Initialize;
     lbServerMessage.Items.Add('IDSoc Initialized..');
 
-    GEnvirnoment.InitEnvironment;
     lbServerMessage.Items.Add('GEnvirnoment loaded..');
 
     MakeStoneMines;

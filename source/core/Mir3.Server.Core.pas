@@ -2,7 +2,10 @@ unit Mir3.Server.Core;
 
 interface
 
-uses System.SysUtils, System.Classes, System.SyncObjs;
+uses System.SysUtils, System.Classes, System.Generics.Collections, System.SyncObjs;
+
+const
+  MIR3_MAX_REQUIRE = 10;
 
 var
   GServerVersion     : String  = 'Server Version : LomCN - 0.0.0.1';
@@ -15,6 +18,11 @@ var
   GViewHackMessage   : Boolean = False;
   GServerRunTime     : Cardinal;
   GRunStartTime      : Cardinal;
+  GHumLimit          : Cardinal;
+  GMonLimit          : Cardinal;
+  GZenLimit          : Cardinal;
+  GNpcLimit          : Cardinal;
+  GSocLimit          : Cardinal;
   GRunCount          : Integer;
   GCurRunCount       : Integer;
   GMinRunCount       : Integer;
@@ -50,11 +58,6 @@ var
   GHomeX3            : Integer;
   GHomeY3            : Integer;
   GDBPort            : Integer;
-  GHumLimit          : Integer;
-  GMonLimit          : Integer;
-  GZenLimit          : Integer;
-  GNpcLimit          : Integer;
-  GSocLimit          : Integer;
   GMaxOpenStack      : Integer;
   GMaxSaveStack      : Integer;
   GUserFull          : Integer;
@@ -101,6 +104,7 @@ var
   GUserConLogList    : TStringList;
   GUserChatLogList   : TStringList;
   GMiniMapList       : TStringList;
+  GStartPoints       : TStringList;
 
 type
   TServerModes = (smTestMode, smPublicMode, smServiceMode);
@@ -125,22 +129,66 @@ type
     RSeries:  Word;
   end;
 
-  TQuestActionInfo = record//size=24
-    f4:string;//f4
-    fC:string;//fC
-    f14:string;//f14
-    f1C:string;//f1C
+  PQuestActionInfo = ^TQuestActionInfo;
+  TQuestActionInfo = record
+    RActIdent    : Integer;
+    RActParam    : String;
+    RActParamVal : Integer;
+    RActTag      : String;
+    RActTagVal   : Integer;
+    RActExtra    : String;
+    RActExtraVal : Integer;
+  end;
+
+  PQuestConditionInfo = ^TQuestConditionInfo;
+  TQuestConditionInfo = record
+    RIfIdent    : Integer;
+    RIfParam    : String;
+    RIfParamVal : Integer;
+    RIfTag      : String;
+    RIfTagVal   : Integer;
+  end;
+
+  PQuestRequire = ^TQuestRequire;
+  TQuestRequire = record
+    RRandomCount : Integer;
+    RCheckIndex  : Word;
+    RCheckValue  : Byte;
+  end;
+
+  PSayingProcedure = ^TSayingProcedure;
+  TSayingProcedure = record
+    RConditionList     : TList;
+    RActionList        : TList;
+    RSaying            : String;
+    RElseActionList    : TList;
+    RElseSaying        : String;
+    RAvailableCommands : TStringList;
+  end;
+
+  PSayingRecord = ^TSayingRecord;
+  TSayingRecord = record
+    RTitle : String;
+    RProcs : TList<PSayingProcedure>
+  end;
+
+  PQuestRecord = ^TQuestRecord;
+  TQuestRecord = record
+    RRequire         : Boolean;
+    RLocalNumber     : integer;
+    RQuestRequireArr : array[0..MIR3_MAX_REQUIRE-1] of TQuestRequire;
+    RSayingList      : TList<PSayingRecord>;
   end;
 
   PChangeUserInfo = ^TChangeUserInfo;
   TChangeUserInfo = record
-    RCommandWho  : String;//[14];
-    RUserName    : String;//[14];
+    RCommandWho  : String;
+    RUserName    : String;
     RChangeGold  : Integer;
   end;
 
-  PGateInfo = ^TGateInfo;
-  TGateInfo = record
+  PLinkInfo = ^TLinkInfo;
+  TLinkInfo = record
     RGateType   : Byte;
     REnterEnvir : TObject;
     REnterX     : Integer;
@@ -257,6 +305,12 @@ type
   PServerMode = ^TServerMode;
   TServerMode = record
     RServerMode : TServerModes;
+  end;
+
+  PPricesInfo = ^TPricesInfo;
+  TPricesInfo = record
+    RIndex      : Word;
+    RSellPrice  : Int64;
   end;
 
   PUserItem = ^TUserItem;
@@ -459,9 +513,9 @@ end;
 
 procedure InitGlobalCoreCode;
 var
-  FFileHandle                    : TextFile;
-  Date, FYear, FMon, FDay        : Word;
-  Time, FHour, FMin, FSec, FMSec : Word;
+  FFileHandle              : TextFile;
+  FYear, FMon, FDay        : Word;
+  FHour, FMin, FSec, FMSec : Word;
 begin
   // Global Critical Sections
   GCS_MessageLock           := TCriticalSection.Create;
@@ -480,6 +534,7 @@ begin
   GUserConLogList     := TStringList.Create;
   GUserChatLogList    := TStringList.Create;
   GMiniMapList        := TStringList.Create;
+  GStartPoints        := TStringList.Create;
 
   // Inite Log File
   if not DirectoryExists(ExtractFilePath(ParamStr(0))+'Logs') then
@@ -508,6 +563,9 @@ begin
   FreeAndNil(GServerLogList);
   GMiniMapList.Clear;
   FreeAndNil(GMiniMapList);
+  GStartPoints.Clear;
+  FreeAndNil(GStartPoints);
+
 
   // Global Critical Sections
   FreeAndNil(GCS_FrontEngineOpenLock);

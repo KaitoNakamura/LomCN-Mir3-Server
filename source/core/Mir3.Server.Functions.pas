@@ -13,6 +13,8 @@ function CaptureString(ASource: String; var ADest: string): String;
 function GetItemServerIndex: Integer;
 function GetGoldLooks(AGoldCount: Integer): Integer;
 function CharCount(AStr: String; AChr: Char): Integer;
+function ReplaceChar(ASource: String; ASourceChar, AReplaceChar: Char): String;
+function GetStartPointMapName(AIndex: Integer): String;
 
 implementation
 
@@ -263,6 +265,37 @@ begin
   for i:=1 to Length(AStr) do
     if AStr[i] = AChr then
       Inc(Result);
+end;
+
+function ReplaceChar(ASource: String; ASourceChar, AReplaceChar: Char): String;
+var
+	i, len: integer;
+begin
+	if ASource <> '' then
+  begin
+    len := Length(ASource);
+    for i:=1 to len do
+    	if ASource[i] = ASourceChar then
+        ASource[I] := AReplaceChar;
+  end;
+  Result := ASource;
+end;
+
+function GetStartPointMapName(AIndex: Integer): String;
+var
+   str, mapstr, rangestr: string;
+begin
+   str := '';
+   Result := '';
+   if AIndex < 0 then exit;
+   if GStartPoints.Count <= 0 then exit;
+
+   if (AIndex < GStartPoints.Count) then
+   begin
+      str := GStartPoints[AIndex];
+      str := GetValidStr3(str, mapstr, ['/']);
+      Result := mapstr;
+   end;
 end;
 
 end.

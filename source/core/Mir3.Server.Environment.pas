@@ -5,7 +5,7 @@ interface
 uses System.Classes, System.Generics.Collections, System.SyncObjs,
 
      Mir3.Server.Constants, Mir3.Server.Functions, Mir3.Server.Core,
-     Mir3.Objects.Base, Mir3.Server.XMLResourceReader;
+     Mir3.Objects.Base, Mir3.Objects.NPC, Mir3.Server.XMLResourceReader;
 
 type
 
@@ -59,6 +59,12 @@ type
      RObjectList	  : TList<PCellObject>;
    end;
 
+   PMapQuestInfo = ^TMapQuestInfo;
+   TMapQuestInfo = record
+     FQuestNPC      : TMerchant;
+     FQuestInfo     : TXMLMapQuestNode;
+   end;
+
    TMapInfoList  = array[0..MaxInt div 16] of TMapInfo;
    PMapInfoList  = ^TMapInfoList;
 
@@ -68,33 +74,39 @@ type
 
   TEnvironment = class
   strict private
-    FMapID         : Integer;
-    FMapName       : String;
-    FMapTitle      : String;
-    FMapWidth      : Integer;
-    FMapHeight     : Integer;
-    FMiniMap       : Integer;
-    FMapExpRatio   : Integer;
-    FMapDropRatio  : Integer;
-    FMapMoneyRatio : Integer;
-    FMapTime       : Integer;
-    FOrderList     : Integer;
-    FWeather       : Integer;
-    FVehicle       : Integer;
-    FNeedLevel     : Integer;
-    FEnterLevel    : Integer;
-    FEnterQuestID  : Integer;
-    FEnterItemID   : Integer;
-    FMineMap       : Boolean;
-    FPVPMap        : Boolean;
-    FMapQuest      : TObject;
-    FServerIndex   : Integer;
-    FCanGetItem    : Boolean;
-    FReconnectMap  : String;
-    FReconnectEnvir: TEnvironment;
-    FMapInfoList   : PMapInfoList;
-    FAttributes    : TMapAttributes;
-    FMapQuestFile  : TList<TXMLMapQuestNode>;
+    FMapID           : Integer;
+    FMapName         : String;
+    FMapTitle        : String;
+    FMapWidth        : Integer;
+    FMapHeight       : Integer;
+    FMiniMap         : Integer;
+    FMapExpRatio     : Integer;
+    FMapDropRatio    : Integer;
+    FMapMoneyRatio   : Integer;
+    FMapTime         : Integer;
+    FOrderList       : Integer;
+    FWeather         : Integer;
+    FVehicle         : Integer;
+    FNeedLevel       : Integer;
+    FEnterLevel      : Integer;
+    FEnterQuestID    : Integer;
+    FEnterItemID     : Integer;
+    FMineMap         : Boolean;
+    FPVPMap          : Boolean;
+    FSaveZoneMap     : Boolean;
+    FMapQuest        : TObject;
+    FServerIndex     : Integer;
+    FCanGetItem      : Boolean;
+    FFightZone1      : Boolean;
+    FFightZone2      : Boolean;
+    FFightZone3      : Boolean;
+    FFightZone4      : Boolean;
+    FReconnectMapID  : Integer;
+    FReconnectEnvir  : TEnvironment;
+    FMapInfoList     : PMapInfoList;
+    FAttributes      : TMapAttributes;
+    FQuestNPC        : TMerchant;
+    FMapQuestFile    : TList<TMapQuestInfo>;
   private
     procedure ResizeMap(X, Y: Integer);
   public
@@ -112,6 +124,8 @@ type
     function GetItemAndCount(X, Y: Integer; var AItemCount: Integer): PMapItem;
     function GetEvent(X, Y: Integer): TObject;
     function GetDupCount(X, Y: Integer): Integer;
+    function GetMapQuestNPC(const AHuman: TCreature; const AMonsterName, AItemName: String; AGroupCall: Boolean): TMerchant;
+    function HasMapQuest: Boolean;
     // Walk, Fly , Fire Fly things
     procedure SetMovement(X, Y: Integer; ACanMove: Boolean);
     function CanWalk(X, Y: Integer; AAllowDup: Boolean): Boolean;
@@ -121,6 +135,8 @@ type
     // Map things
     function AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
     function DeleteFromMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Integer;
+    function AddMapQuest(const AMapQuest: PXMLMapQuestNode; const AMapName: String): Boolean;
+    function AddMapMineEvent(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
   public
     property MapID          : Integer                  read FMapID          write FMapID;
     property MapName        : String                   read FMapName        write FMapName;
@@ -142,11 +158,17 @@ type
     property EnterQuestID   : Integer                  read FEnterQuestID   write FEnterQuestID;
     property EnterItemID    : Integer                  read FEnterItemID    write FEnterItemID;
     property PVPMap         : Boolean                  read FPVPMap         write FPVPMap;
+    property SaveZoneMap    : Boolean                  read FSaveZoneMap    write FSaveZoneMap;
+    property FightZone1     : Boolean                  read FFightZone1     write FFightZone1;
+    property FightZone2     : Boolean                  read FFightZone2     write FFightZone2;
+    property FightZone3     : Boolean                  read FFightZone3     write FFightZone3;
+    property FightZone4     : Boolean                  read FFightZone4     write FFightZone4;
     property ServerIndex    : Integer                  read FServerIndex    write FServerIndex;
     property Attributes     : TMapAttributes           read FAttributes     write FAttributes;
-    property ReconnectMap   : String                   read FReconnectMap   write FReconnectMap;
+    property ReconnectMapID : Integer                  read FReconnectMapID write FReconnectMapID;
     property ReconnectEnvir : TEnvironment             read FReconnectEnvir write FReconnectEnvir;
-    property MapQuestFile   : TList<TXMLMapQuestNode>  read FMapQuestFile   write FMapQuestFile;
+    property MapQuestFile   : TList<TMapQuestInfo>     read FMapQuestFile   write FMapQuestFile;
+    property QuestNPC       : TMerchant                read FQuestNPC       write FQuestNPC;
   end;
 
   (* class TEnvirList *)
@@ -158,14 +180,10 @@ type
     constructor Create;
     destructor Destroy; override;
   public
-    //function AddMapToEnvironment();
-    //function AddMapQuestToEnvironment();
-    //function AddMapEnvironment
     function AddEnvironment(AMapInfoNode: PXMLMapInfoNode): TEnvironment;
-    //function AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
     function AddMapLinkToEnvironment(const AMapLinkNode: PXMLMapLinkNode; const AMapList: TList<TXMLMapInfoNode>): Boolean;
+    function AddMapQuestToEnvironment(const AMapQuest: PXMLMapQuestNode; const AMapList: TList<TXMLMapInfoNode>): Boolean;
     function GetEnvironment(AMapName: String): TEnvironment;
-    procedure InitEnvironment;
     function ServerGetEnvironment(AServerIndex: Integer; AMapName: String): TEnvironment;
   public
     property ServerIndex: Integer read FServerIndex  write FServerIndex;
@@ -175,7 +193,7 @@ implementation
 
 uses
   Winapi.Windows, System.SysUtils,
-  Mir3.Objects.NPC, Mir3.Server.Events, Mir3.Forms.Local.DB, Mir3.Forms.Main.System;
+  Mir3.Server.Events, Mir3.Forms.Local.DB, Mir3.Forms.Main.System;
 
   (* class TEnvironment *)
 
@@ -201,13 +219,18 @@ uses
     FAttributes     := [];
     FMineMap        := False;
     FPVPMap         := False;
+    FSaveZoneMap    := False;
+    FFightZone1     := False;
+    FFightZone2     := False;
+    FFightZone3     := False;
+    FFightZone4     := False;
     FMapQuest       := nil;
     FServerIndex    := 0;
     FCanGetItem     := False;
-    FReconnectMap   := '';
+    FReconnectMapID := 0;
     FMapInfoList    := nil;
     FReconnectEnvir := nil;
-    FMapQuestFile   := TList<TXMLMapQuestNode>.Create;
+    FMapQuestFile   := TList<TMapQuestInfo>.Create;
   end;
 
   destructor TEnvironment.Destroy;
@@ -222,6 +245,9 @@ uses
 
 {$REGION ' - TEnvironment Public Function '}
 
+  //****************************************************************************
+  // Load the given Map File
+  // (function code done)
   function TEnvironment.LoadMap(AMapName: String): Boolean;
   var
     X, Y, C     : Integer;
@@ -268,6 +294,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Check if MapInfo on the given Position Set
+  // (function code done)
   function TEnvironment.GetMapInfoXY(X, Y: Integer; var AMapInfo: PMapInfo): Boolean;
   begin
     AMapInfo := nil;
@@ -282,6 +311,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Get one Creature from the Position back
+  // (function code done)
   function TEnvironment.GetCreature(X, Y: Integer; AAliveOnly: Boolean): TObject;
   var
     I         : Integer;
@@ -315,6 +347,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Get all Creature from a given Position and the Count back
+  // (function code done)
   function TEnvironment.GetAllCreature(X, Y: Integer; AAliveOnly: Boolean; ACreatureList: TList<TCreature>): Integer;
   var
     I         : Integer;
@@ -347,6 +382,9 @@ uses
     Result := ACreatureList.Count;
   end;
 
+  //****************************************************************************
+  // Get all Creatures from a given Range and the Count back
+  // (function code done)
   function TEnvironment.GetCreatureInRange(X, Y, AWide: Integer; AAliveOnly: Boolean; ACreatureList: TList<TCreature>): Integer;
   var
     I, C : Integer;
@@ -361,6 +399,9 @@ uses
     Result := ACreatureList.Count;
   end;
 
+  //****************************************************************************
+  // Check if Creature Valid
+  // (function code done)
   function TEnvironment.IsValidCreature(X, Y, ACheckRange: Integer; ACreature: TObject): Boolean;
   var
     I, C, L   : Integer;
@@ -394,6 +435,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Check if the Creature in Front Valid
+  // (function code done)
   function TEnvironment.IsValidFrontCreature(X, Y, ACeckRange: Integer; var ACreature: TObject): Boolean;
   var
     I, C, L   : Integer;
@@ -437,6 +481,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Get Item from the Position on the Environment
+  // (function code done)
   function TEnvironment.GetItem(X, Y: Integer): PMapItem;
   var
     I        : Integer;
@@ -479,6 +526,9 @@ uses
      end;
   end;
 
+  //****************************************************************************
+  // Get Item and Count from the given Position on the Environment
+  // (function code done)
   function TEnvironment.GetItemAndCount(X, Y: Integer; var AItemCount: Integer): PMapItem;
   var
     I        : Integer;
@@ -522,6 +572,9 @@ uses
      end;
   end;
 
+  //****************************************************************************
+  // Get a Event Object back from the Environment
+  // (function code done)
   function TEnvironment.GetEvent(X, Y: Integer): TObject;
   var
     I        : Integer;
@@ -576,6 +629,76 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Get a Map Quest NPC back from the Environment
+  // (function code done)
+  function TEnvironment.GetMapQuestNPC(const AHuman: TCreature; const AMonsterName, AItemName: String; AGroupCall: Boolean): TMerchant;
+  var
+    I         : Integer;
+    FFlagID   : Integer;
+    FMapQuest : TXMLMapQuestNode;
+    FCheck    : Boolean;
+  begin
+    Result := nil;
+    for I := 0 to FMapQuestFile.Count-1 do
+    begin
+      FMapQuest := FMapQuestFile.Items[I].FQuestInfo;
+      FFlagID   := AHuman.GetQuestMark(FMapQuest.RQFlag);
+      if (FFlagID = FMapQuest.RQFlag) and (AGroupCall = FMapQuest.RGroup) or (not AGroupCall) then
+      begin
+        FCheck := False;
+        with GXMLResourceReader do
+        begin
+
+          if (FMapQuest.RMonID <> 0) and (FMapQuest.RItemID <> 0) then
+          begin
+            if (GetMonsterNameByID(FMapQuest.RMonID) = AMonsterName) and (GetStdItemNameByID(FMapQuest.RItemID) = AItemName) then
+            begin
+              FCheck := True;
+            end;
+          end;
+
+          if (FMapQuest.RMonID <> 0) and (FMapQuest.RItemID = 0) then
+          begin
+            if (GetMonsterNameByID(FMapQuest.RMonID) = AMonsterName) and (AItemName = '') then
+            begin
+              FCheck := True;
+            end;
+          end;
+
+          if (FMapQuest.RMonID = 0) and (FMapQuest.RItemID <> 0) then
+          begin
+            if (AMonsterName = '') and (GetStdItemNameByID(FMapQuest.RItemID) = AItemName) then
+            begin
+              FCheck := True;
+            end;
+          end;
+
+        end;
+
+        if FCheck then
+        begin
+          Result := FMapQuestFile.Items[I].FQuestNPC;
+          Break;
+        end;
+
+      end;
+    end;
+  end;
+
+  //****************************************************************************
+  // Check has Map Quest on the Environment
+  // (function code done)
+  function TEnvironment.HasMapQuest: Boolean;
+  begin
+    if FMapQuestFile.Count > 0 then
+      Result := True
+    else Result := False;
+  end;
+
+  //****************************************************************************
+  // Set High Wall or can Move on the Environment (Mark Position for War Gates etc.)
+  // (function code done)
   procedure TEnvironment.SetMovement(X, Y: Integer; ACanMove: Boolean);
   var
     FMapInfo : PMapInfo;
@@ -587,10 +710,13 @@ uses
       if ACanMove then
         FMapInfo.RMoveAttribute := MP_CAN_MOVE
       else
-        FMapInfo.RMoveAttribute := MP_HIGHWALL;
+        FMapInfo.RMoveAttribute := MP_HIGH_WALL;
     end;
   end;
 
+  //****************************************************************************
+  // Check can Walk on the Environment
+  // (function code done)
   function TEnvironment.CanWalk(X, Y: Integer; AAllowDup: Boolean): Boolean;
   var
     I        : Integer;
@@ -634,6 +760,9 @@ uses
      end;
   end;
 
+  //****************************************************************************
+  // Check can use Fly on the Environment
+  // (function code done)
   function TEnvironment.CanFly(X1, Y1, X2, Y2: Integer): Boolean;
   var
     I, FX, FY   : Integer;
@@ -654,6 +783,9 @@ uses
      end;
   end;
 
+  //****************************************************************************
+  // Check can use Fire Fly on the Environment
+  // (function code done)
   function TEnvironment.CanFireFly(X, Y: Integer): Boolean;
   var
     FMapInfo : PMapInfo;
@@ -663,13 +795,16 @@ uses
     FInRange := GetMapInfoXY(X, Y, FMapInfo);
     if FInRange then
     begin
-      if (FMapInfo.RMoveAttribute = MP_HIGHWALL) then
+      if (FMapInfo.RMoveAttribute = MP_HIGH_WALL) then
       begin
         Result := False;
       end;
     end;
   end;
 
+  //****************************************************************************
+  // Check can Safe Walk on the Environment
+  // (function code done)
   function TEnvironment.CanSafeWalk(X, Y: Integer): Boolean;
   var
     I        : Integer;
@@ -693,6 +828,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Add a Object to the Environment
+  // (function code done)
   function TEnvironment.AddToMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
   var
     I, C        : Integer;
@@ -809,6 +947,9 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Delete a Object from the Environment
+  // (function code done)
   function TEnvironment.DeleteFromMap(X, Y: Integer; AObjectType: Byte; AObject: TObject): Integer;
   var
     I           : Integer;
@@ -870,6 +1011,74 @@ uses
     end;
   end;
 
+  //****************************************************************************
+  // Add a Map Quest NPC and a Map Quest Info Object to the Environment
+  // (function code done)
+  function TEnvironment.AddMapQuest(const AMapQuest: PXMLMapQuestNode; const AMapName: String): Boolean;
+  var
+    FTempNPC : TMerchant;
+    FTempInfo: TMapQuestInfo;
+  begin
+    Result := True;
+    try
+      FTempNPC := TMerchant.Create;
+      with FTempNPC do
+      begin
+        MapName        := AMapName;
+        CX             := 0;
+        CY             := 0;
+        NpcFace        := 0;
+        Appearance     := 0;
+        Invisible      := True;
+        UseMapFileName := False;
+        UserName       := AMapQuest^.RQFileName;
+      end;
+      GUserEngine.NpcList.Add(FTempNPC);
+      FTempInfo.FQuestNPC  := FTempNPC;
+      FTempInfo.FQuestInfo := AMapQuest^;
+      MapQuestFile.Add(FTempInfo);
+    except
+      Result := False;
+    end;
+  end;
+
+  //****************************************************************************
+  // Add a Mine Event Object to the Environment
+  // (Need to check if is working)
+  function TEnvironment.AddMapMineEvent(X, Y: Integer; AObjectType: Byte; AObject: TObject): Pointer;
+  var
+    FMapInfo    : PMapInfo;
+    FInRange    : Boolean;
+    FCellObject : PCellObject;
+  begin
+    Result   := nil;
+    FInRange := GetMapInfoXY(X, Y, FMapInfo);
+    if FInRange then
+    begin
+      if FMapInfo.RMoveAttribute <> MP_CAN_MOVE then
+      begin
+        if FMapInfo.RObjectList = nil then
+        begin
+          FMapInfo.RObjectList := TList<PCellObject>.Create;
+        end else begin
+          if AObjectType = OS_MOVING_OBJECT then
+          begin
+
+          end;
+        end;
+        New(FCellObject);
+        with FCellObject^ do
+        begin
+          RShape  := AObjectType;
+          RObject := AObject;
+          RTime   := GetTickCount;
+          FMapInfo.RObjectList.Add(FCellObject);
+          Result := AObject;
+        end;
+      end;
+    end;
+  end;
+
 {$ENDREGION}
 
 {$REGION ' - TEnvironment Private Functions '}
@@ -924,10 +1133,8 @@ uses
   //****************************************************************************
   // Add and Load a Map and the given Info to the Environment
   // (function code done)
-  //function TEnvirList.AddEnvironment(AMapName, AMapTitel, AReconnectMap: String; ANpc: TObject; AServerIndex, ANeedLevel: Integer; AAttributes: TMapAttributes): TEnvironment;
   function TEnvirList.AddEnvironment(AMapInfoNode: PXMLMapInfoNode): TEnvironment;
   var
-    I     : Integer;
     FEnvir: TEnvironment;
 
     function GetMapAttribut(AControl: String): TMapAttributes;
@@ -1020,17 +1227,8 @@ uses
       EnterQuestID   := AMapInfoNode^.REnterQuest;
       EnterItemID    := AMapInfoNode^.REnterItem;
       PVPMap         := AMapInfoNode^.RPVP;
-      ReconnectMap   := AMapInfoNode^.RNoReconnect;   //Ist die ID von der Map
+      ReconnectMapID := AMapInfoNode^.RNoReconnect;   //Ist die ID von der Map
       Attributes     := GetMapAttribut(AMapInfoNode^.RControl);
-      //MapQuest     := ANpc;
-
-      if not FileExists(GDir_Map + ReconnectMap + '.map') then
-      begin
-        ServerLogMessage('Reconnect Map file not found..  ' + GDir_Map + ReconnectMap + '.map');
-      end else begin
-        //TODO : If NIL  then add to a wait list and check this later
-        ReconnectEnvir := GetEnvironment(ReconnectMap);
-      end;
 
       if LoadMap(GDir_Map + MapName + '.map') then
       begin
@@ -1043,53 +1241,57 @@ uses
   end;
 
   //****************************************************************************
-  // Add a Map Link to the Given both Environments
+  // Add Map Links to the Given both Environments
   // (function code done)
   function TEnvirList.AddMapLinkToEnvironment(const AMapLinkNode: PXMLMapLinkNode; const AMapList: TList<TXMLMapInfoNode>): Boolean;
   var
     FFromMap  : TEnvironment;
     FToMap    : TEnvironment;
-    FGateInfo : PGateInfo;
-
-    function GetMapNameFromID(AMapID: Integer): String;
-    var
-      I: Integer;
-    begin
-      for I := 0 to AMapList.Count-1 do
-      begin
-        if AMapID = AMapList.Items[I].RMapID then
-        begin
-          Result := AMapList.Items[I].RMapName;
-          Break;
-        end;
-      end;
-    end;
-
+    FLinkInfo : PLinkInfo;
   begin
     Result   := False;
-    FFromMap := GetEnvironment(GetMapNameFromID(AMapLinkNode^.RSMapID));
-    FToMap   := GetEnvironment(GetMapNameFromID(AMapLinkNode^.RDMapID));
+    FFromMap := GetEnvironment(GXMLResourceReader.GetMapNameByID(AMapLinkNode^.RSMapID));
+    FToMap   := GetEnvironment(GXMLResourceReader.GetMapNameByID(AMapLinkNode^.RDMapID));
     if (FFromMap <> nil) and (FToMap <> nil) then
     begin
-      New(FGateInfo);
-      with FGateInfo^ do
+      New(FLinkInfo);
+      with FLinkInfo^ do
       begin
         RGateType   := 0;
         REnterEnvir := FToMap;
         REnterX     := AMapLinkNode^.RDMapX;
         REnterY     := AMapLinkNode^.RDMapY;
       end;
-      if ( nil <> FFromMap.AddToMap(AMapLinkNode^.RSMapX, AMapLinkNode^.RSMapY, OS_MAP_LINK_OBJECT, TObject(FGateInfo))) then
+      if ( nil <> FFromMap.AddToMap(AMapLinkNode^.RSMapX, AMapLinkNode^.RSMapY, OS_MAP_LINK_OBJECT, TObject(FLinkInfo))) then
       begin
         Result := True;
       end else begin
-        if FGateInfo <> nil then
-          Dispose(FGateInfo);
+        if FLinkInfo <> nil then
+          Dispose(FLinkInfo);
         Result := False;
       end;
     end;
   end;
 
+  //****************************************************************************
+  // Add Map Quetsts to the Given Environment
+  // (function code done)
+  function TEnvirList.AddMapQuestToEnvironment(const AMapQuest: PXMLMapQuestNode; const AMapList: TList<TXMLMapInfoNode>): Boolean;
+  var
+    FEnvir: TEnvironment;
+  begin
+    FEnvir := GetEnvironment(GXMLResourceReader.GetMapNameByID(AMapQuest.RMapID));
+    if FEnvir <> nil then
+    begin
+      Result := FEnvir.AddMapQuest(AMapQuest, FEnvir.MapName);
+    end else begin
+      Result := False;
+    end;
+  end;
+
+  //****************************************************************************
+  // Give the Environment from given Map Name
+  // (function code done)
   function TEnvirList.GetEnvironment(AMapName: String): TEnvironment;
   var
     I: Integer;
@@ -1110,14 +1312,9 @@ uses
     end;
   end;
 
-  procedure TEnvirList.InitEnvironment;
-  //var
-    //I: integer;
-  begin
-    //for i:=0 to Count-1 do
-      //TEnvironment(Items[i]).ApplyDoors;
-  end;
-
+  //****************************************************************************
+  // Give the Environment from given Map Name and Server Index
+  // (function code done)
   function TEnvirList.ServerGetEnvironment(AServerIndex: Integer; AMapName: String): TEnvironment;
   var
     I : Integer;

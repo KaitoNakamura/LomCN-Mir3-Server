@@ -4,11 +4,11 @@ interface
 
 uses WinAPI.Windows, System.Classes, System.Generics.Collections,
 
-     Mir3.Server.Environment, Mir3.Server.Core;
+     Mir3.Server.Environment, Mir3.Server.Core, Mir3.Objects.Base;
 
 type
   TEvent = class
-  strict private
+  private
     FVisible       : Boolean;
     FActive        : Boolean;
     FClosed        : Boolean;
@@ -23,7 +23,7 @@ type
     FRunTick       : Cardinal;
     FOpenStartTime : Cardinal;
     FContinueTime  : Cardinal;
-    FOwnCreatur    : TObject;
+    FOwnCreatur    : TCreature;
     FEnvirnoment   : TEnvironment;
   private
     procedure AddToMap; virtual;
@@ -48,33 +48,41 @@ type
     property RunTick       : Cardinal     read FRunTick       write FRunTick;
     property OpenStartTime : Cardinal     read FOpenStartTime write FOpenStartTime;
     property ContinueTime  : Cardinal     read FContinueTime  write FContinueTime;
-    property OwnCreatur    : TObject      read FOwnCreatur    write FOwnCreatur;
+    property OwnCreatur    : TCreature    read FOwnCreatur    write FOwnCreatur;
     property Envir         : TEnvironment read FEnvirnoment   write FEnvirnoment;
   end;
 
   TStoneMineEvent = class(TEvent)
-  private
-    FMineCount  : Integer;
-    FRefillTime : Cardinal;
+  strict private
+    FMineCount     : Integer;
+    FMineFillCount : integer;
+    FRefillTime    : Cardinal;
   private
     procedure AddToMap; override;
   public
     constructor Create(AEnvirnoment: TEnvironment; AX, AY, AEventType: Integer);
+    procedure ReFillMineMap;
   public
-    property MineCount  : Integer  read FMineCount write FMineCount;
-    property RefillTime : Cardinal read FRefillTime write FRefillTime;
+    property MineCount     : Integer  read FMineCount     write FMineCount;
+    property MineFillCount : Integer  read FMineFillCount write FMineFillCount;
+    property RefillTime    : Cardinal read FRefillTime    write FRefillTime;
   end;
 
   TPileStones = class(TEvent)
   private
   public
     constructor Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
+    procedure EnlargePile;
   public
 
   end;
 
   TFireBurnEvent = class(TEvent)
   private
+    FTickTime: Cardinal;
+  public
+    constructor Create(AHuman: TCreature; AX, AY, AEventType, AEventTime: Integer; ADamage: Integer);
+    procedure RunEvent; override;
   public
   end;
 
@@ -113,7 +121,7 @@ type
 
 implementation
 
-uses  Mir3.Server.Constants;
+uses Mir3.Server.Constants, Mir3.Forms.Main.System;
 
   (* TEvent *)
 
@@ -121,8 +129,8 @@ uses  Mir3.Server.Constants;
   constructor TEvent.Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
   begin
      FOpenStartTime := GetTickCount;
-     FRunstart      := GetTickCount;
-     FRuntick       := 500;
+     FRunStart      := GetTickCount;
+     FRunTick       := 500;
      FEventType     := AEventType;
      FEventParam    := 0;
      FContinueTime  := AEventTime;
@@ -188,16 +196,31 @@ uses  Mir3.Server.Constants;
 {$REGION ' - TStoneMineEvent Constructor / Destructor '}
   constructor TStoneMineEvent.Create(AEnvirnoment: TEnvironment; AX, AY, AEventType: Integer);
   begin
-
+    inherited Create(AEnvirnoment, AX, AY, AEventType, 0, False);
+    AddToMap;
+    Visible       := False;
+    MineCount     := Random(200);
+    RefillTime    := GettickCount;
+    Active        := FALSE;
+    MineFillCount := Random(80);
   end;
 
 {$ENDREGION}
 
-{$REGION ' - TEvent Private Function '}
+{$REGION ' - TStoneMineEvent Public Function '}
   procedure TStoneMineEvent.AddToMap;
   begin
-
+    if(nil = Envir.AddMapMineEvent(X, Y, OS_EVENT_OBJECT, Self))then
+      IsAddToMap := false
+    else IsAddToMap := true;
   end;
+
+  procedure TStoneMineEvent.ReFillMineMap;
+  begin
+    MineCount  := MineFillCount;
+    RefillTime := GettickCount;
+  end;
+
 {$ENDREGION}
 
   (* TPileStones *)
@@ -205,10 +228,61 @@ uses  Mir3.Server.Constants;
 {$REGION ' - TPileStones Constructor / Destructor '}
   constructor TPileStones.Create(AEnvirnoment: TEnvironment; AX, AY, AEventType, AEventTime: Integer; AVisible: Boolean);
   begin
-
+    inherited Create(AEnvirnoment, AX, AY, AEventType, AEventTime, True);
   end;
 
 {$ENDREGION}
+
+{$REGION ' - TPileStones Public Function '}
+  procedure TPileStones.EnlargePile;
+  begin
+    if EventParam < 5 then
+      Inc(FEventParam);
+  end;
+{$ENDREGION}
+
+  (* TFireBurnEvent *)
+
+{$REGION ' - TFireBurnEvent Constructor / Destructor '}
+  constructor TFireBurnEvent.Create(AHuman: TCreature; AX, AY, AEventType, AEventTime: Integer; ADamage: Integer);
+  begin
+    inherited Create(TEnvironment(AHuman.Environment), AX, AY, AEventType, AEventTime, True);
+    Damage     := ADamage;
+    OwnCreatur := AHuman;
+  end;
+
+  procedure TFireBurnEvent.RunEvent;
+  var
+    I             : Integer;
+    FCreature     : TCreature;
+    FCreatureList : TList<TCreature>;
+  begin
+    if GetTickCount - FTickTime > 3000 then
+    begin
+      FTickTime     := GetTickCount;
+      FCreatureList := TList<TCreature>.Create;
+      if FEnvirnoment <> nil then
+      begin
+        FEnvirnoment.GetAllCreature(X, Y, True, FCreatureList);
+        for I := 0 to FCreatureList.Count-1 do
+        begin
+          FCreature := FCreatureList[I];
+          if FCreature <> nil then
+          begin
+            if OwnCreatur.IsProperTarget(FCreature) then
+            begin
+              FCreature.SendMsg(OwnCreatur, RM_MAG_STRUCK_MINE, 0, Damage, 0, 0, '');
+            end;
+          end;
+        end;
+      end;
+      FCreatureList.Free;
+    end;
+    inherited RunEvent;
+  end;
+
+{$ENDREGION}
+
 
   (* TEventManager *)
 

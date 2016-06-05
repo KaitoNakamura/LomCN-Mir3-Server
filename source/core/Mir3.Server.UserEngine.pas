@@ -39,6 +39,7 @@ type
     function GetMonsterRace(AMonsterName: String): Integer;
     function GetRealUserCount: Integer;
     function GetUserCount: Integer;
+    function GetHumCount(AMapName: String): Integer;
     function GetMonsterCount(AZenInfo: PZenInfo): Integer;
     function RegenMonsters(AZenInfo: PZenInfo; ACount: Integer): Boolean;
     procedure ApplyMonsterAbility(ACreature: TCreature; AMonsterName: String);
@@ -364,6 +365,23 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
     Result := C;
   end;
 
+  function TUserEngine.GetHumCount(AMapName: String): Integer;
+  var
+    I, C   : Integer;
+    FHuman : TUserHuman;
+  begin
+    C := 0;
+    for I := 0 to RunUserList.Count-1 do
+    begin
+      FHuman := TUserHuman(RunUserList.Objects[I]);
+      if (not FHuman.Ghost) and (not FHuman.Death) and (CompareText(TEnvironment(FHuman.Environment).MapName, AMapName) = 0) then
+      begin
+        Inc(C);
+      end;
+    end;
+    Result := C;
+  end;
+
   function TUserEngine.RegenMonsters(AZenInfo: PZenInfo; ACount: Integer): Boolean;
   begin
     Result := False;
@@ -586,18 +604,18 @@ uses Mir3.Server.Functions, Mir3.Forms.Main.System, Mir3.Server.Environment,
   var
     I, C        : Integer;
     FZenCount   : Integer;
-    FCount      : Integer;
+    FCount      : Cardinal;
     FStart      : Cardinal;
     FCreature   : TCreature;
     FZenInfo    : PZenInfo;
     FLack       : Boolean;
     FCheckGen   : Boolean;
   begin
-    FStart := GetTickCount;
+    FStart   := GetTickCount;
+    FZenInfo := nil;
     try
       FLack  := False;
       FCount := GetCurrentTime;
-      FZenInfo := nil;
 
       if GetTickCount - FFirstZenTime > 200 then
       begin
