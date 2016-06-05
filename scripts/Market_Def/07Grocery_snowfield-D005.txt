@@ -1,0 +1,42 @@
+[@Main]
+#SAY
+Welcome, how can I help you?\ \
+<Buy/@buy> Items\
+<Sell/@sell> Items\ 
+<Leave/@Exit>\
+
+
+
+[@Buy]
+#SAY
+What would you like to buy?\
+
+<Leave/@Exit>\
+
+
+[@Sell]
+#SAY
+What would you like to Sell?\
+
+<Leave/@Exit>\
+
+
+[GOODS]
+Candle
+ScrollOfDungeonEscape
+ScrollOfTownPortal
+Talisman(II)
+TalismanOfSoul
+TalismanOfSoul(II)
+TalismanOfHoliness
+TalismanOfHoliness(II)
+TalismanOfFire
+TalismanOfFire(II)
+TalismanOfIce
+TalismanOfIce(II)
+TalismanOfLightning
+TalismanOfLightning(II)
+TalismanOfWindstorm
+TalismanOfWindstorm(II)
+GrayPoisonDust
+YellowPoisonDust
