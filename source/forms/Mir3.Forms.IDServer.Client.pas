@@ -143,7 +143,7 @@ end;
 procedure TFrmIDSoc.SendUserCount(AUserCount: Integer);
 begin
   if IDSocket.Socket.Connected then
-    IDSocket.Socket.SendText('(' + IntToStr(ISM_USER_COUNT) + '/' + GServerName + '/' + IntToStr(GServerIndex) + '/' + IntToStr(AUserCount) + ')');
+    IDSocket.Socket.SendText(AnsiString('(' + IntToStr(ISM_USER_COUNT) + '/' + GServerName + '/' + IntToStr(GServerIndex) + '/' + IntToStr(AUserCount) + ')'));
 end;
 
 procedure TFrmIDSoc.Timer1Timer(Sender: TObject);

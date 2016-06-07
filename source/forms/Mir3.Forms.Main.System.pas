@@ -490,16 +490,16 @@ uses Mir3.Forms.Local.DB, Mir3.Server.Events, Mir3.Server.Constants,
 
       with GXMLResourceReader do
       begin
+
         (* Begin Load Map Things *)
         LoadMapQuest;
         LoadMapLink;
         LoadMapInfo;
 
-        //TODO : Finish the xml changes in FrmDB.LoadAndSetupMapFiles
         lbServerMessage.Items.Add('add Map Info to Environment...');
         FError := FrmDB.LoadAndSetupMapFiles;
         if FError < 0 then
-        begin             //FError := FrmDB.LoadMiniMapInfos;
+        begin
           ServerLogMessage('Read error (Map Files). code=' + IntToStr(FError));
           lbServerMessage.Items.Add('Read error (Map Files). code=' + IntToStr(FError));
           lbServerMessage.Items.Add('~~ Server has stopped work!!~~');

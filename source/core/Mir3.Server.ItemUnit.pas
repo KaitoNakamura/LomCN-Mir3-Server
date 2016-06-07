@@ -364,6 +364,21 @@ uses System.Math;
          {$ENDREGION}
        end;
 
+       51: begin
+         {$REGION ' - Std Mode 51 (Magic Book Translated) '}
+         with AStdItem, AUserItem do
+         begin
+           RAC      := MakeWord(Lobyte(RAC) , Hibyte(RAC)  + RDesc[0]);
+           RMAC     := MakeWord(Lobyte(RMAC), Hibyte(RMAC) + RDesc[1]);
+           RAgility := RAgility + RDesc[3];
+
+           if RDesc[0] > 0 then Inc(FCount);
+           if RDesc[1] > 0 then Inc(FCount);
+           if RDesc[3] > 0 then Inc(FCount);
+         end;
+         {$ENDREGION}
+       end;
+
        52, 53: begin
          {$REGION ' - Std Mode 52 (Shoes) '}
          with AStdItem, AUserItem do

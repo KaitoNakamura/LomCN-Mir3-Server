@@ -34,7 +34,9 @@ uses
   Mir3.Server.Guild in 'core\Mir3.Server.Guild.pas',
   Mir3.Server.Castle in 'core\Mir3.Server.Castle.pas',
   Mir3.Server.Group in 'core\Mir3.Server.Group.pas',
-  Mir3.Server.Friend.BlockUser in 'core\Mir3.Server.Friend.BlockUser.pas';
+  Mir3.Server.Friend.BlockUser in 'core\Mir3.Server.Friend.BlockUser.pas',
+  Mir3.Server.PetSystem in 'core\Mir3.Server.PetSystem.pas',
+  Mir3.Objects.Fishing in 'objects\Mir3.Objects.Fishing.pas';
 
 {$R *.res}
 

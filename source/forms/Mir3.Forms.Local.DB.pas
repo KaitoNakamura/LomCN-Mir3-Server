@@ -153,6 +153,7 @@ begin
     end;
     FrmMain.lbServerMessage.Items.Add('Map Info Load done...');
 
+    (* Load and Add Map Quests *)
     for I := 0 to MapQuestDataList.Count-1 do
     begin
       FXMLMapQuest := MapQuestDataList.Items[I];

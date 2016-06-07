@@ -2,7 +2,7 @@ unit Mir3.Objects.NPC;
 
 interface  //4 Classes
 
-uses WinAPI.Windows, System.Classes, System.Generics.Collections,
+uses WinAPI.Windows, System.Classes, System.Generics.Collections, System.StrUtils,
 
      Mir3.Objects.Base, Mir3.Server.Core;
 
@@ -30,6 +30,8 @@ type
     FCanItemMarket    : Boolean;
     FCanSpecialRepair : Boolean;
     FCanTotalRepair   : Boolean;
+  private
+    function GetVarIndex(AValue: String): Integer;
   public
     procedure UserCall(ACaller: TCreature); dynamic; abstract;
     procedure UserSelect(ACreatureWho: TCreature; ASelected: String); dynamic; abstract;
@@ -41,6 +43,7 @@ type
     procedure RunCreature; override;
   public
     procedure ActivateNpcUtilitys(ASayString: String);
+    procedure CheckNpcSayCommand(AHuman: TUserHuman; var ASource: String; ATag: String);
     procedure NpcSay(ATarget: TCreature; AMessage: string);
     procedure NpcSayTitle(ACreatureWho: TCreature; ATitle: String);
     function ChangeNpcSayTag(ASource, AOriginal, AData: String): String;
@@ -206,6 +209,60 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
      if pos ('@makedrug'  , FTempString) > 0 then CanMakeDrug      := True;
      if pos ('@upgradenow', FTempString) > 0 then CanUpgrade       := True;
   end;  //TODO : add @usemarket @usewarehouse
+
+  procedure TNormNpc.CheckNpcSayCommand(AHuman: TUserHuman; var ASource: String; ATag: String);
+  var
+
+
+     data, str2: string;
+     n: integer;
+  begin
+    if ATag = '$USERNAME'                then ASource := ChangeNpcSayTag(ASource, '<$USERNAME>'               , AHuman.UserName);
+    if ATag = '$PKTIME'                  then ASource := ChangeNpcSayTag(ASource, '<$PKTIME>'                 , AHuman.UserName);  //GetPKTimeMin
+    if ATag = '$NPCNAME'                 then ASource := ChangeNpcSayTag(ASource, '<$NPCNAME>'                , AHuman.UserName);
+    if ATag = '$GUILD'                   then ASource := ChangeNpcSayTag(ASource, '<$GUILD>'                  , AHuman.UserName);
+    if ATag = '$INPUTSTR'                then ASource := ChangeNpcSayTag(ASource, '<$INPUTSTR>'               , AHuman.UserName);
+    if ATag = '$INPUTNUM'                then ASource := ChangeNpcSayTag(ASource, '<$INPUTNUM>'               , AHuman.UserName);
+    if ATag = '$PRICERATE'               then ASource := ChangeNpcSayTag(ASource, '<$PRICERATE>'              , AHuman.UserName);
+    if ATag = '$USERWEAPON'              then ASource := ChangeNpcSayTag(ASource, '<$USERWEAPON>'             , AHuman.UserName);
+
+    if ATag = '$OUTPUT('                 then ASource := ChangeNpcSayTag(ASource, '<$INPUTNUM>'               , AHuman.UserName);
+    if ATag = '$GMERANK('                then ASource := ChangeNpcSayTag(ASource, '<$INPUTNUM>'               , AHuman.UserName);
+    if ATag = '$CS_'                     then ASource := ChangeNpcSayTag(ASource, '<$INPUTNUM>'               , AHuman.UserName);
+
+    (* Sabuk Commands *)
+    if ATag = '$CS_SABUK_WARDATE'        then ASource := ChangeNpcSayTag(ASource, '<$CS_SABUK_WARDATE>'       , AHuman.UserName);
+    if ATag = '$CS_SABUK_OWNER'          then ASource := ChangeNpcSayTag(ASource, '<$CS_SABUK_OWNER>'         , AHuman.UserName);
+    if ATag = '$CS_SABUK_ATTACKGUILDS'   then ASource := ChangeNpcSayTag(ASource, '<$CS_SABUK_ATTACKGUILDS>'  , AHuman.UserName);
+    if ATag = '$CS_SABUK_TODAYTAX'       then ASource := ChangeNpcSayTag(ASource, '<$CS_SABUK_TODAYTAX>'      , AHuman.UserName);
+    if ATag = '$CS_SABUK_CASTLEGOLD'     then ASource := ChangeNpcSayTag(ASource, '<$CS_SABUK_CASTLEGOLD>'    , AHuman.UserName);
+    (* Taosung Commands *)
+    if ATag = '$CS_TAOSUNG_WARDATE'      then ASource := ChangeNpcSayTag(ASource, '<$CS_TAOSUNG_WARDATE>'     , AHuman.UserName);
+    if ATag = '$CS_TAOSUNG_OWNER'        then ASource := ChangeNpcSayTag(ASource, '<$CS_TAOSUNG_OWNER>'       , AHuman.UserName);
+    if ATag = '$CS_TAOSUNG_ATTACKGUILDS' then ASource := ChangeNpcSayTag(ASource, '<$CS_TAOSUNG_ATTACKGUILDS>', AHuman.UserName);
+    if ATag = '$CS_TAOSUNG_TODAYTAX'     then ASource := ChangeNpcSayTag(ASource, '<$CS_TAOSUNG_TODAYTAX>'    , AHuman.UserName);
+    if ATag = '$CS_TAOSUNG_CASTLEGOLD'   then ASource := ChangeNpcSayTag(ASource, '<$CS_TAOSUNG_CASTLEGOLD>'  , AHuman.UserName);
+    //<VALUE ID="341" STRING_TEXT="The Siege Warfare is in progress." TYPE="Message" />
+    //<VALUE ID="342" STRING_TEXT="No Siege Warfare is scheduled." TYPE="Message" />
+    //<VALUE ID="340" STRING_TEXT="There are no upcoming Siege Warfare scheduled." TYPE="Message" />
+    //<VALUE ID="346" STRING_TEXT="&lt;Back/@main&gt; " TYPE="Script" />
+
+     if CompareLStr(ATag, '$OUTPUT(', 8)  then
+     begin
+        ArrestString(ATag, '(', ')', str2);
+        n := GetVarIndex(str2);
+//        if n >= 0 then begin
+//           case n of
+//              0..9:       source := ChangeNpcSayTag(source, '<'+tag+'>', IntToStr(TUserHuman(hum).QuestParams[n]));
+//              100..109:   source := ChangeNpcSayTag(source, '<'+tag+'>', IntToStr(GrobalQuestParams[n-100]));
+//              200..209:   source := ChangeNpcSayTag(source, '<'+tag+'>', IntToStr(TUserHuman(hum).DiceParams[n-200]));
+//              300..309:   source := ChangeNpcSayTag(source, '<'+tag+'>', IntToStr(PEnvir.MapQuestParams[n-300]));
+//           end;
+//        end;
+     end;
+  end;
+
+
 
   procedure TNormNpc.NpcSay(ATarget: TCreature; AMessage: string);
   begin
@@ -812,7 +869,7 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
      FTag          : Integer;
      FQuestActInfo : PQuestActioninfo;
    begin
-     for i:=0 to AActionList.Count-1 do
+     for I := 0 to AActionList.Count-1 do
      begin
        FQuestActInfo := PQuestActioninfo(AActionList[i]);
        case FQuestActInfo.RActIdent of
@@ -1020,7 +1077,7 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
          QA_WRITEWEAPONNAMEEX : begin
 
          end;
-         QA_DELAYGOTO : begin
+         QA_DELAYGOTO : begin  // Delaygoto [Grobal] 30 @TosungCastle_Numa
 
          end;
          QA_ENABLECMD : begin
@@ -1029,7 +1086,7 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
          QA_SENDNOTICEMS : begin
 
          end;
-         QA_LINEMSG : begin
+         QA_LINEMSG : begin // lineMsg [Grobal] "(!)... "   / lineMsg [Local] "(!)
 
          end;
          QA_EVENTMSG : begin
@@ -1086,7 +1143,7 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
          QA_FINISHCASTLEWAR : begin
 
          end;
-         QA_MOVENPC : begin
+         QA_MOVENPC : begin // movenpc "5,243,86,NPCName" Z013 8 15
 
          end;
          QA_NPCNAMECHG : begin
@@ -1116,10 +1173,10 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
          QA_LEAVESHOOTER : begin
 
          end;
-         QA_CHANGEMAPATTR : begin
+         QA_CHANGEMAPATTR : begin //ChangeMapAttr "5" "SAFE"
 
          end;
-         QA_RESETMAPATTR : begin
+         QA_RESETMAPATTR : begin //ResetMapAttr "5"
 
          end;
          QA_MAKECASTLEDOOR : begin
@@ -1131,7 +1188,7 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
          QA_CHARGESHOOTER : begin
 
          end;
-         QA_SETAREAATTR : begin
+         QA_SETAREAATTR : begin //SetAreaAttr "5, 265, 88, 6" "NoFly"
 
          end;
          QA_CLEARDELAYGOTO : begin
@@ -1610,6 +1667,53 @@ uses System.SysUtils, System.Math, Mir3.Forms.Main.System,
 {$ENDREGION}
 
 {$REGION ' - TNormNPC Private Functions '}
+  function TNormNPC.GetVarIndex(AValue: String): Integer;
+  var
+    FNumber : Integer;
+  begin
+    Result := -1;
+    if Length(AValue) = 2 then
+    begin
+      case IndexStr(UpCase(AValue[1]), ['P','N','D','X','Y','Z','S','A','B']) of
+        0 : begin //P
+          FNumber := StrToIntDef(AValue[2], -1);
+          if FNumber in [0..9] then Result := FNumber;
+        end;
+        1 : begin //N
+          FNumber := StrToIntDef(Copy(AValue, 2, 2), -1);
+          if FNumber in [0..99] then Result := FNumber + 100;
+        end;
+        2 : begin //D
+          FNumber := StrToIntDef(AValue[2], -1);
+          if FNumber in [0..9] then Result := FNumber + 200;
+        end;
+        3 : begin //X
+          FNumber    := StrToIntDef(Copy(AValue, 2, 2), -1);
+          if FNumber in [0..99] then Result := FNumber + 1200;
+        end;
+        4 : begin //Y
+          FNumber := StrToIntDef(Copy(AValue, 2, 2), -1);
+          if FNumber in [0..99] then Result := FNumber + 1300;
+        end;
+        5 : begin //Z
+          FNumber := StrToIntDef(Copy(AValue, 2, 2), -1);
+          if FNumber in [0..99] then Result := FNumber + 300;
+        end;
+        6 : begin //S
+          FNumber := StrToIntDef(AValue[2], -1);
+          if FNumber in [0..4] then Result := FNumber + 400;
+        end;
+        7 : begin //A
+          FNumber := StrToIntDef(AValue[2], -1);
+          if FNumber in [0..9] then Result := FNumber + 1000;
+        end;
+        8 : begin //B
+          FNumber := StrToIntDef(AValue[2], -1);
+          if FNumber in [0..9] then Result := FNumber + 1100;
+        end;
+      end;
+    end;
+  end;
 
 {$ENDREGION}
 
