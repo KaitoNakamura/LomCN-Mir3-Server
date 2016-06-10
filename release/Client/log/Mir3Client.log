@@ -1,0 +1,25 @@
+LomCN Mir3 Engine Started..
+
+LomCN Mir3 Engine version ( 0.1 )
+**********************************************************
+Date         : 10. 6.2016, 19:22:12
+Application  : LOMCN Mir3 Client - 0.0.3.0 - (800x600)
+OS           : Windows 6.1.7601
+Memory       : 4194303K total, 4194303K free
+Sample rate  : 44100
+D3D Driver   : nvumdshim.dll
+Description  : NVIDIA Quadro K1000M
+Version      : 10.18.13.6822
+Mode         : 800x600 - A8R8G8B8
+
+System Initiate Done.
+
+Sound engine initialized..
+Language Autor   : Azura, Coly, SomebodyElse
+Language Version : 3
+Language engine initialized
+Sound engine destroy success..
+Language engine destroy success
+
+Finishing..
+The End.
