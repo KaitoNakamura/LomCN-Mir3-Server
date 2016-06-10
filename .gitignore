@@ -1,9 +1,13 @@
 # Delphi
 # =========================
 *.local
-*.dproj
 *.stat
 *.dcu
+*.wix
+*.wil
+*.wav
+*.wes
+*.map
 __recovery
 __history
 
