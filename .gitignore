@@ -3,6 +3,9 @@
 *.local
 *.dproj
 *.stat
+*.dcu
+__recovery
+__history
 
 # Windows
 # =========================
