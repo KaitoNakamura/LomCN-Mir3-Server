@@ -3794,6 +3794,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     8001000080010000C0030000F87F0000F1FF0000}
   OldCreateOrder = False
   Position = poScreenCenter
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object wbGameServerNews: TsWebBrowser
@@ -3833,14 +3834,14 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     TabOrder = 2
     ExplicitTop = 445
     ExplicitWidth = 872
-    object sLabel1: TsLabel
+    object laDownload: TsLabel
       Left = 32
       Top = 47
       Width = 47
       Height = 13
       Caption = 'Download'
     end
-    object sLabel2: TsLabel
+    object laProgress: TsLabel
       Left = 32
       Top = 68
       Width = 61

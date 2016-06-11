@@ -20,14 +20,15 @@ type
     sProgressBar2: TsProgressBar;
     btnStartGame: TsButton;
     wbGameServerNews: TsWebBrowser;
-    sLabel1: TsLabel;
-    sLabel2: TsLabel;
+    laDownload: TsLabel;
+    laProgress: TsLabel;
     sPanel2: TsPanel;
     procedure wbGameServerNewsDocumentComplete(ASender: TObject;
       const pDisp: IDispatch; const URL: OleVariant);
     procedure btnStartGameClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
-    FLanguageEngine          : TMir3_LauncherLanguageEngine;
+    FLanguageEngine : TMir3_LauncherLanguageEngine;
   public
     { Public-Deklarationen }
   end;
@@ -39,6 +40,20 @@ implementation
 
 {$R *.dfm}
 
+procedure TfrmMir3MainSystem.FormCreate(Sender: TObject);
+begin
+ FLanguageEngine      := TMir3_LauncherLanguageEngine.Create('fix me');
+ laDownload.Caption   := FLanguageEngine.GetTextFromLangSystem(1);
+ laProgress.Caption   := FLanguageEngine.GetTextFromLangSystem(2);
+ btnStartGame.Caption := FLanguageEngine.GetTextFromLangSystem(3);
+end;
+
+procedure TfrmMir3MainSystem.btnStartGameClick(Sender: TObject);
+begin
+  { Start Game }
+  WinExec(PAnsiChar(AnsiString(ExtractFilePath(ParamStr(0)) + 'LomCN_Mir3Client.exe launcher')), SW_SHOW);
+  Close;
+end;
 
   {$REGION ' - WebBrowser functions '}
     procedure WB_Set3DBorderStyle(Sender: TObject; bValue: Boolean);
@@ -82,13 +97,5 @@ implementation
     end;
 
   {$ENDREGION}
-
-
-procedure TfrmMir3MainSystem.btnStartGameClick(Sender: TObject);
-begin
-  { Start Game }
-  WinExec(PAnsiChar(AnsiString(ExtractFilePath(ParamStr(0)) + 'LomCN_Mir3Client.exe launcher')), SW_SHOW);
-  Close;
-end;
 
 end.

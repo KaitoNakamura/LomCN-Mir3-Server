@@ -65,6 +65,8 @@ begin
 //      GRenderEngine.System_Log('No english language file found..');
 //      GRenderEngine.System_Log('Initialize language engine fail..');
 //    end;
+  end else begin
+    FLangLauncherFileCols := GetLangLauncherFileTextCols;
   end;
 
 //
