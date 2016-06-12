@@ -2,7 +2,7 @@ unit Mir3ServerFunctions;
 
 interface
 
-uses System.SysUtils, Mir3ServerCore;
+uses WinAPI.Windows, System.SysUtils, Mir3ServerCore;
 
 
 function ArrestString(ASource, ASearchAfter, AArrestBefore: String; var AArrestStr: String): String;
@@ -15,6 +15,7 @@ function GetGoldLooks(AGoldCount: Integer): Integer;
 function CharCount(AStr: String; AChr: Char): Integer;
 function ReplaceChar(ASource: String; ASourceChar, AReplaceChar: Char): String;
 function GetStartPointMapName(AIndex: Integer): String;
+function GetFileVersionString(const AFilepath : String) : String;
 
 implementation
 
@@ -283,7 +284,7 @@ end;
 
 function GetStartPointMapName(AIndex: Integer): String;
 var
-   str, mapstr, rangestr: string;
+   str, mapstr: string;
 begin
    str := '';
    Result := '';
@@ -296,6 +297,43 @@ begin
       str := GetValidStr3(str, mapstr, ['/']);
       Result := mapstr;
    end;
+end;
+
+function GetFileVersionString(const AFilepath : String) : String;
+const
+  sFixVerFormat = ' %d.%d.%d.%d';
+var
+  dwVersionSize : DWord;
+  dwDummy   : DWord;
+  pVerBuf   : Pointer;
+  pFixBuf   : Winapi.Windows.PVSFixedFileInfo;
+  sReqdInfo : string;
+begin
+  pVerBuf := nil;
+  Result := Format(sFixVerFormat,[0,0,0,0]);
+  dwDummy := 0;
+  sReqdInfo := '\';
+  dwVersionSize := GetFileVersionInfoSize(PChar(AFilepath),dwDummy);
+  if dwVersionSize > 0 then
+  begin
+    try
+      pVerBuf := AllocMem(dwVersionSize);
+      if GetFileVersionInfo(PChar(AFilepath),0,dwVersionSize,pVerBuf) then
+      begin
+        if VerQueryValue(pVerBuf,PChar(sReqdInfo),Pointer(pFixBuf),dwDummy) then
+        begin
+          Result := Format(sFixVerFormat,[
+            (pFixBuf^.dwFileVersionMS and $FFFF0000) shr 16,
+            pFixBuf^.dwFileVersionMS and $0000FFFF,
+            (pFixBuf^.dwFileVersionLS and $FFFF0000) shr 16,
+            pFixBuf^.dwFileVersionLS and $0000FFFF
+           ]);
+        end;
+      end;
+    finally
+      FreeMem(pVerBuf,dwVersionSize);
+    end;
+  end;
 end;
 
 end.

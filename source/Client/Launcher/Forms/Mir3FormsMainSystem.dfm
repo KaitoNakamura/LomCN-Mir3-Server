@@ -3794,21 +3794,46 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     8001000080010000C0030000F87F0000F1FF0000}
   OldCreateOrder = False
   Position = poScreenCenter
+  OnClose = FormClose
   OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
-  object wbGameServerNews: TsWebBrowser
+  object plAccountMenu: TsPanel
     Left = 0
     Top = 0
     Width = 866
-    Height = 417
+    Height = 376
     Align = alClient
+    BevelOuter = bvLowered
+    TabOrder = 3
+    Visible = False
+    ExplicitLeft = 8
+    ExplicitWidth = 425
+    ExplicitHeight = 233
+    object sButton2: TsButton
+      Left = 728
+      Top = 326
+      Width = 113
+      Height = 22
+      Caption = 'Save and Close'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 0
+      Visible = False
+      OnClick = btnStartGameClick
+    end
+  end
+  object wbGameServerNews: TsWebBrowser
+    Left = 8
+    Top = 16
+    Width = 300
+    Height = 150
     TabOrder = 0
     OnDocumentComplete = wbGameServerNewsDocumentComplete
-    ExplicitLeft = 208
-    ExplicitTop = 104
-    ExplicitWidth = 300
-    ExplicitHeight = 150
     ControlData = {
       4C000000021F0000810F00000000000000000000000000000000000000000000
       000000004C000000000000000000000001000000E0D057007335CF11AE690800
@@ -3816,63 +3841,31 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       8000000000000000000000000000000000000000000000000000000000000000
       00000000000000000100000000000000000000000000000000000000}
   end
-  object sStatusBar1: TsStatusBar
+  object stbMain: TsStatusBar
     Left = 0
     Top = 517
     Width = 866
     Height = 32
-    Panels = <>
+    Panels = <
+      item
+        Text = 'Game Version : 0.0.0.0'
+        Width = 200
+      end>
     ExplicitTop = 545
     ExplicitWidth = 872
   end
   object sPanel1: TsPanel
     Left = 0
-    Top = 417
+    Top = 376
     Width = 866
-    Height = 100
+    Height = 141
     Align = alBottom
     TabOrder = 2
-    ExplicitTop = 445
-    ExplicitWidth = 872
-    object laDownload: TsLabel
-      Left = 32
-      Top = 47
-      Width = 47
-      Height = 13
-      Caption = 'Download'
-    end
-    object laProgress: TsLabel
-      Left = 32
-      Top = 68
-      Width = 61
-      Height = 13
-      Caption = 'Full Progress'
-    end
-    object sProgressBar1: TsProgressBar
-      Left = 117
-      Top = 47
-      Width = 479
-      Height = 15
-      Smooth = True
-      BarColor = 52736
-      TabOrder = 0
-      ProgressSkin = 'MIR3_PROGRESS_1'
-    end
-    object sProgressBar2: TsProgressBar
-      Left = 117
-      Top = 68
-      Width = 479
-      Height = 15
-      Smooth = True
-      BarColor = 64507
-      TabOrder = 1
-      ProgressSkin = 'MIR3_PROGRESS_2'
-    end
     object btnStartGame: TsButton
-      Left = 664
-      Top = 32
-      Width = 145
-      Height = 41
+      Left = 703
+      Top = 53
+      Width = 132
+      Height = 42
       Caption = 'Start Game'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
@@ -3880,18 +3873,551 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
       ParentFont = False
+      TabOrder = 0
+      OnClick = btnStartGameClick
+    end
+    object btnOption: TsButton
+      Left = 712
+      Top = 107
+      Width = 113
+      Height = 22
+      Caption = 'Option'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 1
+      OnClick = btnOptionClick
+    end
+    object btnAccount: TsButton
+      Left = 271
+      Top = 19
+      Width = 113
+      Height = 22
+      Caption = 'Account'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
       TabOrder = 2
+      OnClick = btnAccountClick
+    end
+    object btnHTMLChangePassword: TsButton
+      Left = 390
+      Top = 19
+      Width = 113
+      Height = 22
+      Caption = 'Change Password'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      Visible = False
       OnClick = btnStartGameClick
     end
     object sPanel2: TsPanel
       Left = 32
-      Top = 18
-      Width = 565
-      Height = 23
+      Top = 47
+      Width = 641
+      Height = 88
+      TabOrder = 4
+      object laDownload: TsLabel
+        Left = 17
+        Top = 40
+        Width = 47
+        Height = 13
+        Caption = 'Download'
+      end
+      object laProgress: TsLabel
+        Left = 17
+        Top = 61
+        Width = 61
+        Height = 13
+        Caption = 'Full Progress'
+      end
+      object sLabel1: TsLabel
+        Left = 587
+        Top = 40
+        Width = 35
+        Height = 13
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = '0 %'
+      end
+      object sLabel2: TsLabel
+        Left = 587
+        Top = 61
+        Width = 35
+        Height = 13
+        Alignment = taRightJustify
+        AutoSize = False
+        Caption = '0 %'
+      end
+      object sLabel3: TsLabel
+        Left = 17
+        Top = 16
+        Width = 564
+        Height = 13
+        AutoSize = False
+        Caption = 'Download : ...'
+        ParentFont = False
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+      end
+      object sProgressBar1: TsProgressBar
+        Left = 102
+        Top = 39
+        Width = 479
+        Height = 15
+        Smooth = True
+        BarColor = 52736
+        TabOrder = 0
+        ProgressSkin = 'MIR3_PROGRESS_1'
+      end
+      object sProgressBar2: TsProgressBar
+        Left = 102
+        Top = 60
+        Width = 479
+        Height = 15
+        Smooth = True
+        BarColor = 64507
+        TabOrder = 1
+        ProgressSkin = 'MIR3_PROGRESS_2'
+      end
+    end
+    object btnHTMLNews: TsButton
+      Left = 152
+      Top = 19
+      Width = 113
+      Height = 22
+      Caption = 'News'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 5
+      Visible = False
+      OnClick = btnStartGameClick
+    end
+    object btnHTMLHome: TsButton
+      Left = 33
+      Top = 19
+      Width = 113
+      Height = 22
+      Caption = 'Home'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 6
+      Visible = False
+      OnClick = btnStartGameClick
+    end
+  end
+  object plOptionMenu: TsPanel
+    Left = 0
+    Top = 0
+    Width = 866
+    Height = 376
+    BevelOuter = bvLowered
+    TabOrder = 4
+    Visible = False
+    object laLanguage: TsLabel
+      Left = 32
+      Top = 45
+      Width = 47
+      Height = 13
+      Caption = 'Language'
+    end
+    object laScreenResolution: TsLabel
+      Left = 264
+      Top = 45
+      Width = 86
+      Height = 13
+      Caption = 'Screen Resolution'
+    end
+    object cbLanguages: TsComboBox
+      Left = 32
+      Top = 64
+      Width = 145
+      Height = 21
       Alignment = taLeftJustify
-      Caption = ' Download : '
+      VerticalAlignment = taAlignTop
+      Color = 15855332
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ItemIndex = -1
+      ParentFont = False
+      TabOrder = 0
+      Text = 'English'
+    end
+    object cbScreenResolution: TsComboBox
+      Left = 260
+      Top = 64
+      Width = 145
+      Height = 21
+      Alignment = taLeftJustify
+      VerticalAlignment = taAlignTop
+      Color = 15855332
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clBlack
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ItemIndex = -1
+      ParentFont = False
+      TabOrder = 1
+      Text = '800x600'
+      Items.Strings = (
+        '800x600'
+        '1024x768')
+    end
+    object pcOptionSystem: TsPageControl
+      Left = 1
+      Top = 158
+      Width = 864
+      Height = 183
+      ActivePage = tsInGameOption
+      Align = alBottom
+      TabOrder = 2
+      object tsInGameOption: TsTabSheet
+        Caption = ' InGame Option '
+        ExplicitHeight = 114
+        object cbShowMonster: TsCheckBox
+          Left = 31
+          Top = 21
+          Width = 203
+          Height = 17
+          Caption = 'Show Monster'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowMonsterEffect: TsCheckBox
+          Left = 31
+          Top = 44
+          Width = 203
+          Height = 17
+          Caption = 'Show Monster Effect'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowMonsterInfoWindow: TsCheckBox
+          Left = 31
+          Top = 67
+          Width = 203
+          Height = 17
+          Caption = 'Show Monster Info Window'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 2
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowHealthBar: TsCheckBox
+          Left = 283
+          Top = 21
+          Width = 203
+          Height = 17
+          Caption = 'Show Health Bar'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 3
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowHelmet: TsCheckBox
+          Left = 31
+          Top = 113
+          Width = 203
+          Height = 17
+          Caption = 'Show Helmet'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 4
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowPetChatting: TsCheckBox
+          Left = 31
+          Top = 90
+          Width = 203
+          Height = 17
+          Caption = 'Show Pet Chatting'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 5
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowCharacterName: TsCheckBox
+          Left = 518
+          Top = 21
+          Width = 203
+          Height = 17
+          Caption = 'Show Character Name'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 6
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowTooltipImage: TsCheckBox
+          Left = 283
+          Top = 113
+          Width = 203
+          Height = 17
+          Caption = 'Show Tooltip Image'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 7
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowNewMessage: TsCheckBox
+          Left = 283
+          Top = 90
+          Width = 203
+          Height = 17
+          Caption = 'Show New Message'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 8
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowWeather: TsCheckBox
+          Left = 283
+          Top = 67
+          Width = 203
+          Height = 17
+          Caption = 'Show Weather'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 9
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbShowDropItem: TsCheckBox
+          Left = 283
+          Top = 44
+          Width = 203
+          Height = 17
+          Caption = 'Show Drop Item'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 10
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+      end
+      object tsSound: TsTabSheet
+        Caption = ' Sound and Video '
+        ExplicitHeight = 114
+        object laBGMVolume: TsLabel
+          Left = 41
+          Top = 76
+          Width = 58
+          Height = 13
+          Caption = 'BGM Volume'
+        end
+        object laFXVolume: TsLabel
+          Left = 295
+          Top = 76
+          Width = 49
+          Height = 13
+          Caption = 'FX Volume'
+        end
+        object laVideoVolume: TsLabel
+          Left = 549
+          Top = 76
+          Width = 63
+          Height = 13
+          Caption = 'Video Volume'
+        end
+        object cbBGMSoundActive: TsCheckBox
+          Left = 37
+          Top = 38
+          Width = 248
+          Height = 17
+          Caption = 'Activate Background Music'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object cbFXSoundActive: TsCheckBox
+          Left = 291
+          Top = 38
+          Width = 248
+          Height = 17
+          Caption = 'Activate FX Sound'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object spBGMSoundVolum: TsSpinEdit
+          Left = 39
+          Top = 95
+          Width = 80
+          Height = 21
+          Alignment = taCenter
+          Color = 15855332
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          NumbersOnly = True
+          ParentFont = False
+          TabOrder = 2
+          Text = '90'
+          MaxValue = 100
+          MinValue = 1
+          Value = 90
+        end
+        object spFXSoundVolum: TsSpinEdit
+          Left = 293
+          Top = 95
+          Width = 80
+          Height = 21
+          Alignment = taCenter
+          Color = 15855332
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          NumbersOnly = True
+          ParentFont = False
+          TabOrder = 3
+          Text = '90'
+          MaxValue = 100
+          MinValue = 1
+          Value = 90
+        end
+        object cbShowStartVideo: TsCheckBox
+          Left = 545
+          Top = 38
+          Width = 203
+          Height = 17
+          Caption = 'Show Start Video'
+          AutoSize = False
+          Checked = True
+          State = cbChecked
+          TabOrder = 4
+          ImgChecked = 0
+          ImgUnchecked = 0
+        end
+        object spVideoVolume: TsSpinEdit
+          Left = 547
+          Top = 95
+          Width = 80
+          Height = 21
+          Alignment = taCenter
+          Color = 15855332
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Tahoma'
+          Font.Style = []
+          NumbersOnly = True
+          ParentFont = False
+          TabOrder = 5
+          Text = '90'
+          MaxValue = 100
+          MinValue = 1
+          Value = 90
+        end
+      end
+    end
+    object plOptionBottom: TsPanel
+      Left = 1
+      Top = 341
+      Width = 864
+      Height = 34
+      Align = alBottom
+      BevelOuter = bvNone
       TabOrder = 3
-      SkinData.SkinSection = 'EDIT'
+      ExplicitTop = 340
+      object btnOptSaveClose: TsButton
+        Left = 608
+        Top = 6
+        Width = 113
+        Height = 22
+        Caption = 'Save and Close'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 0
+      end
+      object btnOptCancel: TsButton
+        Left = 744
+        Top = 6
+        Width = 113
+        Height = 22
+        Caption = 'Cancel'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+        TabOrder = 1
+        OnClick = btnOptCancelClick
+      end
+    end
+    object cbFullScreen: TsCheckBox
+      Left = 483
+      Top = 66
+      Width = 203
+      Height = 17
+      Caption = 'Show Full Sceen'
+      AutoSize = False
+      TabOrder = 4
+      ImgChecked = 0
+      ImgUnchecked = 0
     end
   end
   object sSkinManager1: TsSkinManager
@@ -7206,17 +7732,17 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     ThirdParty.ThirdScrollBar = ' '
     ThirdParty.ThirdStaticText = ' '
     ThirdParty.ThirdNativePaint = ' '
-    Left = 752
-    Top = 103
+    Left = 808
+    Top = 31
   end
   object sSkinProvider1: TsSkinProvider
     SkinData.SkinSection = 'FORM'
-    TitleBar = sTitleBar1
+    TitleBar = tbMain
     TitleButtons = <>
-    Left = 752
-    Top = 151
+    Left = 808
+    Top = 79
   end
-  object sTitleBar1: TsTitleBar
+  object tbMain: TsTitleBar
     Items = <
       item
         Align = tbaCenterInSpace
@@ -7235,7 +7761,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
         Width = 134
       end>
     ShowCaption = True
-    Left = 752
-    Top = 199
+    Left = 808
+    Top = 127
   end
 end

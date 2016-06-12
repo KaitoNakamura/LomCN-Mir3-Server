@@ -3,7 +3,7 @@
         <ProjectGuid>{D2C55AFF-5F08-40C3-9626-8330112D5A36}</ProjectGuid>
         <MainSource>Polish.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Debug</Config>
+        <Config Condition="'$(Config)'==''">Release</Config>
         <TargetedPlatforms>1</TargetedPlatforms>
         <AppType>Library</AppType>
         <FrameworkType>None</FrameworkType>

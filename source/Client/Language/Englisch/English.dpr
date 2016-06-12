@@ -37,7 +37,7 @@ uses
 
 const
   LANGUAGE_FILE_AUTOR   = 'Azura, Coly, SomebodyElse';
-  LANGUAGE_FILE_VERSION = $00000003;
+  LANGUAGE_FILE_VERSION = $00000004;
 
 function GetFileAutor(Buffer: PWideChar) : Integer; stdcall;
 var
