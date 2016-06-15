@@ -2,8 +2,8 @@ object frmConfigManager: TfrmConfigManager
   Left = 0
   Top = 0
   Caption = 'LomCN - Config Manager'
-  ClientHeight = 679
-  ClientWidth = 625
+  ClientHeight = 700
+  ClientWidth = 1013
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -3847,22 +3847,17 @@ object frmConfigManager: TfrmConfigManager
   object pcConfigManager: TPageControl
     Left = 0
     Top = 17
-    Width = 625
-    Height = 607
+    Width = 1013
+    Height = 628
     ActivePage = tsLauncher
     Align = alClient
     TabOrder = 0
     OnChange = pcConfigManagerChange
-    ExplicitTop = 11
-    ExplicitHeight = 583
     object tsLauncher: TTabSheet
       Caption = ' Mir3 Launcher Config  '
-      ExplicitLeft = 8
-      ExplicitTop = 22
-      ExplicitHeight = 392
       object Label5: TLabel
         Left = 22
-        Top = 41
+        Top = 77
         Width = 32
         Height = 13
         Caption = 'Name'
@@ -3875,7 +3870,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label6: TLabel
         Left = 12
-        Top = 68
+        Top = 104
         Width = 43
         Height = 13
         Caption = 'Caption'
@@ -3888,7 +3883,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label7: TLabel
         Left = 39
-        Top = 95
+        Top = 131
         Width = 12
         Height = 13
         Caption = 'IP'
@@ -3901,7 +3896,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label8: TLabel
         Left = 29
-        Top = 122
+        Top = 158
         Width = 24
         Height = 13
         Caption = 'Port'
@@ -3914,7 +3909,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label9: TLabel
         Left = 107
-        Top = 19
+        Top = 55
         Width = 48
         Height = 13
         Caption = 'Server 1'
@@ -3927,7 +3922,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label10: TLabel
         Left = 240
-        Top = 19
+        Top = 55
         Width = 48
         Height = 13
         Caption = 'Server 2'
@@ -3940,7 +3935,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label11: TLabel
         Left = 373
-        Top = 19
+        Top = 55
         Width = 48
         Height = 13
         Caption = 'Server 3'
@@ -3953,7 +3948,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label12: TLabel
         Left = 506
-        Top = 19
+        Top = 55
         Width = 48
         Height = 13
         Caption = 'Server 4'
@@ -3966,7 +3961,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label13: TLabel
         Left = 3
-        Top = 158
+        Top = 194
         Width = 121
         Height = 13
         Caption = 'Update Server Setup '
@@ -3992,7 +3987,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label15: TLabel
         Left = 27
-        Top = 202
+        Top = 238
         Width = 26
         Height = 13
         Caption = 'Host'
@@ -4005,7 +4000,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label16: TLabel
         Left = 29
-        Top = 229
+        Top = 265
         Width = 24
         Height = 13
         Caption = 'Port'
@@ -4018,7 +4013,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label17: TLabel
         Left = 27
-        Top = 258
+        Top = 294
         Width = 26
         Height = 13
         Caption = 'User'
@@ -4031,7 +4026,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label18: TLabel
         Left = 35
-        Top = 285
+        Top = 321
         Width = 18
         Height = 13
         Caption = 'PW'
@@ -4044,7 +4039,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label19: TLabel
         Left = 72
-        Top = 180
+        Top = 216
         Width = 112
         Height = 13
         Caption = 'Main Update Server'
@@ -4057,7 +4052,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label20: TLabel
         Left = 7
-        Top = 310
+        Top = 346
         Width = 47
         Height = 13
         Caption = 'Protocol'
@@ -4070,7 +4065,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label21: TLabel
         Left = 9
-        Top = 337
+        Top = 373
         Width = 46
         Height = 13
         Caption = 'Base Dir'
@@ -4083,7 +4078,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label22: TLabel
         Left = 12
-        Top = 364
+        Top = 400
         Width = 42
         Height = 13
         Caption = 'List File'
@@ -4095,8 +4090,8 @@ object frmConfigManager: TfrmConfigManager
         ParentFont = False
       end
       object Label23: TLabel
-        Left = 205
-        Top = 180
+        Left = 256
+        Top = 216
         Width = 87
         Height = 13
         Caption = 'Fallback Server'
@@ -4109,7 +4104,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label24: TLabel
         Left = 74
-        Top = 454
+        Top = 490
         Width = 33
         Height = 13
         Caption = 'Home'
@@ -4122,7 +4117,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label25: TLabel
         Left = 78
-        Top = 481
+        Top = 517
         Width = 29
         Height = 13
         Caption = 'News'
@@ -4135,7 +4130,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label26: TLabel
         Left = 61
-        Top = 508
+        Top = 544
         Width = 46
         Height = 13
         Caption = 'Account'
@@ -4148,7 +4143,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label27: TLabel
         Left = 8
-        Top = 535
+        Top = 571
         Width = 99
         Height = 13
         Caption = 'Change Password'
@@ -4161,7 +4156,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object Label29: TLabel
         Left = 3
-        Top = 426
+        Top = 462
         Width = 100
         Height = 13
         Caption = 'Home Page Setup'
@@ -4172,10 +4167,23 @@ object frmConfigManager: TfrmConfigManager
         Font.Style = [fsBold]
         ParentFont = False
       end
+      object Label30: TLabel
+        Left = 12
+        Top = 29
+        Width = 74
+        Height = 13
+        Caption = 'Server Count'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
       object Panel4: TPanel
         Left = 3
-        Top = 150
-        Width = 611
+        Top = 186
+        Width = 995
         Height = 2
         Color = clGray
         ParentBackground = False
@@ -4183,8 +4191,8 @@ object frmConfigManager: TfrmConfigManager
       end
       object Panel5: TPanel
         Left = 3
-        Top = 418
-        Width = 611
+        Top = 454
+        Width = 995
         Height = 2
         Color = clGray
         ParentBackground = False
@@ -4192,7 +4200,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerName1: TMaskEdit
         Left = 69
-        Top = 38
+        Top = 74
         Width = 121
         Height = 21
         TabOrder = 2
@@ -4200,7 +4208,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerCaption1: TMaskEdit
         Left = 69
-        Top = 65
+        Top = 101
         Width = 121
         Height = 21
         MaxLength = 40
@@ -4209,7 +4217,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerIP1: TMaskEdit
         Left = 69
-        Top = 92
+        Top = 128
         Width = 121
         Height = 21
         TabOrder = 4
@@ -4217,7 +4225,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerPort1: TMaskEdit
         Left = 69
-        Top = 119
+        Top = 155
         Width = 121
         Height = 21
         TabOrder = 5
@@ -4225,7 +4233,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerName2: TMaskEdit
         Left = 202
-        Top = 38
+        Top = 74
         Width = 121
         Height = 21
         TabOrder = 6
@@ -4233,7 +4241,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerCaption2: TMaskEdit
         Left = 202
-        Top = 65
+        Top = 101
         Width = 121
         Height = 21
         MaxLength = 40
@@ -4242,7 +4250,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerIP2: TMaskEdit
         Left = 202
-        Top = 92
+        Top = 128
         Width = 121
         Height = 21
         TabOrder = 8
@@ -4258,7 +4266,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerName3: TMaskEdit
         Left = 335
-        Top = 38
+        Top = 74
         Width = 121
         Height = 21
         TabOrder = 10
@@ -4266,7 +4274,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerCaption3: TMaskEdit
         Left = 335
-        Top = 65
+        Top = 101
         Width = 121
         Height = 21
         MaxLength = 40
@@ -4275,7 +4283,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerIP3: TMaskEdit
         Left = 335
-        Top = 92
+        Top = 128
         Width = 121
         Height = 21
         TabOrder = 12
@@ -4283,7 +4291,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerPort3: TMaskEdit
         Left = 335
-        Top = 119
+        Top = 155
         Width = 121
         Height = 21
         TabOrder = 13
@@ -4291,7 +4299,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerName4: TMaskEdit
         Left = 468
-        Top = 38
+        Top = 74
         Width = 121
         Height = 21
         TabOrder = 14
@@ -4299,7 +4307,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerCaption4: TMaskEdit
         Left = 468
-        Top = 65
+        Top = 101
         Width = 121
         Height = 21
         MaxLength = 40
@@ -4308,7 +4316,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerIP4: TMaskEdit
         Left = 468
-        Top = 92
+        Top = 128
         Width = 121
         Height = 21
         TabOrder = 16
@@ -4316,7 +4324,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerPort4: TMaskEdit
         Left = 468
-        Top = 119
+        Top = 155
         Width = 121
         Height = 21
         TabOrder = 17
@@ -4324,7 +4332,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meServerPort2: TMaskEdit
         Left = 202
-        Top = 119
+        Top = 155
         Width = 121
         Height = 21
         TabOrder = 18
@@ -4332,16 +4340,16 @@ object frmConfigManager: TfrmConfigManager
       end
       object meUpdateServerHost: TMaskEdit
         Left = 69
-        Top = 199
-        Width = 121
+        Top = 235
+        Width = 150
         Height = 21
         TabOrder = 19
         Text = ''
       end
       object meUpdateServerPort: TMaskEdit
         Left = 69
-        Top = 226
-        Width = 121
+        Top = 262
+        Width = 150
         Height = 21
         MaxLength = 40
         TabOrder = 20
@@ -4349,16 +4357,16 @@ object frmConfigManager: TfrmConfigManager
       end
       object meUpdateServerUser: TMaskEdit
         Left = 69
-        Top = 253
-        Width = 121
+        Top = 289
+        Width = 150
         Height = 21
         TabOrder = 21
         Text = ''
       end
       object meUpdateServerPassword: TMaskEdit
         Left = 69
-        Top = 280
-        Width = 121
+        Top = 316
+        Width = 150
         Height = 21
         PasswordChar = '*'
         TabOrder = 22
@@ -4366,8 +4374,8 @@ object frmConfigManager: TfrmConfigManager
       end
       object cbUpdateServerProtocol: TComboBox
         Left = 69
-        Top = 307
-        Width = 121
+        Top = 343
+        Width = 150
         Height = 21
         TabOrder = 23
         Text = 'HTTP'
@@ -4378,58 +4386,58 @@ object frmConfigManager: TfrmConfigManager
       end
       object meUpdateServerBaseDir: TMaskEdit
         Left = 69
-        Top = 334
-        Width = 121
+        Top = 370
+        Width = 150
         Height = 21
         TabOrder = 24
         Text = '\update\'
       end
       object meUpdateServerListFile: TMaskEdit
         Left = 69
-        Top = 361
-        Width = 121
+        Top = 397
+        Width = 150
         Height = 21
         TabOrder = 25
         Text = '!lomcn_mir3_list.lst.gz'
       end
       object meFallbackServerHost: TMaskEdit
-        Left = 202
-        Top = 199
-        Width = 121
+        Left = 253
+        Top = 235
+        Width = 150
         Height = 21
         TabOrder = 26
         Text = ''
       end
       object meFallbackServerPort: TMaskEdit
-        Left = 202
-        Top = 226
-        Width = 121
+        Left = 253
+        Top = 262
+        Width = 150
         Height = 21
         MaxLength = 40
         TabOrder = 27
         Text = '0'
       end
       object meFallbackServerUser: TMaskEdit
-        Left = 202
-        Top = 253
-        Width = 121
+        Left = 253
+        Top = 289
+        Width = 150
         Height = 21
         TabOrder = 28
         Text = ''
       end
       object meFallbackServerPassword: TMaskEdit
-        Left = 202
-        Top = 280
-        Width = 121
+        Left = 253
+        Top = 316
+        Width = 150
         Height = 21
         PasswordChar = '*'
         TabOrder = 29
         Text = ''
       end
       object cbFallbackServerProtocol: TComboBox
-        Left = 202
-        Top = 307
-        Width = 121
+        Left = 253
+        Top = 343
+        Width = 150
         Height = 21
         TabOrder = 30
         Text = 'HTTP'
@@ -4439,32 +4447,32 @@ object frmConfigManager: TfrmConfigManager
           'FTP')
       end
       object meFallbackServerBaseDir: TMaskEdit
-        Left = 202
-        Top = 334
-        Width = 121
+        Left = 253
+        Top = 370
+        Width = 150
         Height = 21
         TabOrder = 31
         Text = '\update\'
       end
       object meFallbackServerListFile: TMaskEdit
-        Left = 202
-        Top = 361
-        Width = 121
+        Left = 253
+        Top = 397
+        Width = 150
         Height = 21
         TabOrder = 32
         Text = '!lomcn_mir3_list.lst.gz'
       end
       object cbUseFallbackSystem: TCheckBox
-        Left = 351
-        Top = 201
+        Left = 439
+        Top = 237
         Width = 259
         Height = 17
         Caption = 'Use Fallback System'
         TabOrder = 33
       end
       object cbUseUpdateSystem: TCheckBox
-        Left = 351
-        Top = 224
+        Left = 439
+        Top = 260
         Width = 259
         Height = 17
         Caption = 'Client Use Update System'
@@ -4473,8 +4481,8 @@ object frmConfigManager: TfrmConfigManager
         TabOrder = 34
       end
       object cbUseHomePageBtn: TCheckBox
-        Left = 351
-        Top = 247
+        Left = 439
+        Top = 283
         Width = 259
         Height = 17
         Caption = 'Show Home Page Button'
@@ -4483,8 +4491,8 @@ object frmConfigManager: TfrmConfigManager
         TabOrder = 35
       end
       object cbUseHTMLAccountBtn: TCheckBox
-        Left = 360
-        Top = 294
+        Left = 448
+        Top = 330
         Width = 249
         Height = 17
         Caption = 'Show HTML Account Button'
@@ -4492,8 +4500,8 @@ object frmConfigManager: TfrmConfigManager
         TabOrder = 36
       end
       object cbUseHTMLChangePWBtn: TCheckBox
-        Left = 360
-        Top = 317
+        Left = 448
+        Top = 353
         Width = 235
         Height = 17
         Caption = 'Show HTML Change Password Button'
@@ -4501,8 +4509,8 @@ object frmConfigManager: TfrmConfigManager
         TabOrder = 37
       end
       object cbShowOptionButton: TCheckBox
-        Left = 351
-        Top = 384
+        Left = 439
+        Top = 420
         Width = 259
         Height = 17
         Caption = 'User can Change Client Option'
@@ -4511,16 +4519,16 @@ object frmConfigManager: TfrmConfigManager
         TabOrder = 38
       end
       object cbUseHTMLAccountManager: TCheckBox
-        Left = 351
-        Top = 271
+        Left = 439
+        Top = 307
         Width = 235
         Height = 17
         Caption = 'Use HTML Account Manager System'
         TabOrder = 39
       end
       object cbUseAccountManagerBtn: TCheckBox
-        Left = 351
-        Top = 361
+        Left = 439
+        Top = 397
         Width = 259
         Height = 17
         Caption = 'Show Account Manager Button'
@@ -4530,7 +4538,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meURL_HomePage: TMaskEdit
         Left = 113
-        Top = 451
+        Top = 487
         Width = 425
         Height = 21
         TabOrder = 41
@@ -4538,7 +4546,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meURL_NewsPage: TMaskEdit
         Left = 113
-        Top = 478
+        Top = 514
         Width = 425
         Height = 21
         TabOrder = 42
@@ -4546,7 +4554,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meURL_AccountManagerPage: TMaskEdit
         Left = 113
-        Top = 505
+        Top = 541
         Width = 425
         Height = 21
         Enabled = False
@@ -4555,7 +4563,7 @@ object frmConfigManager: TfrmConfigManager
       end
       object meURL_ChangePWPage: TMaskEdit
         Left = 113
-        Top = 532
+        Top = 568
         Width = 425
         Height = 21
         Enabled = False
@@ -4564,23 +4572,23 @@ object frmConfigManager: TfrmConfigManager
       end
       object cbUpdateServerPassiveMode: TCheckBox
         Left = 69
-        Top = 388
+        Top = 424
         Width = 127
         Height = 17
         Caption = 'Passive Mode'
         TabOrder = 45
       end
       object cbFallbackServerPassiveMode: TCheckBox
-        Left = 202
-        Top = 388
+        Left = 253
+        Top = 424
         Width = 127
         Height = 17
         Caption = 'Passive Mode'
         TabOrder = 46
       end
       object cbShowChangePasswordBtn: TCheckBox
-        Left = 351
-        Top = 338
+        Left = 439
+        Top = 374
         Width = 259
         Height = 17
         Caption = 'Show Change Password Button'
@@ -4588,13 +4596,37 @@ object frmConfigManager: TfrmConfigManager
         State = cbChecked
         TabOrder = 47
       end
+      object meServerCount: TMaskEdit
+        Left = 92
+        Top = 26
+        Width = 53
+        Height = 21
+        MaxLength = 40
+        TabOrder = 48
+        Text = '1'
+      end
+      object rbUseCRCCheck: TRadioButton
+        Left = 584
+        Top = 508
+        Width = 113
+        Height = 17
+        Caption = 'Use CRC Check'
+        Checked = True
+        TabOrder = 49
+        TabStop = True
+      end
+      object rbUseMD5Check: TRadioButton
+        Left = 584
+        Top = 538
+        Width = 113
+        Height = 17
+        Caption = 'Use MD5 Check'
+        TabOrder = 50
+      end
     end
     object tsClient: TTabSheet
       Caption = ' Client Startup Config '
       ImageIndex = 1
-      ExplicitLeft = 8
-      ExplicitTop = 22
-      ExplicitHeight = 450
       object Label1: TLabel
         Left = 3
         Top = 125
@@ -4893,48 +4925,1023 @@ object frmConfigManager: TfrmConfigManager
     object tsServerConfig: TTabSheet
       Caption = ' Server Config '
       ImageIndex = 2
-      ExplicitWidth = 465
-      ExplicitHeight = 165
+      object Label74: TLabel
+        Left = 3
+        Top = 3
+        Width = 113
+        Height = 13
+        Caption = 'Game Server Setup '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object TodoList3: TMemo
+        Left = 276
+        Top = 200
+        Width = 253
+        Height = 89
+        Lines.Strings = (
+          'TODO : '
+          ' - Add MSSQL Support'
+          ' - Add MYSQL Support'
+          ' - check if we need more config things'
+          ' - Add the full Server Config things here')
+        TabOrder = 0
+      end
+    end
+    object tsLoginGateConfig: TTabSheet
+      Caption = 'Login Gate Config'
+      ImageIndex = 3
+      object Label49: TLabel
+        Left = 38
+        Top = 67
+        Width = 80
+        Height = 13
+        Caption = 'Gate Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label50: TLabel
+        Left = 38
+        Top = 97
+        Width = 54
+        Height = 13
+        Caption = 'Gate Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label51: TLabel
+        Left = 3
+        Top = 3
+        Width = 99
+        Height = 13
+        Caption = 'Login Gate Setup '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label52: TLabel
+        Left = 270
+        Top = 67
+        Width = 91
+        Height = 13
+        Caption = 'Server Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label53: TLabel
+        Left = 270
+        Top = 97
+        Width = 65
+        Height = 13
+        Caption = 'Server Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label54: TLabel
+        Left = 38
+        Top = 155
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos X'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label55: TLabel
+        Left = 38
+        Top = 186
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos Y'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label56: TLabel
+        Left = 270
+        Top = 155
+        Width = 95
+        Height = 13
+        Caption = 'IP Ban / Blacklist'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label57: TLabel
+        Left = 271
+        Top = 186
+        Width = 82
+        Height = 13
+        Caption = 'Engine Version'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object meLoginGateHost: TMaskEdit
+        Left = 124
+        Top = 64
+        Width = 121
+        Height = 21
+        TabOrder = 0
+        Text = '127.0.0.1'
+      end
+      object meLoginGatePort: TMaskEdit
+        Left = 124
+        Top = 94
+        Width = 121
+        Height = 21
+        TabOrder = 1
+        Text = '0'
+      end
+      object meLoginWinPosX: TMaskEdit
+        Left = 124
+        Top = 152
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '10'
+      end
+      object meLoginWinPosY: TMaskEdit
+        Left = 124
+        Top = 183
+        Width = 121
+        Height = 21
+        TabOrder = 3
+        Text = '10'
+      end
+      object meLoginServerHost: TMaskEdit
+        Left = 367
+        Top = 64
+        Width = 121
+        Height = 21
+        TabOrder = 4
+        Text = '127.0.0.1'
+      end
+      object meLoginServerPort: TMaskEdit
+        Left = 367
+        Top = 94
+        Width = 121
+        Height = 21
+        TabOrder = 5
+        Text = '0'
+      end
+      object Panel9: TPanel
+        Left = 10
+        Top = 133
+        Width = 995
+        Height = 2
+        Color = clGray
+        ParentBackground = False
+        TabOrder = 6
+      end
+      object meLoginIPBlacklist: TMaskEdit
+        Left = 371
+        Top = 152
+        Width = 230
+        Height = 21
+        TabOrder = 7
+        Text = '.\Mir3IPBlacklist.txt'
+      end
+      object meLoginEngineVersion: TMaskEdit
+        Left = 372
+        Top = 183
+        Width = 29
+        Height = 21
+        Alignment = taCenter
+        TabOrder = 8
+        Text = '1'
+      end
+    end
+    object tsSelectCharGateConfig: TTabSheet
+      Caption = 'Select Char Gate Config'
+      ImageIndex = 4
+      object Label40: TLabel
+        Left = 30
+        Top = 59
+        Width = 80
+        Height = 13
+        Caption = 'Gate Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label41: TLabel
+        Left = 30
+        Top = 89
+        Width = 54
+        Height = 13
+        Caption = 'Gate Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label42: TLabel
+        Left = 3
+        Top = 3
+        Width = 133
+        Height = 13
+        Caption = 'Select Char Gate Setup '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label43: TLabel
+        Left = 262
+        Top = 59
+        Width = 91
+        Height = 13
+        Caption = 'Server Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label44: TLabel
+        Left = 262
+        Top = 89
+        Width = 65
+        Height = 13
+        Caption = 'Server Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label45: TLabel
+        Left = 30
+        Top = 147
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos X'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label46: TLabel
+        Left = 30
+        Top = 178
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos Y'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label47: TLabel
+        Left = 262
+        Top = 147
+        Width = 95
+        Height = 13
+        Caption = 'IP Ban / Blacklist'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label48: TLabel
+        Left = 263
+        Top = 178
+        Width = 82
+        Height = 13
+        Caption = 'Engine Version'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object meSelectCharGateHost: TMaskEdit
+        Left = 116
+        Top = 56
+        Width = 121
+        Height = 21
+        TabOrder = 0
+        Text = '127.0.0.1'
+      end
+      object meSelectCharGatePort: TMaskEdit
+        Left = 116
+        Top = 86
+        Width = 121
+        Height = 21
+        TabOrder = 1
+        Text = '0'
+      end
+      object meSelectCharWinPosX: TMaskEdit
+        Left = 116
+        Top = 144
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '10'
+      end
+      object meSelectCharWinPosY: TMaskEdit
+        Left = 116
+        Top = 175
+        Width = 121
+        Height = 21
+        TabOrder = 3
+        Text = '10'
+      end
+      object meSelectCharServerHost: TMaskEdit
+        Left = 359
+        Top = 56
+        Width = 121
+        Height = 21
+        TabOrder = 4
+        Text = '127.0.0.1'
+      end
+      object meSelectCharServerPort: TMaskEdit
+        Left = 359
+        Top = 86
+        Width = 121
+        Height = 21
+        TabOrder = 5
+        Text = '0'
+      end
+      object Panel8: TPanel
+        Left = 10
+        Top = 125
+        Width = 995
+        Height = 2
+        Color = clGray
+        ParentBackground = False
+        TabOrder = 6
+      end
+      object meSelectCharIPBlacklist: TMaskEdit
+        Left = 363
+        Top = 144
+        Width = 230
+        Height = 21
+        TabOrder = 7
+        Text = '.\Mir3IPBlacklist.txt'
+      end
+      object meSelectCharEngineVersion: TMaskEdit
+        Left = 364
+        Top = 175
+        Width = 29
+        Height = 21
+        Alignment = taCenter
+        TabOrder = 8
+        Text = '1'
+      end
+    end
+    object tsRunGateConfig: TTabSheet
+      Caption = ' Run Gate Config '
+      ImageIndex = 5
+      object Label31: TLabel
+        Left = 22
+        Top = 51
+        Width = 80
+        Height = 13
+        Caption = 'Gate Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label32: TLabel
+        Left = 22
+        Top = 81
+        Width = 54
+        Height = 13
+        Caption = 'Gate Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label33: TLabel
+        Left = 3
+        Top = 3
+        Width = 91
+        Height = 13
+        Caption = 'Run Gate Setup '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label34: TLabel
+        Left = 254
+        Top = 51
+        Width = 91
+        Height = 13
+        Caption = 'Server Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label35: TLabel
+        Left = 254
+        Top = 81
+        Width = 65
+        Height = 13
+        Caption = 'Server Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label36: TLabel
+        Left = 22
+        Top = 139
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos X'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label37: TLabel
+        Left = 22
+        Top = 170
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos Y'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label38: TLabel
+        Left = 254
+        Top = 139
+        Width = 95
+        Height = 13
+        Caption = 'IP Ban / Blacklist'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label39: TLabel
+        Left = 255
+        Top = 170
+        Width = 82
+        Height = 13
+        Caption = 'Engine Version'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object meRunGateHost: TMaskEdit
+        Left = 108
+        Top = 48
+        Width = 121
+        Height = 21
+        TabOrder = 0
+        Text = '127.0.0.1'
+      end
+      object meRunGatePort: TMaskEdit
+        Left = 108
+        Top = 78
+        Width = 121
+        Height = 21
+        TabOrder = 1
+        Text = '0'
+      end
+      object meRunWinPosX: TMaskEdit
+        Left = 108
+        Top = 136
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '10'
+      end
+      object meRunWinPosY: TMaskEdit
+        Left = 108
+        Top = 167
+        Width = 121
+        Height = 21
+        TabOrder = 3
+        Text = '10'
+      end
+      object meRunServerHost: TMaskEdit
+        Left = 351
+        Top = 48
+        Width = 121
+        Height = 21
+        TabOrder = 4
+        Text = '127.0.0.1'
+      end
+      object meRunServerPort: TMaskEdit
+        Left = 351
+        Top = 78
+        Width = 121
+        Height = 21
+        TabOrder = 5
+        Text = '0'
+      end
+      object Panel7: TPanel
+        Left = 4
+        Top = 117
+        Width = 995
+        Height = 2
+        Color = clGray
+        ParentBackground = False
+        TabOrder = 6
+      end
+      object meRunIPBlacklist: TMaskEdit
+        Left = 355
+        Top = 136
+        Width = 230
+        Height = 21
+        TabOrder = 7
+        Text = '.\Mir3IPBlacklist.txt'
+      end
+      object meRunEngineVersion: TMaskEdit
+        Left = 356
+        Top = 167
+        Width = 29
+        Height = 21
+        Alignment = taCenter
+        TabOrder = 8
+        Text = '1'
+      end
+    end
+    object tsLoginServerConfig: TTabSheet
+      Caption = ' Login Server Config '
+      ImageIndex = 6
+      object Label58: TLabel
+        Left = 46
+        Top = 75
+        Width = 80
+        Height = 13
+        Caption = 'Gate Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label59: TLabel
+        Left = 46
+        Top = 105
+        Width = 54
+        Height = 13
+        Caption = 'Gate Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label60: TLabel
+        Left = 3
+        Top = 3
+        Width = 110
+        Height = 13
+        Caption = 'Login Server Setup '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label61: TLabel
+        Left = 278
+        Top = 75
+        Width = 91
+        Height = 13
+        Caption = 'Server Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label62: TLabel
+        Left = 278
+        Top = 105
+        Width = 65
+        Height = 13
+        Caption = 'Server Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label63: TLabel
+        Left = 46
+        Top = 163
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos X'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label64: TLabel
+        Left = 46
+        Top = 194
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos Y'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label66: TLabel
+        Left = 279
+        Top = 163
+        Width = 82
+        Height = 13
+        Caption = 'Engine Version'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object MaskEdit1: TMaskEdit
+        Left = 132
+        Top = 72
+        Width = 121
+        Height = 21
+        TabOrder = 0
+        Text = '127.0.0.1'
+      end
+      object MaskEdit2: TMaskEdit
+        Left = 132
+        Top = 102
+        Width = 121
+        Height = 21
+        TabOrder = 1
+        Text = '0'
+      end
+      object MaskEdit3: TMaskEdit
+        Left = 132
+        Top = 160
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '10'
+      end
+      object MaskEdit4: TMaskEdit
+        Left = 132
+        Top = 191
+        Width = 121
+        Height = 21
+        TabOrder = 3
+        Text = '10'
+      end
+      object MaskEdit5: TMaskEdit
+        Left = 375
+        Top = 72
+        Width = 121
+        Height = 21
+        TabOrder = 4
+        Text = '127.0.0.1'
+      end
+      object MaskEdit6: TMaskEdit
+        Left = 375
+        Top = 102
+        Width = 121
+        Height = 21
+        TabOrder = 5
+        Text = '0'
+      end
+      object Panel10: TPanel
+        Left = 10
+        Top = 141
+        Width = 995
+        Height = 2
+        Color = clGray
+        ParentBackground = False
+        TabOrder = 6
+      end
+      object MaskEdit9: TMaskEdit
+        Left = 380
+        Top = 160
+        Width = 29
+        Height = 21
+        Alignment = taCenter
+        TabOrder = 7
+        Text = '1'
+      end
+      object TodoList2: TMemo
+        Left = 584
+        Top = 304
+        Width = 321
+        Height = 89
+        Lines.Strings = (
+          'TODO : '
+          ' - Add MSSQL Support'
+          ' - Add MYSQL Support'
+          ' - check if we need more config things')
+        TabOrder = 8
+      end
+    end
+    object tsDBServerConfig: TTabSheet
+      Caption = ' DB Server Config '
+      ImageIndex = 7
+      object Label65: TLabel
+        Left = 54
+        Top = 83
+        Width = 80
+        Height = 13
+        Caption = 'Gate Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label67: TLabel
+        Left = 54
+        Top = 113
+        Width = 54
+        Height = 13
+        Caption = 'Gate Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label68: TLabel
+        Left = 3
+        Top = 3
+        Width = 95
+        Height = 13
+        Caption = 'DB Server Setup '
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label69: TLabel
+        Left = 286
+        Top = 83
+        Width = 91
+        Height = 13
+        Caption = 'Server Host / IP'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label70: TLabel
+        Left = 286
+        Top = 113
+        Width = 65
+        Height = 13
+        Caption = 'Server Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label71: TLabel
+        Left = 54
+        Top = 171
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos X'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label72: TLabel
+        Left = 54
+        Top = 202
+        Width = 77
+        Height = 13
+        Caption = 'Window Pos Y'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label73: TLabel
+        Left = 287
+        Top = 171
+        Width = 82
+        Height = 13
+        Caption = 'Engine Version'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object MaskEdit7: TMaskEdit
+        Left = 140
+        Top = 80
+        Width = 121
+        Height = 21
+        TabOrder = 0
+        Text = '127.0.0.1'
+      end
+      object MaskEdit10: TMaskEdit
+        Left = 140
+        Top = 110
+        Width = 121
+        Height = 21
+        TabOrder = 1
+        Text = '0'
+      end
+      object MaskEdit11: TMaskEdit
+        Left = 140
+        Top = 168
+        Width = 121
+        Height = 21
+        TabOrder = 2
+        Text = '10'
+      end
+      object MaskEdit12: TMaskEdit
+        Left = 140
+        Top = 199
+        Width = 121
+        Height = 21
+        TabOrder = 3
+        Text = '10'
+      end
+      object MaskEdit13: TMaskEdit
+        Left = 383
+        Top = 80
+        Width = 121
+        Height = 21
+        TabOrder = 4
+        Text = '127.0.0.1'
+      end
+      object MaskEdit14: TMaskEdit
+        Left = 383
+        Top = 110
+        Width = 121
+        Height = 21
+        TabOrder = 5
+        Text = '0'
+      end
+      object Panel11: TPanel
+        Left = 10
+        Top = 149
+        Width = 995
+        Height = 2
+        Color = clGray
+        ParentBackground = False
+        TabOrder = 6
+      end
+      object MaskEdit15: TMaskEdit
+        Left = 388
+        Top = 168
+        Width = 29
+        Height = 21
+        Alignment = taCenter
+        TabOrder = 7
+        Text = '1'
+      end
+      object TodoList1: TMemo
+        Left = 576
+        Top = 296
+        Width = 225
+        Height = 89
+        Lines.Strings = (
+          'TODO : '
+          ' - Add MSSQL Support'
+          ' - Add MYSQL Support'
+          ' - check if we need more config things')
+        TabOrder = 8
+      end
     end
   end
   object StatusBar: TStatusBar
     Left = 0
-    Top = 660
-    Width = 625
+    Top = 681
+    Width = 1013
     Height = 19
     Panels = <
       item
         Text = 'Version : 0.0.0.0'
         Width = 200
       end>
-    ExplicitLeft = 400
-    ExplicitTop = 416
-    ExplicitWidth = 0
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 625
+    Width = 1013
     Height = 17
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = 320
-    ExplicitTop = 64
-    ExplicitWidth = 185
   end
   object Panel6: TPanel
     Left = 0
-    Top = 624
-    Width = 625
+    Top = 645
+    Width = 1013
     Height = 36
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 3
     object btnSaveConfig: TButton
-      Left = 491
+      Left = 780
       Top = 6
-      Width = 127
+      Width = 222
       Height = 25
       Caption = 'Save Launcher Config'
       TabOrder = 0
@@ -4950,9 +5957,9 @@ object frmConfigManager: TfrmConfigManager
       OnClick = btnDefaultClick
     end
     object btnLoadConfig: TButton
-      Left = 192
+      Left = 96
       Top = 6
-      Width = 127
+      Width = 223
       Height = 25
       Caption = 'Load Launcher Config'
       TabOrder = 2
@@ -4961,11 +5968,11 @@ object frmConfigManager: TfrmConfigManager
   end
   object OpenDialog: TOpenDialog
     Filter = 'Launcher File *.conf|*.conf'
-    Left = 568
-    Top = 208
+    Left = 968
+    Top = 544
   end
   object SaveDialog: TSaveDialog
-    Left = 568
-    Top = 256
+    Left = 968
+    Top = 592
   end
 end

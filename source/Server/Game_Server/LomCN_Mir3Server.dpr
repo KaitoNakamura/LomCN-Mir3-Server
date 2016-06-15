@@ -36,7 +36,8 @@ uses
   Mir3ObjectsMonster_4 in 'objects\Mir3ObjectsMonster_4.pas',
   Mir3ObjectsMonster_5 in 'objects\Mir3ObjectsMonster_5.pas',
   Mir3ObjectsMonster_6 in 'objects\Mir3ObjectsMonster_6.pas',
-  Mir3ObjectsNPC in 'objects\Mir3ObjectsNPC.pas';
+  Mir3ObjectsNPC in 'objects\Mir3ObjectsNPC.pas',
+  Mir3CommonThread in '..\..\Client\Client\Client_Common\Mir3CommonThread.pas';
 
 {$R *.res}
 

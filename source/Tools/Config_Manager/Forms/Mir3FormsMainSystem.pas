@@ -123,6 +123,105 @@ type
     cbUpdateServerPassiveMode: TCheckBox;
     cbFallbackServerPassiveMode: TCheckBox;
     cbShowChangePasswordBtn: TCheckBox;
+    meServerCount: TMaskEdit;
+    Label30: TLabel;
+    tsLoginGateConfig: TTabSheet;
+    tsSelectCharGateConfig: TTabSheet;
+    tsRunGateConfig: TTabSheet;
+    tsLoginServerConfig: TTabSheet;
+    tsDBServerConfig: TTabSheet;
+    meRunGateHost: TMaskEdit;
+    meRunGatePort: TMaskEdit;
+    meRunWinPosX: TMaskEdit;
+    meRunWinPosY: TMaskEdit;
+    Label31: TLabel;
+    Label32: TLabel;
+    Label33: TLabel;
+    meRunServerHost: TMaskEdit;
+    meRunServerPort: TMaskEdit;
+    Label34: TLabel;
+    Label35: TLabel;
+    Panel7: TPanel;
+    Label36: TLabel;
+    Label37: TLabel;
+    Label38: TLabel;
+    meRunIPBlacklist: TMaskEdit;
+    meRunEngineVersion: TMaskEdit;
+    Label39: TLabel;
+    meSelectCharGateHost: TMaskEdit;
+    meSelectCharGatePort: TMaskEdit;
+    meSelectCharWinPosX: TMaskEdit;
+    meSelectCharWinPosY: TMaskEdit;
+    Label40: TLabel;
+    Label41: TLabel;
+    Label42: TLabel;
+    meSelectCharServerHost: TMaskEdit;
+    meSelectCharServerPort: TMaskEdit;
+    Label43: TLabel;
+    Label44: TLabel;
+    Panel8: TPanel;
+    Label45: TLabel;
+    Label46: TLabel;
+    Label47: TLabel;
+    meSelectCharIPBlacklist: TMaskEdit;
+    meSelectCharEngineVersion: TMaskEdit;
+    Label48: TLabel;
+    meLoginGateHost: TMaskEdit;
+    meLoginGatePort: TMaskEdit;
+    meLoginWinPosX: TMaskEdit;
+    meLoginWinPosY: TMaskEdit;
+    Label49: TLabel;
+    Label50: TLabel;
+    Label51: TLabel;
+    meLoginServerHost: TMaskEdit;
+    meLoginServerPort: TMaskEdit;
+    Label52: TLabel;
+    Label53: TLabel;
+    Panel9: TPanel;
+    Label54: TLabel;
+    Label55: TLabel;
+    Label56: TLabel;
+    meLoginIPBlacklist: TMaskEdit;
+    meLoginEngineVersion: TMaskEdit;
+    Label57: TLabel;
+    MaskEdit1: TMaskEdit;
+    MaskEdit2: TMaskEdit;
+    MaskEdit3: TMaskEdit;
+    MaskEdit4: TMaskEdit;
+    Label58: TLabel;
+    Label59: TLabel;
+    Label60: TLabel;
+    MaskEdit5: TMaskEdit;
+    MaskEdit6: TMaskEdit;
+    Label61: TLabel;
+    Label62: TLabel;
+    Panel10: TPanel;
+    Label63: TLabel;
+    Label64: TLabel;
+    MaskEdit9: TMaskEdit;
+    Label66: TLabel;
+    MaskEdit7: TMaskEdit;
+    MaskEdit10: TMaskEdit;
+    MaskEdit11: TMaskEdit;
+    MaskEdit12: TMaskEdit;
+    Label65: TLabel;
+    Label67: TLabel;
+    Label68: TLabel;
+    MaskEdit13: TMaskEdit;
+    MaskEdit14: TMaskEdit;
+    Label69: TLabel;
+    Label70: TLabel;
+    Panel11: TPanel;
+    Label71: TLabel;
+    Label72: TLabel;
+    MaskEdit15: TMaskEdit;
+    Label73: TLabel;
+    Label74: TLabel;
+    TodoList1: TMemo;
+    TodoList2: TMemo;
+    TodoList3: TMemo;
+    rbUseCRCCheck: TRadioButton;
+    rbUseMD5Check: TRadioButton;
     procedure pcConfigManagerChange(Sender: TObject);
     procedure btnDefaultClick(Sender: TObject);
     procedure btnSaveConfigClick(Sender: TObject);
@@ -130,19 +229,14 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
   private
-    FManageMode  : Integer;
-    FMemLauncher : TMemoryStream;
-    FMemClient   : TMemoryStream;
-    FMemServer   : TMemoryStream;
+    FManageMode    : Integer;
+    FConfigManager : TMir3ConfigManager;
   public
     { Public-Deklarationen }
   end;
 
 var
   frmConfigManager         : TfrmConfigManager;
-  GGameClientConfig        : TMir3_GameClientConfig;
-  GGameLauncherConfig      : TMir3_GameSystemConfig;
-  GGameSystemConfigVersion : TMir3_GameSystemConfigVersion;
 
 implementation
 
@@ -151,17 +245,13 @@ implementation
 procedure TfrmConfigManager.FormCreate(Sender: TObject);
 begin
   FManageMode  := 0;
-  FMemLauncher := TMemoryStream.Create;
-  FMemClient   := TMemoryStream.Create;
-  FMemServer   := TMemoryStream.Create;
+  FConfigManager := TMir3ConfigManager.Create;
   StatusBar.Panels[0].Text := 'Version : ' + GetFileVersionString(ExtractFilePath(ParamStr(0))+'LomCN_Mir3ConfigManager.exe');
 end;
 
 procedure TfrmConfigManager.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  FreeAndNil(FMemLauncher);
-  FreeAndNil(FMemClient);
-  FreeAndNil(FMemServer);
+  FreeAndNil(FConfigManager);
 end;
 
 procedure TfrmConfigManager.btnDefaultClick(Sender: TObject);
@@ -169,6 +259,7 @@ begin
   case FManageMode of
     0 : begin
       {$REGION ' Launcher Defaults '}
+      meServerCount.Text             := '0';
       meServerName1.Text             := 'TestServer1';
       meServerName2.Text             := 'TestServer2';
       meServerName3.Text             := 'TestServer3';
@@ -242,7 +333,6 @@ begin
       cbShowWeather.Checked           := True;
       cbShowNewsMessage.Checked       := True;
       cbShowTooltipImage.Checked      := True;
-
       {$ENDREGION}
     end;
     2 : begin
@@ -250,6 +340,48 @@ begin
 
       //TODO : Add Server Config Defaults
       {$ENDREGION}
+    end;
+    3 : begin
+      {$REGION ' Login Gate Defaults '}
+      meLoginGateHost.Text      := '127.0.0.1';
+      meLoginGatePort.Text      := '7000';
+      meLoginServerHost.Text    := '127.0.0.1';
+      meLoginServerPort.Text    := '5500';
+      meLoginWinPosX.Text       := '10';
+      meLoginWinPosY.Text       := '10';
+      meLoginEngineVersion.Text := '1';
+      meLoginIPBlacklist.Text   := '.\Mir3IPBlacklist.txt';
+      {$ENDREGION}
+    end;
+    4 : begin
+      {$REGION ' Select Char Gate Defaults '}
+      meSelectCharGateHost.Text      := '127.0.0.1';
+      meSelectCharGatePort.Text      := '7101';
+      meSelectCharServerHost.Text    := '127.0.0.1';
+      meSelectCharServerPort.Text    := '5100';
+      meSelectCharWinPosX.Text       := '10';
+      meSelectCharWinPosY.Text       := '10';
+      meSelectCharEngineVersion.Text := '1';
+      meSelectCharIPBlacklist.Text   := '.\Mir3IPBlacklist.txt';
+      {$ENDREGION}
+    end;
+    5 : begin
+      {$REGION ' Run Gate Defaults '}
+      meRunGateHost.Text      := '127.0.0.1';
+      meRunGatePort.Text      := '7201';
+      meRunServerHost.Text    := '127.0.0.1';
+      meRunServerPort.Text    := '5000';
+      meRunWinPosX.Text       := '10';
+      meRunWinPosY.Text       := '10';
+      meRunEngineVersion.Text := '1';
+      meRunIPBlacklist.Text   := '.\Mir3IPBlacklist.txt';
+      {$ENDREGION}
+    end;
+    6 : begin
+
+    end;
+    7 : begin
+
     end;
   end;
 end;
@@ -262,59 +394,53 @@ begin
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
-        ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        ZeroMemory(@GGameLauncherConfig     , SizeOf(TMir3_GameSystemConfig));
-        FMemLauncher.Clear;
-        FMemLauncher.LoadFromFile(OpenDialog.FileName);
-        FMemLauncher.Seek(0,0);
-        FMemLauncher.ReadBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        FMemLauncher.ReadBuffer(GGameLauncherConfig     , SizeOf(TMir3_GameSystemConfig));
-        with GGameLauncherConfig do
+        {$REGION ' Load Launcher Config '}
+        with FConfigManager do
         begin
-          {$REGION ' Load Launcher Config '}
-          meServerName1.Text                  := DeCodeString(String(FServer_1_Name));
-          meServerName2.Text                  := DeCodeString(String(FServer_2_Name));
-          meServerName3.Text                  := DeCodeString(String(FServer_3_Name));
-          meServerName4.Text                  := DeCodeString(String(FServer_4_Name));
-          meServerCaption1.Text               := DeCodeString(String(FServer_1_Caption));
-          meServerCaption2.Text               := DeCodeString(String(FServer_2_Caption));
-          meServerCaption3.Text               := DeCodeString(String(FServer_3_Caption));
-          meServerCaption4.Text               := DeCodeString(String(FServer_4_Caption));
-          meServerIP1.Text                    := DeCodeString(String(FServer_1_IP));
-          meServerIP2.Text                    := DeCodeString(String(FServer_2_IP));
-          meServerIP3.Text                    := DeCodeString(String(FServer_3_IP));
-          meServerIP4.Text                    := DeCodeString(String(FServer_4_IP));
-          meServerPort1.Text                  := IntToStr(FServer_1_Port);
-          meServerPort2.Text                  := IntToStr(FServer_2_Port);
-          meServerPort3.Text                  := IntToStr(FServer_3_Port);
-          meServerPort4.Text                  := IntToStr(FServer_4_Port);
+          meServerCount.Text                  := IntToStr(LC_ServerCount);
+          meServerName1.Text                  := LC_ServerName1;
+          meServerName2.Text                  := LC_ServerName2;
+          meServerName3.Text                  := LC_ServerName3;
+          meServerName4.Text                  := LC_ServerName4;
+          meServerCaption1.Text               := LC_ServerCaption1;
+          meServerCaption2.Text               := LC_ServerCaption2;
+          meServerCaption3.Text               := LC_ServerCaption3;
+          meServerCaption4.Text               := LC_ServerCaption4;
+          meServerIP1.Text                    := LC_ServerIP1;
+          meServerIP2.Text                    := LC_ServerIP2;
+          meServerIP3.Text                    := LC_ServerIP3;
+          meServerIP4.Text                    := LC_ServerIP4;
+          meServerPort1.Text                  := IntToStr(LC_ServerPort1);
+          meServerPort2.Text                  := IntToStr(LC_ServerPort2);
+          meServerPort3.Text                  := IntToStr(LC_ServerPort3);
+          meServerPort4.Text                  := IntToStr(LC_ServerPort4);
           //Update Server
-          meUpdateServerHost.Text             := DeCodeString(String(FUpdateServer_Host));
-          meUpdateServerPort.Text             := IntToStr(FUpdateServer_Port);
-          meUpdateServerUser.Text             := DeCodeString(String(FUpdateServer_User));
-          meUpdateServerPassword.Text         := DeCodeString(String(FUpdateServer_Password));
-          meUpdateServerBaseDir.Text          := DeCodeString(String(FUpdateBaseDirectory));
-          meUpdateServerListFile.Text         := DeCodeString(String(FUpdate_List_File));
-          cbUpdateServerProtocol.ItemIndex    := FUpdateServer_Protocol;
-          cbUpdateServerPassiveMode.Checked   := FUpdate_Passive_Mode;
+          meUpdateServerHost.Text             := LC_UpSrvHost;
+          meUpdateServerPort.Text             := IntToStr(LC_UpSrvPort);
+          meUpdateServerUser.Text             := LC_UpSrvUser;
+          meUpdateServerPassword.Text         := LC_UpSrvPassword;
+          meUpdateServerBaseDir.Text          := LC_UpSrvBaseDir;
+          meUpdateServerListFile.Text         := LC_UpSrvListFile;
+          cbUpdateServerProtocol.ItemIndex    := LC_UpSrvProtocol;
+          cbUpdateServerPassiveMode.Checked   := LC_UpSrvPassiveMode;
           //Fallback
-          meFallbackServerHost.Text           := DeCodeString(String(FFallbackServer_Host));
-          meFallbackServerPort.Text           := IntToStr(FFallbackServer_Port);
-          meFallbackServerUser.Text           := DeCodeString(String(FFallbackServer_User));
-          meFallbackServerPassword.Text       := DeCodeString(String(FFallbackServer_Password));
-          meFallbackServerBaseDir.Text        := DeCodeString(String(FFallbackServerBaseDirectory));
-          meFallbackServerListFile.Text       := DeCodeString(String(FFallbackServer_List_File));
-          cbFallbackServerProtocol.ItemIndex  := FFallbackServer_Protocol;
-          cbUpdateServerPassiveMode.Checked   := FFallbackServer_Passive_Mode;
+          meFallbackServerHost.Text           := LC_FBSrvHost;
+          meFallbackServerPort.Text           := IntToStr(LC_FBSrvPort);
+          meFallbackServerUser.Text           := LC_FBSrvUser;
+          meFallbackServerPassword.Text       := LC_FBSrvPassword;
+          meFallbackServerBaseDir.Text        := LC_FBSrvBaseDir;
+          meFallbackServerListFile.Text       := LC_FBSrvListFile;
+          cbFallbackServerProtocol.ItemIndex  := LC_FBSrvProtocol;
+          cbUpdateServerPassiveMode.Checked   := LC_FBSrvPassivMode;
           //Options
-          cbUseFallbackSystem.Checked         := FUse_Fallback_Service;
-          cbUseUpdateSystem.Checked           := FUse_Update_Service;
-          cbUseHomePageBtn.Checked            := FUse_HomePage_Btn;
-          if FUse_HTML_Mode_Account then
-          begin
+          cbUseFallbackSystem.Checked         := LC_UseFallbackService;
+          cbUseUpdateSystem.Checked           := LC_UseUpdateService;
+          cbUseHomePageBtn.Checked            := LC_UseHomePageBTN;
+          if LC_UseHTMLAccountSys then
+          begin                  // TODO : FIX ME
             cbUseHTMLAccountManager.Checked   := True;
-            cbUseHTMLAccountBtn.Checked       := FUse_Account_Btn;
-            cbUseHTMLChangePWBtn.Checked      := FUse_ChangePassword_Btn;
+            cbUseHTMLAccountBtn.Checked       := LC_UseAccountPageBTN;   //LC_UseAccountBTN;
+            cbUseHTMLChangePWBtn.Checked      := LC_UseChangePWPageBTN;  //LC_UseChangePWBTN;
             cbUseHTMLAccountBtn.Enabled       := True;
             cbUseHTMLChangePWBtn.Enabled      := True;
             cbUseAccountManagerBtn.Checked    := False
@@ -326,14 +452,14 @@ begin
             cbUseHTMLChangePWBtn.Enabled      := False;
             cbUseAccountManagerBtn.Checked    := True;
           end;
-          cbShowOptionButton.Checked          := FUse_Option_Btn;
+          cbShowOptionButton.Checked          := LC_UseOptionBTN;
           //URLs
-          meURL_HomePage.Text                 := DeCodeString(String(FURL_HomePage));
-          meURL_NewsPage.Text                 := DeCodeString(String(FURL_News_Page));
-          meURL_AccountManagerPage.Text       := DeCodeString(String(FURL_Account_Page));
-          meURL_ChangePWPage.Text             := DeCodeString(String(FURL_ChangePassword_Page));
-          {$ENDREGION}
+          meURL_HomePage.Text                 := LC_URL_HomePage;
+          meURL_NewsPage.Text                 := LC_URL_News_Page;
+          meURL_AccountManagerPage.Text       := LC_URL_Account_Page;
+          meURL_ChangePWPage.Text             := LC_URL_ChangePW_Page;
         end;
+        {$ENDREGION}
       end;
     end;
     1 : begin
@@ -341,56 +467,133 @@ begin
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
-        ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        ZeroMemory(@GGameLauncherConfig     , SizeOf(TMir3_GameSystemConfig));
-        FMemClient.Clear;
-        FMemClient.LoadFromFile(OpenDialog.FileName);
-        FMemLauncher.Seek(0,0);
-        FMemLauncher.ReadBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        FMemLauncher.ReadBuffer(GGameClientConfig     , SizeOf(TMir3_GameClientConfig));
-        with GGameClientConfig do
-        begin
         {$REGION ' Load Client Config '}
-        cbLanguage.ItemIndex            := FLanguageId;
-        if FScreenSize = 800 then
-          cbScreenResolution.Text  := '800x600'
-        else cbScreenResolution.Text := '1024x768';
+        with FConfigManager do
+        begin
+          cbLanguage.ItemIndex            := CC_LanguageId;
+          if CC_ScreenSize = 800 then
+            cbScreenResolution.Text  := '800x600'
+          else cbScreenResolution.Text := '1024x768';
 
-        cbFullScreen.Checked            := FFull_Screen;
-        cbBGMActivate.Checked           := FBGMSoundActive;
-        cbFXActivate.Checked            := FFXSoundActive;
-        cbShowStartVideo.Checked        := FUseStartVideo;
-        edBGMVolume.Text                := IntToStr(FBGMSoundVolume);
-        edFXVolume.Text                 := IntToStr(FFXSoundVolume);
-        edVideoVolume.Text              := IntToStr(FVideoVolume);
-        // Options
-        cbShowMonster.Checked           := FShowMonster;
-        cbShowMonsterEffect.Checked     := FShowMonsterEffect;
-        cbShowMonsterInfoWindow.Checked := FShowMonsterInfoWindow;
-        cbShowPetChatting.Checked       := FShowPetChatting;
-        cbShowHelmet.Checked            := FShowHelmet;
-        cbShowHealtBar.Checked          := FShowHealthBar;
-        cbShowDropItem.Checked          := FShowDropItem;
-        cbShowCharacterName.Checked     := FShowCharacterName;
-        cbShowWeather.Checked           := FShowWeather;
-        cbShowNewsMessage.Checked       := FShowNewMessage;
-        cbShowTooltipImage.Checked      := FShowTooltipImage;
-        {$ENDREGION}
+          cbFullScreen.Checked            := CC_FullScreen;
+          cbBGMActivate.Checked           := CC_BGMSoundActive;
+          cbFXActivate.Checked            := CC_FXSoundActive;
+          cbShowStartVideo.Checked        := CC_UseStartVideo;
+          edBGMVolume.Text                := IntToStr(CC_BGMSoundVolume);
+          edFXVolume.Text                 := IntToStr(CC_FXSoundVolume);
+          edVideoVolume.Text              := IntToStr(CC_VideoVolume);
+          // Options
+          cbShowMonster.Checked           := CC_ShowMonster;
+          cbShowMonsterEffect.Checked     := CC_ShowMonsterEffect;
+          cbShowMonsterInfoWindow.Checked := CC_ShowMonsterInfoWindow;
+          cbShowPetChatting.Checked       := CC_ShowPetChatting;
+          cbShowHelmet.Checked            := CC_ShowHelmet;
+          cbShowHealtBar.Checked          := CC_ShowHealthBar;
+          cbShowDropItem.Checked          := CC_ShowDropItem;
+          cbShowCharacterName.Checked     := CC_ShowCharacterName;
+          cbShowWeather.Checked           := CC_ShowWeather;
+          cbShowNewsMessage.Checked       := CC_ShowNewMessage;
+          cbShowTooltipImage.Checked      := CC_ShowTooltipImage;
         end;
+        {$ENDREGION}
       end;
     end;
     2 : begin
-      OpenDialog.Filter     := 'Server File Server.ini|Server.ini';
-      OpenDialog.DefaultExt := 'ini';
+      OpenDialog.Filter     := 'Server File Mir3ServerSetup.conf|Mir3ServerSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
-        FMemServer.Clear;
-        FMemServer.LoadFromFile(OpenDialog.FileName);
-      {$REGION ' Server Defaults '}
-       //with GServerConfig do
-       //begin
-          //TODO : Add Server Config Defaults
-       //end;
+      {$REGION ' Load Game Server Config '}
+      with FConfigManager do
+      begin
+       //TODO : Add Server Config Defaults
+      end;
+      {$ENDREGION}
+      end;
+    end;
+    3 : begin
+      OpenDialog.Filter     := 'Server File Mir3LoginGateSetup.conf|Mir3LoginGateSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
+      if OpenDialog.Execute then
+      begin
+      {$REGION ' Load Login Gate Config '}
+      with FConfigManager do
+      begin
+        meLoginGateHost.Text      := GL_GateHost;
+        meLoginGatePort.Text      := IntToStr(GL_GatePort);
+        meLoginServerHost.Text    := GL_ServerHost;
+        meLoginServerPort.Text    := IntToStr(GL_ServerPort);
+        meLoginWinPosX.Text       := IntToStr(GL_WindowX);
+        meLoginWinPosY.Text       := IntToStr(GL_WindowY);
+        meLoginEngineVersion.Text := IntToStr(GL_EngineVersion);
+        meLoginIPBlacklist.Text   := GL_BlockIPList;
+      end;
+      {$ENDREGION}
+      end;
+    end;
+    4 : begin
+      OpenDialog.Filter     := 'Server File Mir3SelCharGateSetup.conf|Mir3SelCharGateSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
+      if OpenDialog.Execute then
+      begin
+      {$REGION ' Load Select Char Gate Config '}
+      with FConfigManager do
+      begin
+        meSelectCharGateHost.Text      := GS_GateHost;
+        meSelectCharGatePort.Text      := IntToStr(GS_GatePort);
+        meSelectCharServerHost.Text    := GS_ServerHost;
+        meSelectCharServerPort.Text    := IntToStr(GS_ServerPort);
+        meSelectCharWinPosX.Text       := IntToStr(GS_WindowX);
+        meSelectCharWinPosY.Text       := IntToStr(GS_WindowY);
+        meSelectCharEngineVersion.Text := IntToStr(GS_EngineVersion);
+        meSelectCharIPBlacklist.Text   := GS_BlockIPList;
+      end;
+      {$ENDREGION}
+      end;
+    end;
+    5 : begin
+      OpenDialog.Filter     := 'Server File Mir3RunGateSetup.conf|Mir3RunGateSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
+      if OpenDialog.Execute then
+      begin
+      {$REGION ' Load Run Gate Config '}
+      with FConfigManager do
+      begin
+        meRunGateHost.Text      := GR_GateHost;
+        meRunGatePort.Text      := IntToStr(GR_GatePort);
+        meRunServerHost.Text    := GR_ServerHost;
+        meRunServerPort.Text    := IntToStr(GR_ServerPort);
+        meRunWinPosX.Text       := IntToStr(GR_WindowX);
+        meRunWinPosY.Text       := IntToStr(GR_WindowY);
+        meRunEngineVersion.Text := IntToStr(GR_EngineVersion);
+        meRunIPBlacklist.Text   := GR_BlockIPList;
+      end;
+      {$ENDREGION}
+      end;
+    end;
+    6 : begin
+      OpenDialog.Filter     := 'Server File Mir3LoginServerSetup.conf|Mir3LoginServerSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
+      if OpenDialog.Execute then
+      begin
+      {$REGION ' Load Login Server Config '}
+      with FConfigManager do
+      begin
+       //TODO : Add Server Config Defaults
+      end;
+      {$ENDREGION}
+      end;
+    end;
+    7 : begin
+      OpenDialog.Filter     := 'Server File Mir3DBServerSetup.conf|Mir3DBServerSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
+      if OpenDialog.Execute then
+      begin
+      {$REGION ' Load DB Server Config '}
+      with FConfigManager do
+      begin
+         //TODO : Add Server Config Defaults
+      end;
       {$ENDREGION}
       end;
     end;
@@ -406,75 +609,73 @@ begin
       if SaveDialog.Execute then
       begin
         {$REGION ' Save Launcher Config '}
-        ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        ZeroMemory(@GGameLauncherConfig     , SizeOf(TMir3_GameSystemConfig));
-        with GGameSystemConfigVersion do
+        with FConfigManager do
         begin
-          FFileTypeInfo      := FILE_TYPE_INFO;
-          FConfigFileVersion := 1;
-        end;
-        FMemLauncher.WriteBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-
-        with GGameLauncherConfig do
-        begin
-          FServer_1_Name                  := AnsiString(EncodeString(Trim(meServerName1.Text)));
-          FServer_2_Name                  := AnsiString(EncodeString(Trim(meServerName2.Text)));
-          FServer_3_Name                  := AnsiString(EncodeString(Trim(meServerName3.Text)));
-          FServer_4_Name                  := AnsiString(EncodeString(Trim(meServerName4.Text)));
-          FServer_1_Caption               := AnsiString(EncodeString(Trim(meServerCaption1.Text)));
-          FServer_2_Caption               := AnsiString(EncodeString(Trim(meServerCaption2.Text)));
-          FServer_3_Caption               := AnsiString(EncodeString(Trim(meServerCaption3.Text)));
-          FServer_4_Caption               := AnsiString(EncodeString(Trim(meServerCaption4.Text)));
-          FServer_1_IP                    := AnsiString(EncodeString(Trim(meServerIP1.Text)));
-          FServer_2_IP                    := AnsiString(EncodeString(Trim(meServerIP2.Text)));
-          FServer_3_IP                    := AnsiString(EncodeString(Trim(meServerIP3.Text)));
-          FServer_4_IP                    := AnsiString(EncodeString(Trim(meServerIP4.Text)));
-          FServer_1_Port                  := StrToIntDef(Trim(meServerPort1.Text), 0);
-          FServer_2_Port                  := StrToIntDef(Trim(meServerPort2.Text), 0);
-          FServer_3_Port                  := StrToIntDef(Trim(meServerPort3.Text), 0);
-          FServer_4_Port                  := StrToIntDef(Trim(meServerPort4.Text), 0);
+          LC_ServerCount                  := StrToIntDef(Trim(meServerCount.Text), 0);
+          LC_ServerName1                  := Trim(meServerName1.Text);
+          LC_ServerName2                  := Trim(meServerName2.Text);
+          LC_ServerName3                  := Trim(meServerName3.Text);
+          LC_ServerName4                  := Trim(meServerName4.Text);
+          LC_ServerCaption1               := Trim(meServerCaption1.Text);
+          LC_ServerCaption2               := Trim(meServerCaption2.Text);
+          LC_ServerCaption3               := Trim(meServerCaption3.Text);
+          LC_ServerCaption4               := Trim(meServerCaption4.Text);
+          LC_ServerIP1                    := Trim(meServerIP1.Text);
+          LC_ServerIP2                    := Trim(meServerIP2.Text);
+          LC_ServerIP3                    := Trim(meServerIP3.Text);
+          LC_ServerIP4                    := Trim(meServerIP4.Text);
+          LC_ServerPort1                  := StrToIntDef(Trim(meServerPort1.Text), 0);
+          LC_ServerPort2                  := StrToIntDef(Trim(meServerPort2.Text), 0);
+          LC_ServerPort3                  := StrToIntDef(Trim(meServerPort3.Text), 0);
+          LC_ServerPort4                  := StrToIntDef(Trim(meServerPort4.Text), 0);
           //Update Server
-          FUpdateServer_Host              := AnsiString(EncodeString(Trim(meUpdateServerHost.Text)));
-          FUpdateServer_Port              := StrToIntDef(Trim(meUpdateServerPort.Text), 0);
-          FUpdateServer_User              := AnsiString(EncodeString(Trim(meUpdateServerUser.Text)));
-          FUpdateServer_Password          := AnsiString(EncodeString(Trim(meUpdateServerPassword.Text)));
-          FUpdateBaseDirectory            := AnsiString(EncodeString(Trim(meUpdateServerBaseDir.Text)));
-          FUpdate_List_File               := AnsiString(EncodeString(Trim(meUpdateServerListFile.Text)));
-          FUpdateServer_Protocol          := cbUpdateServerProtocol.ItemIndex;
-          FUpdate_Passive_Mode            := cbUpdateServerPassiveMode.Checked;
+          LC_UpSrvHost                    := Trim(meUpdateServerHost.Text);
+          LC_UpSrvPort                    := StrToIntDef(Trim(meUpdateServerPort.Text), 0);
+          LC_UpSrvUser                    := Trim(meUpdateServerUser.Text);
+          LC_UpSrvPassword                := Trim(meUpdateServerPassword.Text);
+          LC_UpSrvBaseDir                 := Trim(meUpdateServerBaseDir.Text);
+          LC_UpSrvListFile                := Trim(meUpdateServerListFile.Text);
+          LC_UpSrvProtocol                := cbUpdateServerProtocol.ItemIndex;
+          LC_UpSrvPassiveMode             := cbUpdateServerPassiveMode.Checked;
           //Fallback
-          FFallbackServer_Host            := AnsiString(EncodeString(meFallbackServerHost.Text));
-          FFallbackServer_Port            := StrToIntDef(meFallbackServerPort.Text, 0);
-          FFallbackServer_User            := AnsiString(EncodeString(meFallbackServerUser.Text));
-          FFallbackServer_Password        := AnsiString(EncodeString(meFallbackServerPassword.Text));
-          FFallbackServerBaseDirectory    := AnsiString(EncodeString(meFallbackServerBaseDir.Text));
-          FFallbackServer_List_File       := AnsiString(EncodeString(meFallbackServerListFile.Text));
-          FFallbackServer_Protocol        := cbFallbackServerProtocol.ItemIndex;
-          FFallbackServer_Passive_Mode    := cbUpdateServerPassiveMode.Checked;
+          LC_FBSrvHost                    := Trim(meFallbackServerHost.Text);
+          LC_FBSrvPort                    := StrToIntDef(Trim(meFallbackServerPort.Text), 0);
+          LC_FBSrvUser                    := Trim(meFallbackServerUser.Text);
+          LC_FBSrvPassword                := Trim(meFallbackServerPassword.Text);
+          LC_FBSrvBaseDir                 := Trim(meFallbackServerBaseDir.Text);
+          LC_FBSrvListFile                := Trim(meFallbackServerListFile.Text);
+          LC_FBSrvProtocol                := cbFallbackServerProtocol.ItemIndex;
+          LC_FBSrvPassivMode              := cbUpdateServerPassiveMode.Checked;
           //Options
-          FUse_Fallback_Service           := cbUseFallbackSystem.Checked;
-          FUse_Update_Service             := cbUseUpdateSystem.Checked;
-          FUse_HomePage_Btn               := cbUseHomePageBtn.Checked;
+          LC_UseFallbackService           := cbUseFallbackSystem.Checked;
+          LC_UseUpdateService             := cbUseUpdateSystem.Checked;
+          LC_UseHomePageBTN               := cbUseHomePageBtn.Checked;
           if cbUseHTMLAccountManager.Checked then
           begin
-            FUse_HTML_Mode_Account        := True;
-            FUse_Account_Btn              := cbUseHTMLAccountBtn.Checked;
-            FUse_ChangePassword_Btn       := cbUseHTMLChangePWBtn.Checked;
+            LC_UseHTMLAccountSys          := True;
+            LC_UseAccountPageBTN          := cbUseHTMLAccountBtn.Checked;
+            LC_UseChangePWPageBTN         := cbUseHTMLChangePWBtn.Checked;
           end else begin
-            FUse_HTML_Mode_Account        := False;
-            FUse_Account_Btn              := cbUseAccountManagerBtn.Checked;
-            FUse_ChangePassword_Btn       := cbShowChangePasswordBtn.Checked;
+            LC_UseHTMLAccountSys          := False;
+            LC_UseAccountBTN              := cbUseAccountManagerBtn.Checked;
+            LC_UseChangePWBTN             := cbShowChangePasswordBtn.Checked;
           end;
-          FUse_Option_Btn                 := cbShowOptionButton.Checked;
+          LC_UseOptionBTN                 := cbShowOptionButton.Checked;
           //URLs
-          FURL_HomePage                   := AnsiString(EncodeString(meURL_HomePage.Text));
-          FURL_News_Page                  := AnsiString(EncodeString(meURL_NewsPage.Text));
-          FURL_Account_Page               := AnsiString(EncodeString(meURL_AccountManagerPage.Text));
-          FURL_ChangePassword_Page        := AnsiString(EncodeString(meURL_ChangePWPage.Text));
+          LC_URL_HomePage                 := Trim(meURL_HomePage.Text);
+          LC_URL_News_Page                := Trim(meURL_NewsPage.Text);
+          LC_URL_Account_Page             := Trim(meURL_AccountManagerPage.Text);
+          LC_URL_ChangePW_Page            := Trim(meURL_ChangePWPage.Text);
+          if rbUseCRCCheck.Checked then
+          begin
+            LC_UseCRCFileCheck := True;
+            LC_UseMD5FileCheck := False;
+          end else begin
+            LC_UseCRCFileCheck := False;
+            LC_UseMD5FileCheck := True;
+          end;
         end;
-        FMemLauncher.WriteBuffer(GGameLauncherConfig     , SizeOf(TMir3_GameSystemConfig));
-        FMemLauncher.Seek(0,0);
-        FMemLauncher.SaveToFile(SaveDialog.FileName);
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctLauncher);
         {$ENDREGION}
       end;
     end;
@@ -483,61 +684,141 @@ begin
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
-        {$REGION ' Load Client Config '}
-        ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        ZeroMemory(@GGameClientConfig       , SizeOf(TMir3_GameClientConfig));
-        with GGameSystemConfigVersion do
+        {$REGION ' Save Client Config '}
+        with FConfigManager do
         begin
-          FFileTypeInfo      := FILE_TYPE_INFO;
-          FConfigFileVersion := 1;
-        end;
-        FMemClient.WriteBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-
-        with GGameClientConfig do
-        begin
-          FLanguageId             := cbLanguage.ItemIndex;
+          CC_LanguageId             := cbLanguage.ItemIndex;
           if cbScreenResolution.Text = '800x600' then
-            FScreenSize  := 800
-          else FScreenSize := 1024;
+            CC_ScreenSize  := 800
+          else CC_ScreenSize := 1024;
 
-          FFull_Screen            := cbFullScreen.Checked;
-          FBGMSoundActive         := cbBGMActivate.Checked;
-          FFXSoundActive          := cbFXActivate.Checked;
-          FUseStartVideo          := cbShowStartVideo.Checked;
-          FBGMSoundVolume         := StrToIntDef(Trim(edBGMVolume.Text), 0);
-          FFXSoundVolume          := StrToIntDef(Trim(edFXVolume.Text), 0);
-          FVideoVolume            := StrToIntDef(Trim(edVideoVolume.Text), 0);
+          CC_FullScreen             := cbFullScreen.Checked;
+          CC_BGMSoundActive         := cbBGMActivate.Checked;
+          CC_FXSoundActive          := cbFXActivate.Checked;
+          CC_UseStartVideo          := cbShowStartVideo.Checked;
+          CC_BGMSoundVolume         := StrToIntDef(Trim(edBGMVolume.Text), 0);
+          CC_FXSoundVolume          := StrToIntDef(Trim(edFXVolume.Text), 0);
+          CC_VideoVolume            := StrToIntDef(Trim(edVideoVolume.Text), 0);
           // Options
-          FShowMonster            := cbShowMonster.Checked;
-          FShowMonsterEffect      := cbShowMonsterEffect.Checked;
-          FShowMonsterInfoWindow  := cbShowMonsterInfoWindow.Checked;
-          FShowPetChatting        := cbShowPetChatting.Checked;
-          FShowHelmet             := cbShowHelmet.Checked;
-          FShowHealthBar          := cbShowHealtBar.Checked;
-          FShowDropItem           := cbShowDropItem.Checked;
-          FShowCharacterName      := cbShowCharacterName.Checked;
-          FShowWeather            := cbShowWeather.Checked;
-          FShowNewMessage         := cbShowNewsMessage.Checked;
-          FShowTooltipImage       := cbShowTooltipImage.Checked;
+          CC_ShowMonster            := cbShowMonster.Checked;
+          CC_ShowMonsterEffect      := cbShowMonsterEffect.Checked;
+          CC_ShowMonsterInfoWindow  := cbShowMonsterInfoWindow.Checked;
+          CC_ShowPetChatting        := cbShowPetChatting.Checked;
+          CC_ShowHelmet             := cbShowHelmet.Checked;
+          CC_ShowHealthBar          := cbShowHealtBar.Checked;
+          CC_ShowDropItem           := cbShowDropItem.Checked;
+          CC_ShowCharacterName      := cbShowCharacterName.Checked;
+          CC_ShowWeather            := cbShowWeather.Checked;
+          CC_ShowNewMessage         := cbShowNewsMessage.Checked;
+          CC_ShowTooltipImage       := cbShowTooltipImage.Checked;
         end;
-        FMemClient.WriteBuffer(GGameClientConfig     , SizeOf(TMir3_GameClientConfig));
-        FMemClient.Seek(0,0);
-        FMemClient.SaveToFile(SaveDialog.FileName);
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctUserClient);
         {$ENDREGION}
       end;
     end;
     2 : begin
-      SaveDialog.Filter     := 'Server File Server.ini|Server.ini';
-      SaveDialog.DefaultExt := 'ini';
+      SaveDialog.Filter     := 'Server File Mir3ServerSetup.conf|Mir3ServerSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
-      {$REGION ' Save Server Config '}
-       //with GServerConfig do
-       //begin
-          //TODO : Add Server Config
-       //end;
-      {$ENDREGION}
-        FMemServer.SaveToFile(SaveDialog.FileName);
+        {$REGION ' Save Server Config '}
+        with FConfigManager do
+        begin
+
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctGameServer);
+        {$ENDREGION}
+      end;
+    end;
+    3 : begin
+      SaveDialog.Filter     := 'Server File Mir3LoginGateSetup.conf|Mir3LoginGateSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
+      if SaveDialog.Execute then
+      begin
+        {$REGION ' Save Login Gate Config '}
+        with FConfigManager do
+        begin
+          GL_GateHost       := meLoginGateHost.Text;
+          GL_GatePort       := StrToIntDef(Trim(meLoginGatePort.Text), 0);
+          GL_ServerHost     := meLoginServerHost.Text;
+          GL_ServerPort     := StrToIntDef(Trim(meLoginServerPort.Text), 0);
+          GL_WindowX        := StrToIntDef(Trim(meLoginWinPosX.Text), 0);
+          GL_WindowY        := StrToIntDef(Trim(meLoginWinPosY.Text), 0);
+          GL_EngineVersion  := StrToIntDef(Trim(meLoginEngineVersion.Text), 0);
+          GL_BlockIPList    := meLoginIPBlacklist.Text;
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctGateLogin);
+        {$ENDREGION}
+      end;
+    end;
+    4 : begin
+      SaveDialog.Filter     := 'Server File Mir3SelCharGateSetup.conf|Mir3SelCharGateSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
+      if SaveDialog.Execute then
+      begin
+        {$REGION ' Save Select Char Gate Config '}
+        with FConfigManager do
+        begin
+          GS_GateHost       := meSelectCharGateHost.Text;
+          GS_GatePort       := StrToIntDef(Trim(meSelectCharGatePort.Text), 0);
+          GS_ServerHost     := meSelectCharServerHost.Text;
+          GS_ServerPort     := StrToIntDef(Trim(meSelectCharServerPort.Text), 0);
+          GS_WindowX        := StrToIntDef(Trim(meSelectCharWinPosX.Text), 0);
+          GS_WindowY        := StrToIntDef(Trim(meSelectCharWinPosY.Text), 0);
+          GS_EngineVersion  := StrToIntDef(Trim(meSelectCharEngineVersion.Text), 0);
+          GS_BlockIPList    := meSelectCharIPBlacklist.Text;
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctGateSelectChar);
+        {$ENDREGION}
+      end;
+    end;
+    5 : begin
+      SaveDialog.Filter     := 'Server File Mir3RunGateSetup.conf|Mir3RunGateSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
+      if SaveDialog.Execute then
+      begin
+        {$REGION ' Save Run Gate Config '}
+        with FConfigManager do
+        begin
+          GR_GateHost       := meRunGateHost.Text;
+          GR_GatePort       := StrToIntDef(Trim(meRunGatePort.Text), 0);
+          GR_ServerHost     := meRunServerHost.Text;
+          GR_ServerPort     := StrToIntDef(Trim(meRunServerPort.Text), 0);
+          GR_WindowX        := StrToIntDef(Trim(meRunWinPosX.Text), 0);
+          GR_WindowY        := StrToIntDef(Trim(meRunWinPosY.Text), 0);
+          GR_EngineVersion  := StrToIntDef(Trim(meRunEngineVersion.Text), 0);
+          GR_BlockIPList    := meRunIPBlacklist.Text;
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctGateRun);
+        {$ENDREGION}
+      end;
+    end;
+    6 : begin
+      SaveDialog.Filter     := 'Server File Mir3LoginServerSetup.conf|Mir3LoginServerSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
+      if SaveDialog.Execute then
+      begin
+        {$REGION ' Save Login Server Config '}
+        with FConfigManager do
+        begin
+
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctLoginServer);
+        {$ENDREGION}
+      end;
+    end;
+    7 : begin
+      SaveDialog.Filter     := 'Server File Mir3DBServerSetup.conf|Mir3DBServerSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
+      if SaveDialog.Execute then
+      begin
+        {$REGION ' Save DB Server Config '}
+        with FConfigManager do
+        begin
+
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctDBServer);
+        {$ENDREGION}
       end;
     end;
   end;
@@ -557,9 +838,34 @@ begin
       FManageMode := 1;
     end;
     2 : begin
-      btnSaveConfig.Caption := 'Save Server Config';
-      btnLoadConfig.Caption := 'Load Server Config';
+      btnSaveConfig.Caption := 'Save Game Server Config';
+      btnLoadConfig.Caption := 'Load Game Server Config';
       FManageMode := 2;
+    end;
+    3 : begin
+      btnSaveConfig.Caption := 'Save Login Gate Config';
+      btnLoadConfig.Caption := 'Load Login Gate Config';
+      FManageMode := 3;
+    end;
+    4 : begin
+      btnSaveConfig.Caption := 'Save Select Char Gate Config';
+      btnLoadConfig.Caption := 'Load Select Char Gate Config';
+      FManageMode := 4;
+    end;
+    5 : begin
+      btnSaveConfig.Caption := 'Save Run Gate Config';
+      btnLoadConfig.Caption := 'Load Run Gate Config';
+      FManageMode := 5;
+    end;
+    6 : begin
+      btnSaveConfig.Caption := 'Save Login Server Config';
+      btnLoadConfig.Caption := 'Load Login Server Config';
+      FManageMode := 6;
+    end;
+    7 : begin
+      btnSaveConfig.Caption := 'Save DB Server Config';
+      btnLoadConfig.Caption := 'Load DB Server Config';
+      FManageMode := 7;
     end;
   end;
 end;
