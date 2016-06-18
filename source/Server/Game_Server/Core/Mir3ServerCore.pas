@@ -2,7 +2,7 @@ unit Mir3ServerCore;
 
 interface
 
-uses System.SysUtils, System.Classes, System.Generics.Collections, System.SyncObjs;
+uses WinAPI.Windows, WinAPI.Messages, System.SysUtils, System.Classes, System.Generics.Collections, System.SyncObjs;
 
 const
   MIR3_MAX_REQUIRE = 10;
@@ -99,15 +99,31 @@ var
   GCS_FrontEngineOpenLock    : TCriticalSection;
 
   { Global P and String Lists }
-  GServerLogList     : TStringList;
-  GUserLogList       : TStringList;
-  GUserConLogList    : TStringList;
-  GUserChatLogList   : TStringList;
-  GMiniMapList       : TStringList;
-  GStartPoints       : TStringList;
+  GServerLogList             : TStringList;
+  GUserLogList               : TStringList;
+  GUserConLogList            : TStringList;
+  GUserChatLogList           : TStringList;
+  GMiniMapList               : TStringList;
+  GStartPoints               : TStringList;
 
 type
-  TServerModes = (smTestMode, smPublicMode, smServiceMode);
+  TServerModes   = (smTestMode, smPublicMode, smServiceMode);
+  TProgamType    = (ptDBServer  , ptLoginSrv, ptLogServer, ptM3Server, ptLoginGate,
+                    ptLoginGate1, ptSelGate , ptSelGate1 , ptRunGate , ptRunGate1,
+                    ptRunGate2, ptServerManager);
+
+  { TProgram }
+  PProgram = ^TProgram;
+  TProgram = record
+    RRunning        : Boolean;
+    RProgramFile    : String;
+    RDirectory      : String;
+    RProcessInfo    : TProcessInformation;
+    RProcessHandle  : THandle;
+    RMainFormHandle : THandle;
+    RMainFormX      : Integer;
+    RMainFormY      : Integer;
+  end;
 
   PMsgHeader = ^TMsgHeader;
   TMsgHeader = record
@@ -468,6 +484,12 @@ type
     RCurTrain   : Integer;
   end;
 
+  TServiceState   = (ssCreate, ssLoadInfo, ssStartService, ssStopService, ssCloseApplication);
+  TSCMServiceInfo = packed record
+    RServiceHandle : NativeUInt;
+    RServiceState  : TServiceState;
+  end;
+
   TMapAttribute  = (maNoSpaceMove, maNoRandomMove, maNoSpellMove, maNoItemMove,
                     maNoCastleMove, maNeedHole, moNoRecall, maNoDrug, maNoPositionMove,
                     maNoSlave, maOnly75Over, maNoGuildWar, maNoSpell, maNoRecovery,
@@ -480,12 +502,22 @@ type
   TMapAttributes = set of TMapAttribute;
 
 var
-  GEventSetupInfo : TEventSetupInfo;
-  GServerMode     : TServerMode;
+  GEventSetupInfo      : TEventSetupInfo;
+  GServerMode          : TServerMode;
+  GServerManagerHandle : THandle;
 
 
 procedure ServerLogMessage(ALogMessage: String);
 function MakeDefaultMsg(AMessage: Word; ARecog: Integer; WParam, ATag, ASeries: Word): TDefaultMessage;
+(* Game Center System *)
+function StartGameService(var AProgramInfo: TProgram; AHandle: String; AWaitTime: LongWord): LongWord;
+function StopGameService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
+procedure SendControlManagerMessage(AIdent: Word; AMessage: String; AProgramType: TProgamType);
+procedure SendFromControlManagerMessage(AHandle: THandle; AIdent: Word; AMessage: String; AWaitTime: Cardinal);
+
+
+
+procedure SendSCMMessageServiceInfo(AHandle: HWND; AServiceInfo: TSCMServiceInfo; ASender, AIndent: Word);
 
 implementation
 
@@ -509,6 +541,92 @@ begin
     RTag	  := ATag;
     RSeries := ASeries;
   end;
+end;
+
+function StartGameService(var AProgramInfo: TProgram; AHandle: String; AWaitTime: LongWord): LongWord;
+var
+  FCommandLine      : String;
+  FDirectory        : String;
+  FStartupInfo      : TStartupInfo;
+  FSecureAttributes : TSecurityAttributes;
+  FSecureDescriptor : TSecurityDescriptor;
+begin
+  (* Create Securety things (need it up to Vista ) *)
+  InitializeSecurityDescriptor(@FSecureDescriptor, SECURITY_DESCRIPTOR_REVISION);
+  SetSecurityDescriptorDacl(@FSecureDescriptor, True, nil, False);
+  with FSecureAttributes do
+  begin
+    nLength              := SizeOf(FSecureAttributes);
+    lpSecurityDescriptor := @FSecureDescriptor;
+    bInheritHandle       := True;
+  end;
+
+  (* Start of Create Process *)
+  Result := 0;
+  FillChar(FStartupInfo, SizeOf(TStartupInfo), #0);
+  GetStartupInfo(FStartupInfo);
+  FCommandLine := Format('%s%s %s %d %d', [AProgramInfo.RDirectory, AProgramInfo.RProgramFile, AHandle, AProgramInfo.RMainFormX, AProgramInfo.RMainFormY]);
+  FDirectory   := String(AProgramInfo.RDirectory);
+  if not CreateProcessW(nil, PWideChar(FCommandLine), @FSecureAttributes, @FSecureDescriptor, True, 0, nil, PWideChar(FDirectory), FStartupInfo, AProgramInfo.RProcessInfo) then
+  begin
+    Result := GetLastError();
+  end;
+  Sleep(AWaitTime);
+end;
+
+function StopGameService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
+var
+  FExitCode: LongWord;
+begin
+  Result := 0;
+  if TerminateProcess(AProgramInfo.RProcessInfo.hProcess, FExitCode) then
+  begin
+    Result := GetLastError();
+  end;
+  Sleep(AWaitTime);
+end;
+
+procedure SendControlManagerMessage(AIdent: Word; AMessage: String; AProgramType: TProgamType);
+begin
+//  FParam       := MakeLong(Word(AProgramType), AIdent);
+//
+//  //GetMem(FData.lpData, FData.cbData);
+//  FTest.
+//  FData.dwData := 0;
+//  FData.cbData := Length(AMessage) + 1;
+//  FData.lpData := @FTest;//PChar(AMessage);
+//  //Move(AMessage, FData.lpData, Length(AMessage)+1);
+//  //PChar
+//  //StrCopy(FData.lpData, PChar(AMessage));
+//  SendMessage(GServerManagerHandle, WM_COPYDATA, FParam, Cardinal(@FData));
+//  //FreeMem(FData.lpData);
+end;
+
+procedure SendFromControlManagerMessage(AHandle: THandle; AIdent: Word; AMessage: String; AWaitTime: Cardinal);
+var
+  FData  : TCopyDataStruct;
+  FParam : Integer;
+begin
+  FParam       := Word(ptServerManager);
+  FData.dwData := AIdent;
+  FData.cbData := Length(AMessage) + 1;
+  FData.lpData := PChar(AMessage);
+  SendMessage(AHandle, WM_COPYDATA, FParam, Cardinal(@FData));
+  Sleep(AWaitTime);
+end;
+
+
+procedure SendSCMMessageServiceInfo(AHandle: HWND; AServiceInfo: TSCMServiceInfo; ASender, AIndent: Word);
+var
+  FSendData : TCopyDataStruct;
+begin
+  with FSendData do
+  begin
+    dwData := AIndent;
+    cbData := SizeOf(TSCMServiceInfo);
+    lpData := @AServiceInfo;
+  end;
+  SendMessage(AHandle, WM_COPYDATA, ASender, Cardinal(@FSendData));
 end;
 
 procedure InitGlobalCoreCode;

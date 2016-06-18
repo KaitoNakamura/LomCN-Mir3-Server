@@ -5,7 +5,7 @@
         <FrameworkType>VCL</FrameworkType>
         <MainSource>LomCN_Mir3ServerManager.dpr</MainSource>
         <Base>True</Base>
-        <Config Condition="'$(Config)'==''">Release</Config>
+        <Config Condition="'$(Config)'==''">Debug</Config>
         <Platform Condition="'$(Platform)'==''">Win32</Platform>
         <TargetedPlatforms>3</TargetedPlatforms>
         <AppType>Application</AppType>
@@ -95,6 +95,7 @@
         <DCC_RemoteDebug>true</DCC_RemoteDebug>
     </PropertyGroup>
     <PropertyGroup Condition="'$(Cfg_1_Win32)'!=''">
+        <AppEnableAdministrator>true</AppEnableAdministrator>
         <VerInfo_Locale>1033</VerInfo_Locale>
         <AppEnableHighDPI>true</AppEnableHighDPI>
         <Icon_MainIcon>..\..\Images\LomCN_Icon_Red.ico</Icon_MainIcon>
@@ -136,6 +137,13 @@
             <Form>frmMainSystem</Form>
             <FormType>dfm</FormType>
         </DCCReference>
+        <DCCReference Include="..\Game_Server\core\Mir3ServerCore.pas"/>
+        <DCCReference Include="..\..\Client\Client\Client_Common\Mir3CommonConfigDefinition.pas"/>
+        <DCCReference Include="..\..\Client\Client\Client_Engine\Mir3ClientEngineEnDecode.pas"/>
+        <DCCReference Include="..\..\Client\Client\Client_Common\Mir3ClientCommonGlobals.pas"/>
+        <DCCReference Include="..\Game_Server\Core\Mir3ServerCoreGate.pas"/>
+        <DCCReference Include="..\Game_Server\Core\Mir3ServerConstants.pas"/>
+        <None Include="LomCN_Mir3ServerManager_TODO.txt"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
@@ -162,6 +170,18 @@
                 </Excluded_Packages>
             </Delphi.Personality>
             <Deployment Version="3">
+                <DeployFile LocalName="LomCN_Mir3ServerManager_TODO.txt" Configuration="Debug" Class="ProjectFile">
+                    <Platform Name="Win32">
+                        <RemoteDir>.\</RemoteDir>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
+                <DeployFile LocalName="..\..\..\release\Server\LomCN_Mir3ServerManager.exe" Configuration="Release" Class="ProjectOutput">
+                    <Platform Name="Win32">
+                        <RemoteName>LomCN_Mir3ServerManager.exe</RemoteName>
+                        <Overwrite>true</Overwrite>
+                    </Platform>
+                </DeployFile>
                 <DeployFile LocalName="..\..\..\release\Server\LomCN_Mir3ServerManager.exe" Configuration="Debug" Class="ProjectOutput">
                     <Platform Name="Win32">
                         <RemoteName>LomCN_Mir3ServerManager.exe</RemoteName>

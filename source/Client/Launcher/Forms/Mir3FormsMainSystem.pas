@@ -4,15 +4,34 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, PNGImage, Vcl.ExtCtrls, Vcl.Buttons,
-  Vcl.OleCtrls, SHDocVw, MSHTML, Vcl.ComCtrls,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.Buttons,
+  Vcl.OleCtrls, SHDocVw, MSHTML, Vcl.ComCtrls, WinInet,
   Vcl.Samples.Gauges, acTitleBar, sSkinProvider, sSkinManager, acWebBrowser,
   Vcl.StdCtrls, sButton, acProgressBar, sPanel, sStatusBar, sLabel,
   Mir3ServerFunctions, Mir3CoreLanguageConstants, Mir3CommonConfigDefinition,
   Mir3CoreLauncherLanguage, Mir3ClientEngineEnDecode, sComboBox, sCheckBox,
-  sEdit, sSpinEdit, sPageControl;
+  sEdit, sSpinEdit, sPageControl, Mir3CommonThread, Mir3CoreMD5,
+  IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
+  IdExplicitTLSClientServerBase, IdFTP, System.Zip, IdHashMessageDigest, idHash;
 
 type
+  TFTPDownload = class(TMir3_Thread)
+  strict private
+    FListFile      : String;
+    FFTPBaseDir    : String;
+    FFTPUserName   : String;
+    FFTPPassword   : String;
+    FFTPHost       : String;
+    FFTPPort       : Integer;
+    FFTPPassivMode : Boolean;
+    FUseMode       : Integer;
+  protected
+    procedure Execute; override;
+    procedure SetupFTP(ABaseDir, AUserName, APassword, AHost, AListFile: String; APort: Integer; APassiveMode: Boolean);
+  public
+    property Event;
+  end;
+
   TfrmMir3MainSystem = class(TForm)
     sSkinManager1: TsSkinManager;
     sSkinProvider1: TsSkinProvider;
@@ -27,7 +46,7 @@ type
     sPanel2: TsPanel;
     laDownload: TsLabel;
     laProgress: TsLabel;
-    sProgressBar1: TsProgressBar;
+    pbDownload: TsProgressBar;
     sProgressBar2: TsProgressBar;
     sLabel1: TsLabel;
     sLabel2: TsLabel;
@@ -68,44 +87,98 @@ type
     laVideoVolume: TsLabel;
     btnHTMLNews: TsButton;
     btnHTMLHome: TsButton;
-    procedure wbGameServerNewsDocumentComplete(ASender: TObject;
-      const pDisp: IDispatch; const URL: OleVariant);
+    ftpSys: TIdFTP;
+    procedure wbGameServerNewsDocumentComplete(ASender: TObject; const pDisp: IDispatch; const URL: OleVariant);
     procedure btnStartGameClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure btnOptionClick(Sender: TObject);
     procedure btnAccountClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnOptCancelClick(Sender: TObject);
+    procedure ftpSysWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
+    procedure ftpSysWorkBegin(ASender: TObject; AWorkMode: TWorkMode; AWorkCountMax: Int64);
   private
     FButtonCount           : Integer;
     FLib_Path              : String;
-    FLauncherHomePage      : String;
-    FLauncherNewsPage      : String;
-    FLauncherAccountPage   : String;
-    FLauncherPassResetPage : String;
+    FConfigManager         : TMir3ConfigManager;
+    FDownloadManager       : TFTPDownload;
+    FZipManager            : TZipFile;
   private
     procedure ProcessConfigFile;
     procedure WB_Set3DBorderStyle(Sender: TObject; bValue: Boolean);
     procedure WB_LoadHTML(AWebBrowser: TWebBrowser; AURL: WideString);
   public
-    { Public-Deklarationen }
+
   end;
 
 var
   frmMir3MainSystem        : TfrmMir3MainSystem;
   GLanguageEngine          : TMir3_LauncherLanguageEngine;
-  GGameClientConfig        : TMir3_GameClientConfig;
-  GGameSystemConfig        : TMir3_GameSystemConfig;
-  GGameSystemConfigVersion : TMir3_GameSystemConfigVersion;
+
 
 implementation
 
 {$R *.dfm}
 
+procedure TFTPDownload.Execute;
+begin
+  FUseMode := 0;
+  while not Terminated do
+  begin
+    if not Terminated and (WaitForSingleObject(Event, INFINITE) = WAIT_OBJECT_0) then
+    begin
+      case FUseMode of
+        0 : begin  //ListFile
+
+        end;
+        1 : begin  //Check if aviable and if the MD5 ok, if not then Download
+
+        end;
+        2 : begin  //Unpack gz files
+          //use zip
+        end;
+      end;
+    end;
+  end;
+end;
+
+procedure TFTPDownload.SetupFTP(ABaseDir, AUserName, APassword, AHost, AListFile: String; APort: Integer; APassiveMode: Boolean);
+begin
+  FListFile      := AListFile;
+  FFTPBaseDir    := ABaseDir;
+  FFTPUserName   := AUserName;
+  FFTPPassword   := APassword;
+  FFTPHost       := AHost;
+  FFTPPort       := APort;
+  FFTPPassivMode := APassiveMode;
+end;
+
+function MD5File(const AFileName: String): String;
+var
+ FMD5        : TIdHashMessageDigest5;
+ FFileStream : TFileStream;
+begin
+  Result:='';
+  if FileExists(AFileName) then
+  begin
+    FMD5 := TIdHashMessageDigest5.Create;
+    FFileStream := TFileStream.Create(AFileName, fmOpenRead or fmShareDenyWrite);
+    try
+      Result := FMD5.HashStreamAsHex(FFileStream);
+    finally
+      FFileStream.Free;
+      FMD5.Free;
+    end;
+  end;
+end;
+
 procedure TfrmMir3MainSystem.FormCreate(Sender: TObject);
 begin
-  FButtonCount := 0;
-  FLib_Path    := ExtractFilePath(ParamStr(0))+'lib\';
+ // Caption := MD5File('C:\dbghelp.dll');
+
+  FConfigManager := TMir3ConfigManager.Create;
+  FButtonCount   := 0;
+  FLib_Path      := ExtractFilePath(ParamStr(0))+'lib\';
   ProcessConfigFile;
   // Set Language and HTML Page Info
   GLanguageEngine                 := TMir3_LauncherLanguageEngine.Create('English.lgu');
@@ -142,15 +215,50 @@ begin
   laDownload.Caption              := GLanguageEngine.GetTextFromLangSystem(MIR3_LANG_LABEL_DOWNLOAD);
   laProgress.Caption              := GLanguageEngine.GetTextFromLangSystem(MIR3_LANG_LABEL_ALL_PROGRESS);
   tbMain.Items[0].Caption         := 'LomCN - ' + GLanguageEngine.GetTextFromLangSystem(MIR3_LANG_MAIN_CAPTION);
-  if Trim(FLauncherHomePage) <> '' then
-    WB_LoadHTML(wbGameServerNews, FLauncherHomePage);
+  if Trim(FConfigManager.LC_URL_HomePage) <> '' then
+    WB_LoadHTML(wbGameServerNews, FConfigManager.LC_URL_HomePage);
   stbMain.Panels[0].Text          := GLanguageEngine.GetTextFromLangSystem(MIR3_LANG_VERSION) + ' : ' +
                                      GetFileVersionString(ExtractFilePath(ParamStr(0))+'LomCN_Mir3Client.exe');
   wbGameServerNews.Align          := alClient;
+
+  //FDownloadManager                := TFTPDownload.Create;
+  //FZipManager                     := TZipFile.Create;
+  if FConfigManager.LC_UseUpdateService then
+  begin
+    ftpSys.Host     := '';
+    ftpSys.Port     := 21;
+    ftpSys.Username := '';
+    ftpSys.Password := '';
+    ftpSys.Passive  := False;      // Resume?
+    //ftpSys.Get('Source', 'Destination');
+    //ftpSys.Connect;
+    //ftpSys.ChangeDir('');
+    //FDownloadManager.DownloadInfoList();
+
+
+    //FZipManager.Open('', zmRead);
+    //FZipManager.ExtractZipFile('','',);
+    //TZipProgressEvent = procedure(Sender: TObject; FileName: string; Header: TZipHeader; Position: Int64)
+
+  end;
+
+end;
+
+procedure TfrmMir3MainSystem.ftpSysWork(ASender: TObject; AWorkMode: TWorkMode; AWorkCount: Int64);
+begin
+  pbDownload.Max := AWorkCount;
+end;
+
+procedure TfrmMir3MainSystem.ftpSysWorkBegin(ASender: TObject;
+  AWorkMode: TWorkMode; AWorkCountMax: Int64);
+begin
+  pbDownload.Position := AWorkCountMax;
+  Application.ProcessMessages;
 end;
 
 procedure TfrmMir3MainSystem.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
+  FreeAndNil(FConfigManager);
   FreeAndNil(GLanguageEngine);
 end;
 
@@ -168,7 +276,7 @@ end;
 procedure TfrmMir3MainSystem.btnOptCancelClick(Sender: TObject);
 begin
   plOptionMenu.Visible     := False;
-  if Trim(FLauncherHomePage) <> '' then
+  if Trim(FConfigManager.LC_URL_HomePage) <> '' then
   begin
     wbGameServerNews.Width   := 866;
     wbGameServerNews.Height  := 376;
@@ -177,7 +285,7 @@ begin
     Width := 867;
     Resize;
     Width := 866;
-    WB_LoadHTML(wbGameServerNews, FLauncherHomePage);
+    WB_LoadHTML(wbGameServerNews, FConfigManager.LC_URL_HomePage);
   end;
 end;
 
@@ -201,126 +309,6 @@ end;
 
   {$REGION ' - Help functions       '}
     procedure TfrmMir3MainSystem.ProcessConfigFile;
-    var
-      FTempSystemMem : TMemoryStream;
-      FTempGameMem   : TMemoryStream;
-
-      procedure CreateDefaultSystemFile;
-      begin
-        ZeroMemory(@GGameSystemConfig       , SizeOf(TMir3_GameSystemConfig));
-        ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-
-        with GGameSystemConfigVersion do
-        begin
-          FFileTypeInfo      := FILE_TYPE_INFO;
-          FConfigFileVersion := 1;
-        end;
-        FTempSystemMem.WriteBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-
-        with GGameSystemConfig do
-        begin
-          FServer_Count                := 1;
-          FServer_1_Name               := AnsiString(EncodeString('TestServer'));  //EncodeString('LomCNTitanBeta');
-          FServer_1_Caption            := AnsiString(EncodeString('Test Server')); //EncodeString('LomCN Titan Beta');
-          FServer_1_IP                 := AnsiString(EncodeString('127.0.0.1'));
-          FServer_1_Port               := 7000;
-          FServer_2_Name               := AnsiString(EncodeString('-'));
-          FServer_2_Caption            := AnsiString(EncodeString('-'));
-          FServer_2_IP                 := AnsiString(EncodeString('0.0.0.0'));
-          FServer_2_Port               := 0;
-          FServer_3_Name               := AnsiString(EncodeString('-'));
-          FServer_3_Caption            := AnsiString(EncodeString('-'));
-          FServer_3_IP                 := AnsiString(EncodeString('0.0.0.0'));
-          FServer_3_Port               := 0;
-          FServer_4_Name               := AnsiString(EncodeString('-'));
-          FServer_4_Caption            := AnsiString(EncodeString('-'));
-          FServer_4_IP                 := AnsiString(EncodeString('0.0.0.0'));
-          FServer_4_Port               := 0;
-          { Update System }
-          FUpdateServer_Host           := AnsiString(EncodeString('-'));
-          FUpdateServer_Port           := 0;
-          FUpdateServer_Protocol       := 1;
-          FUpdateServer_User           := AnsiString(EncodeString('-'));
-          FUpdateServer_Password       := AnsiString(EncodeString('-'));
-          FUpdateBaseDirectory         := AnsiString(EncodeString('-'));
-          FUpdate_Passive_Mode         := True;
-          FUpdate_List_File            := '!lomcn_mir3_list.lst.gz';
-          { Fallback System }
-          FFallbackServer_Host         := AnsiString(EncodeString('-'));
-          FFallbackServer_Port         := 0;
-          FFallbackServer_Protocol     := 1;
-          FFallbackServer_User         := AnsiString(EncodeString('-'));
-          FFallbackServer_Password     := AnsiString(EncodeString('-'));
-          FFallbackServerBaseDirectory := AnsiString(EncodeString('-'));
-          FFallbackServer_Passive_Mode := True;
-          FFallbackServer_List_File    := AnsiString(EncodeString('!lomcn_mir3_fallback.fbs.gz'));
-          FFallbackServer_As_Update    := False;
-          { Option System }
-          FUse_Update_Service          := True;
-          FUse_Fallback_Service        := True;
-          FUse_HomePage_Btn            := False;
-          FUse_Account_Btn             := True;
-          FUse_ChangePassword_Btn      := False;
-          FUse_Option_Btn              := True;
-          FUse_News_Page               := True;
-          { Page Set System }
-          FPageSetCount                := 0;
-
-
-        end;
-        FTempSystemMem.WriteBuffer(GGameSystemConfig, SizeOf(TMir3_GameSystemConfig));
-        FTempSystemMem.Seek(0,0);
-        FTempSystemMem.SaveToFile(FLib_Path + 'Mir3.conf');
-      end;
-
-      procedure CreateDefaultGameFile;
-      begin
-        ZeroMemory(@GGameClientConfig       , SizeOf(TMir3_GameClientConfig));
-        ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-        with GGameSystemConfigVersion do
-        begin
-          FFileTypeInfo      := FILE_TYPE_INFO;
-          FConfigFileVersion := 1;
-        end;
-        FTempGameMem.WriteBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-
-        with GGameClientConfig do
-        begin
-          FFull_Screen           := True;
-          FScreenSize            := 800;
-          FLanguageId            := 1;
-          FUseStartVideo         := True;
-          FVideoVolume           := 90;
-          FLastUserName          := '';
-          FLastServer            := '';
-          FItemBeltX             := 0;
-          FItemBeltY             := 0;
-          FItemBeltMode          := 0;
-          FMagicBeldX            := 0;
-          FMagicBeldY            := 0;
-          FMagicBeldMode         := 0;
-          FBGMSoundActive        := True;
-          FBGMSoundVolume        := 90;
-          FFXSoundActive         := True;
-          FFXSoundVolume         := 90;
-          FAttackMode            := 0;
-          FShowMonster           := True;
-          FShowMonsterEffect     := True;
-          FShowMonsterInfoWindow := False;
-          FShowPetChatting       := True;
-          FShowHelmet            := True;
-          FShowHealthBar         := True;
-          FShowDropItem          := True;
-          FShowWeather           := True;
-          FShowNewMessage        := True;
-          FShowTooltipImage      := True;
-          FShowCharacterName     := True;
-        end;
-
-        FTempGameMem.WriteBuffer(GGameSystemConfig, SizeOf(TMir3_GameSystemConfig));
-        FTempGameMem.Seek(0,0);
-        FTempGameMem.SaveToFile(FLib_Path + 'Mir3Client.conf');
-      end;
 
       function GetPosition(ACount: Integer): Integer;
       begin
@@ -334,154 +322,269 @@ end;
       end;
 
     begin
-      FTempSystemMem := TMemoryStream.Create;
-      FTempGameMem   := TMemoryStream.Create;
-      try
-
-        (* Game Launcher Configuration *)
-        if FileExists(FLib_Path + 'Mir3.conf') then
+      (* Game Launcher Configuration *)
+      if FileExists(FLib_Path + 'Mir3.conf') then
+      begin
+        FConfigManager.LoadConfig(FLib_Path + 'Mir3.conf', ctLauncher);
+        if FConfigManager.CH_FileVersion <> 1 then
         begin
-          ZeroMemory(@GGameSystemConfig       , SizeOf(TMir3_GameSystemConfig));
-          ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-          FTempSystemMem.LoadFromFile(FLib_Path + 'Mir3.conf');
-          FTempSystemMem.Seek(0,0);
-          FTempSystemMem.ReadBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-          if GGameSystemConfigVersion.FConfigFileVersion <> 1 then
+          FConfigManager.DefaultConfig(FLib_Path + 'Mir3.conf', ctLauncher);
+        end;
+
+        with FConfigManager do
+        begin
+
+          if LC_UseHomePageBTN and (LC_URL_HomePage <> '') then
           begin
-            CreateDefaultSystemFile;
+            Inc(FButtonCount);
+            btnHTMLHome.Left    := 33;
+            btnHTMLHome.Visible := True;
           end;
 
-          FTempSystemMem.ReadBuffer(GGameSystemConfig, SizeOf(TMir3_GameSystemConfig));
-          with GGameSystemConfig do
+          if LC_UseNewsPageBTN and (LC_URL_News_Page <> '') then
           begin
+            btnHTMLNews.Left    := GetPosition(FButtonCount);
+            btnHTMLNews.Visible := True;
+            Inc(FButtonCount);
+          end;
 
-
-            //URL Setup
-            FLauncherHomePage      := DeCodeString(String(FURL_HomePage));
-            FLauncherNewsPage      := DeCodeString(String(FURL_News_Page));
-            FLauncherAccountPage   := DeCodeString(String(FURL_Account_Page));
-            FLauncherPassResetPage := DeCodeString(String(FURL_ChangePassword_Page));
-
-            if FUse_HomePage_Btn and (Trim(FLauncherHomePage) <> '') then
+          if LC_UseHTMLAccountSys then
+          begin
+            if LC_UseAccountPageBTN and (LC_URL_Account_Page <> '') then
             begin
-              Inc(FButtonCount);
-              btnHTMLHome.Left    := 33;
-              btnHTMLHome.Visible := True;
-            end;
-
-            if FUse_News_Page and (Trim(FLauncherNewsPage) <> '') then
-            begin
-              btnHTMLNews.Left    := GetPosition(FButtonCount);
-              btnHTMLNews.Visible := True;
+              btnAccount.Left    := GetPosition(FButtonCount);
+              btnAccount.Visible := True;
               Inc(FButtonCount);
             end;
 
-            if FUse_HTML_Mode_Account then
+            if LC_UseChangePWPageBTN and (LC_URL_ChangePW_Page <> '') then
             begin
-              if FUse_Account_Btn and (Trim(FLauncherAccountPage) <> '') then
-              begin
-                btnAccount.Left    := GetPosition(FButtonCount);
-                btnAccount.Visible := True;
-                Inc(FButtonCount);
-              end;
-
-              if FUse_ChangePassword_Btn and (Trim(FLauncherPassResetPage) <> '') then
-              begin
-                btnHTMLChangePassword.Left    := GetPosition(FButtonCount);
-                btnHTMLChangePassword.Visible := True;
-                Inc(FButtonCount);
-              end;
-            end else begin
-              if FUse_Account_Btn then
-              begin
-                btnAccount.Left    := GetPosition(FButtonCount);
-                btnAccount.Visible := True;
-                Inc(FButtonCount);
-              end;
-
-              if FUse_ChangePassword_Btn then
-              begin
-                btnHTMLChangePassword.Left    := GetPosition(FButtonCount);
-                btnHTMLChangePassword.Visible := True;
-                Inc(FButtonCount);
-              end;
+              btnHTMLChangePassword.Left    := GetPosition(FButtonCount);
+              btnHTMLChangePassword.Visible := True;
+              Inc(FButtonCount);
+            end;
+          end else begin
+            if LC_UseAccountBTN then
+            begin
+              btnAccount.Left    := GetPosition(FButtonCount);
+              btnAccount.Visible := True;
+              Inc(FButtonCount);
             end;
 
-
-
+            if LC_UseChangePWBTN then
+            begin
+              btnHTMLChangePassword.Left    := GetPosition(FButtonCount);
+              btnHTMLChangePassword.Visible := True;
+              Inc(FButtonCount);
+            end;
           end;
-
-          //btnAccount.Visible := GGameSystemConfig.FUse_Account_Btn;
-          //btnOption.Visible  := GGameSystemConfig.FUse_Option_Btn;
-          //if GGameSystemConfig.FUse_Update_Service then
-            //No Update Service Aviable
-
-        end else begin
-          CreateDefaultSystemFile;
         end;
 
-        (* Game Client Configuration *)
-        if FileExists(FLib_Path + 'Mir3Client.conf') then
+        //if GGameSystemConfig.FUse_Update_Service then
+          //No Update Service Aviable
+
+      end else begin
+        FConfigManager.DefaultConfig(FLib_Path + 'Mir3.conf', ctLauncher);
+      end;
+
+      (* Game Client Configuration *)
+      if FileExists(FLib_Path + 'Mir3Client.conf') then
+      begin
+        FConfigManager.LoadConfig(FLib_Path + 'Mir3Client.conf', ctUserClient);
+        if FConfigManager.CH_FileVersion <> 1 then
         begin
-          ZeroMemory(@GGameClientConfig       , SizeOf(TMir3_GameClientConfig));
-          ZeroMemory(@GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-          FTempGameMem.LoadFromFile(FLib_Path + 'Mir3Client.conf');
-          FTempGameMem.Seek(0,0);
-          FTempGameMem.ReadBuffer(GGameSystemConfigVersion, SizeOf(TMir3_GameSystemConfigVersion));
-          if GGameSystemConfigVersion.FConfigFileVersion <> 1 then
-          begin
-            CreateDefaultGameFile;
-          end;
-
-          FTempGameMem.ReadBuffer(GGameClientConfig, SizeOf(TMir3_GameClientConfig));
-
-          //Add Infos to Controls
-          with GGameClientConfig do
-          begin
-            if FScreenSize = 800 then
-              cbScreenResolution.ItemIndex := 0
-            else cbScreenResolution.ItemIndex := 1;
-
-            case FLanguageId of
-              1 : cbLanguages.ItemIndex := 0;
-              2 : cbLanguages.ItemIndex := 1;
-              3 : cbLanguages.ItemIndex := 2;
-              4 : cbLanguages.ItemIndex := 3;
-            end;
-
-            cbFullScreen.Checked            := FFull_Screen;
-            (* InGame things *)
-            cbShowMonster.Checked           := FShowMonster;
-            cbShowMonsterEffect.Checked     := FShowMonsterEffect;
-            cbShowMonsterInfoWindow.Checked := FShowMonsterInfoWindow;
-            cbShowHealthBar.Checked         := FShowHealthBar;
-            cbShowHelmet.Checked            := FShowHelmet;
-            cbShowPetChatting.Checked       := FShowPetChatting;
-            cbShowCharacterName.Checked     := FShowCharacterName;
-            cbShowTooltipImage.Checked      := FShowTooltipImage;
-            cbShowNewMessage.Checked        := FShowNewMessage;
-            cbShowWeather.Checked           := FShowWeather;
-            cbShowDropItem.Checked          := FShowDropItem;
-            (* Sound and Video *)
-            cbBGMSoundActive.Checked        := FBGMSoundActive;
-            spBGMSoundVolum.Value           := FBGMSoundVolume;
-            cbFXSoundActive.Checked         := FFXSoundActive;
-            spFXSoundVolum.Value            := FFXSoundVolume;
-            cbShowStartVideo.Checked        := FUseStartVideo;
-            spVideoVolume.Value             := FVideoVolume;
-
-          end;
-
-        end else begin
-          CreateDefaultGameFile;
+          FConfigManager.DefaultConfig(FLib_Path + 'Mir3Client.conf', ctUserClient);
         end;
-      finally
-        FTempGameMem.Clear;
-        FreeAndNil(FTempGameMem);
-        FTempSystemMem.Clear;
-        FreeAndNil(FTempSystemMem);
+
+        //Add Infos to Controls
+        with FConfigManager do
+        begin
+          if CC_ScreenSize = 800 then
+            cbScreenResolution.ItemIndex := 0
+          else cbScreenResolution.ItemIndex := 1;
+
+          case CC_LanguageId of
+            1 : cbLanguages.ItemIndex := 0;
+            2 : cbLanguages.ItemIndex := 1;
+            3 : cbLanguages.ItemIndex := 2;
+            4 : cbLanguages.ItemIndex := 3;
+          end;
+
+          cbFullScreen.Checked            := CC_FullScreen;
+          (* InGame things *)
+          cbShowMonster.Checked           := CC_ShowMonster;
+          cbShowMonsterEffect.Checked     := CC_ShowMonsterEffect;
+          cbShowMonsterInfoWindow.Checked := CC_ShowMonsterInfoWindow;
+          cbShowHealthBar.Checked         := CC_ShowHealthBar;
+          cbShowHelmet.Checked            := CC_ShowHelmet;
+          cbShowPetChatting.Checked       := CC_ShowPetChatting;
+          cbShowCharacterName.Checked     := CC_ShowCharacterName;
+          cbShowTooltipImage.Checked      := CC_ShowTooltipImage;
+          cbShowNewMessage.Checked        := CC_ShowNewMessage;
+          cbShowWeather.Checked           := CC_ShowWeather;
+          cbShowDropItem.Checked          := CC_ShowDropItem;
+          (* Sound and Video *)
+          cbBGMSoundActive.Checked        := CC_BGMSoundActive;
+          spBGMSoundVolum.Value           := CC_BGMSoundVolume;
+          cbFXSoundActive.Checked         := CC_FXSoundActive;
+          spFXSoundVolum.Value            := CC_FXSoundVolume;
+          cbShowStartVideo.Checked        := CC_UseStartVideo;
+          spVideoVolume.Value             := CC_VideoVolume;
+
+        end;
+
+      end else begin
+        FConfigManager.DefaultConfig(FLib_Path + 'Mir3Client.conf', ctUserClient);
       end;
     end;
+
+function FtpDownloadFile(strHost, strUser, strPwd: string; Port: Integer; ftpDir, ftpFile, TargetFile: string; ProgressBar: TProgressBar): Boolean;
+
+  function FmtFileSize(Size: Integer): string;
+  begin
+    if Size >= $F4240 then
+      Result := Format('%.2f', [Size / $F4240]) + ' Mb'
+    else
+    if Size < 1000 then
+      Result := IntToStr(Size) + ' bytes'
+    else
+      Result := Format('%.2f', [Size / 1000]) + ' Kb';
+  end;
+
+const
+  READ_BUFFERSIZE = 4096; // or 256, 512, ...
+var
+  hNet, hFTP, hFile: HINTERNET;
+  buffer: array[0..READ_BUFFERSIZE - 1] of Char;
+  bufsize, dwBytesRead, fileSize: DWORD;
+  sRec: TWin32FindData;
+  strStatus: string;
+  LocalFile: file;
+  bSuccess: Boolean;
+begin
+  Result := False;
+
+  { Open an internet session }
+  hNet := InternetOpen('Program_Name', // Agent
+                        INTERNET_OPEN_TYPE_PRECONFIG, // AccessType
+                        nil, // ProxyName
+                        nil, // ProxyBypass
+                        0); // or INTERNET_FLAG_ASYNC / INTERNET_FLAG_OFFLINE
+
+  {
+    Agent contains the name of the application or
+    entity calling the Internet functions
+  }
+
+
+  { See if connection handle is valid }
+  if hNet = nil then
+  begin
+    ShowMessage('Unable to get access to WinInet.Dll');
+    Exit;
+  end;
+
+  { Connect to the FTP Server }
+  hFTP := InternetConnect(hNet, // Handle from InternetOpen
+                          PChar(strHost), // FTP server
+                          port, // (INTERNET_DEFAULT_FTP_PORT),
+                          PChar(StrUser), // username
+                          PChar(strPwd), // password
+                          INTERNET_SERVICE_FTP, // FTP, HTTP, or Gopher?
+                          0, // flag: 0 or INTERNET_FLAG_PASSIVE
+                          0);// User defined number for callback
+
+  if hFTP = nil then
+  begin
+    InternetCloseHandle(hNet);
+    ShowMessage(Format('Host "%s" is not available',[strHost]));
+    Exit;
+  end;
+
+  { Change directory }
+  bSuccess := FtpSetCurrentDirectory(hFTP, PChar(ftpDir));
+
+  if not bSuccess then
+  begin
+    InternetCloseHandle(hFTP);
+    InternetCloseHandle(hNet);
+    ShowMessage(Format('Cannot set directory to %s.',[ftpDir]));
+    Exit;
+  end;
+
+  { Read size of file }
+  if FtpFindFirstFile(hFTP, PChar(ftpFile), sRec, 0, 0) <> nil then
+  begin
+    fileSize := sRec.nFileSizeLow;
+    // fileLastWritetime := sRec.lastWriteTime
+  end else
+  begin
+    InternetCloseHandle(hFTP);
+    InternetCloseHandle(hNet);
+    ShowMessage(Format('Cannot find file ',[ftpFile]));
+    Exit;
+  end;
+
+  { Open the file }
+  hFile := FtpOpenFile(hFTP, // Handle to the ftp session
+                       PChar(ftpFile), // filename
+                       GENERIC_READ, // dwAccess
+                       FTP_TRANSFER_TYPE_BINARY, // dwFlags
+                       0); // This is the context used for callbacks.
+
+  if hFile = nil then
+  begin
+    InternetCloseHandle(hFTP);
+    InternetCloseHandle(hNet);
+    Exit;
+  end;
+
+  { Create a new local file }
+  AssignFile(LocalFile, TargetFile);
+  {$i-}
+  Rewrite(LocalFile, 1);
+  {$i+}
+
+  if IOResult <> 0 then
+  begin
+    InternetCloseHandle(hFile);
+    InternetCloseHandle(hFTP);
+    InternetCloseHandle(hNet);
+    Exit;
+  end;
+
+  dwBytesRead := 0;
+  bufsize := READ_BUFFERSIZE;
+
+  while (bufsize > 0) do
+  begin
+    Application.ProcessMessages;
+
+    if not InternetReadFile(hFile,
+                            @buffer, // address of a buffer that receives the data
+                            READ_BUFFERSIZE, // number of bytes to read from the file
+                            bufsize) then Break; // receives the actual number of bytes read
+
+    if (bufsize > 0) and (bufsize <= READ_BUFFERSIZE) then
+      BlockWrite(LocalFile, buffer, bufsize);
+    dwBytesRead := dwBytesRead + bufsize;
+
+    { Show Progress }
+    ProgressBar.Position := Round(dwBytesRead * 100 / fileSize);
+    //Form1.Label1.Caption := Format('%s of %s / %d %%',[FmtFileSize(dwBytesRead),FmtFileSize(fileSize) ,ProgressBar.Position]);
+  end;
+
+  CloseFile(LocalFile);
+
+  InternetCloseHandle(hFile);
+  InternetCloseHandle(hFTP);
+  InternetCloseHandle(hNet);
+  Result := True;
+end;
+
+
+
+
   {$ENDREGION}
 
   {$REGION ' - WebBrowser functions '}

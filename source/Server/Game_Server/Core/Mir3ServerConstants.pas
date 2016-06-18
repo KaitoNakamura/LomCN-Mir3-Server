@@ -6,6 +6,7 @@ const
 
   (* Run Gate things *)
   MIR3_MAX_GATE                     = 20;
+  MIR3_MAX_GATE_SESSION             = 10000;
   MIR3_MAX_PUBLIC_ADDR              = 30;
   MIR3_STATUS_ARRAY_SIZE            = 16;
   MIR3_SEND_BLOCK                   = 1024;

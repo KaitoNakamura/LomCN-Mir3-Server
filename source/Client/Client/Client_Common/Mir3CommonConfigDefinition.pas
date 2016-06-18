@@ -2,7 +2,7 @@
  *   LomCN Mir3 Config Definition File 2016                                              *
  *                                                                                       *
  *   Web       : http://www.lomcn.org                                                    *
- *   Version   : 0.0.0.3                                                                 *
+ *   Version   : 0.0.0.4                                                                 *
  *                                                                                       *
  *   - File Info -                                                                       *
  *                                                                                       *
@@ -14,6 +14,7 @@
  *  - 0.0.0.1  [2013-06-08] Coly : fist init                                             *
  *  - 0.0.0.2  [2016-06-12] Coly : change to latest system                               *
  *  - 0.0.0.3  [2016-06-14] Coly : reduced config redundancy                             *
+ *  - 0.0.0.4  [2016-06-17] Coly : add Server Manager Config                             *
  *                                                                                       *
  *****************************************************************************************
  *  - TODO List for this *.pas file -                                                    *
@@ -222,21 +223,36 @@ type
     RShowCharacterName     : Boolean;
   end;
 
+  //Mir3ManagerSetup.conf
+  PMir3ServerManagerConfig = ^TMir3ServerManagerConfig;
+  TMir3ServerManagerConfig = packed record
+    RPahtLoginGate      : String[255];
+    RPahtSelectCharGate : String[255];
+    RPahtRunGate_1      : String[255];
+    RPahtRunGate_2      : String[255];
+    RPahtRunGate_3      : String[255];
+    RPahtLoginServer    : String[255];
+    RPahtDatabaseServer : String[255];
+    RPahtLogServer      : String[255];
+    RPahtGameServer     : String[255];
+  end;
+
 {$ENDREGION}
 
-  TMir3ConfigType = (ctGateLogin, ctGateSelectChar, ctGateRun, ctLoginServer, ctDBServer, ctGameServer, ctLauncher, ctUserClient);
+  TMir3ConfigType = (ctGateLogin, ctGateSelectChar, ctGateRun, ctLoginServer, ctDBServer, ctGameServer, ctLauncher, ctUserClient, ctServerManager);
 
   TMir3ConfigManager = class
   private
-    FConfigFileHeader  : TMir3ConfigFileHeader;
-    FGateLoginConfig   : TMir3GateLoginConfig;
-    FGateSelCharConfig : TMir3GateSelectCharConfig;
-    FGateRunConfig     : TMir3GateRunConfig;
-    FLoginServerConfig : TMir3LoginServerConfig;
-    FDBServerConfig    : TMir3DBServerConfig;
-    FGameServerConfig  : TMir3GameServerConfig;
-    FLauncherConfig    : TMir3LauncherConfig;
-    FUserClientConfig  : TMir3UserClientConfig;
+    FConfigFileHeader    : TMir3ConfigFileHeader;
+    FGateLoginConfig     : TMir3GateLoginConfig;
+    FGateSelCharConfig   : TMir3GateSelectCharConfig;
+    FGateRunConfig       : TMir3GateRunConfig;
+    FLoginServerConfig   : TMir3LoginServerConfig;
+    FDBServerConfig      : TMir3DBServerConfig;
+    FGameServerConfig    : TMir3GameServerConfig;
+    FLauncherConfig      : TMir3LauncherConfig;
+    FUserClientConfig    : TMir3UserClientConfig;
+    FServerManagerConfig : TMir3ServerManagerConfig;
   private
     {$REGION ' - Getter   '}
     {$REGION ' - Gate Login System      '}
@@ -371,6 +387,17 @@ type
     function GetCC_ShowNewMessage: Boolean;
     function GetCC_ShowTooltipImage: Boolean;
     function GetCC_ShowCharacterName: Boolean;
+    {$ENDREGION}
+    {$REGION ' - Server Manager System     '}
+    function GetSM_PahtLoginGate: String;
+    function GetSM_PahtSelectCharGate: String;
+    function GetSM_PahtRunGate1: String;
+    function GetSM_PahtRunGate2: String;
+    function GetSM_PahtRunGate3: String;
+    function GetSM_PahtLoginServer: String;
+    function GetSM_PahtDatabaseServer: String;
+    function GetSM_PahtLogServer: String;
+    function GetSM_PahtGameServer: String;
     {$ENDREGION}
     {$ENDREGION}
     function GetCH_FileTypeInfo: String;
@@ -509,6 +536,17 @@ type
     procedure SetCC_ShowNewMessage(AValue: Boolean);
     procedure SetCC_ShowTooltipImage(AValue: Boolean);
     procedure SetCC_ShowCharacterName(AValue: Boolean);
+    {$ENDREGION}
+    {$REGION ' - Game Server System     '}
+    procedure SetSM_PahtLoginGate(AValue: String);
+    procedure SetSM_PahtSelectCharGate(AValue: String);
+    procedure SetSM_PahtRunGate1(AValue: String);
+    procedure SetSM_PahtRunGate2(AValue: String);
+    procedure SetSM_PahtRunGate3(AValue: String);
+    procedure SetSM_PahtLoginServer(AValue: String);
+    procedure SetSM_PahtDatabaseServer(AValue: String);
+    procedure SetSM_PahtLogServer(AValue: String);
+    procedure SetSM_PahtGameServer(AValue: String);
     {$ENDREGION}
     {$ENDREGION}
   public (* Function  *)
@@ -655,6 +693,17 @@ type
     property CC_ShowTooltipImage      : Boolean  read GetCC_ShowTooltipImage      write SetCC_ShowTooltipImage;
     property CC_ShowCharacterName     : Boolean  read GetCC_ShowCharacterName     write SetCC_ShowCharacterName;
     {$ENDREGION}
+    {$REGION ' - Server Manager System      '}
+    property SM_PahtLoginGate      : String read GetSM_PahtLoginGate      write SetSM_PahtLoginGate;
+    property SM_PahtSelectCharGate : String read GetSM_PahtSelectCharGate write SetSM_PahtSelectCharGate;
+    property SM_PahtRunGate1       : String read GetSM_PahtRunGate1       write SetSM_PahtRunGate1;
+    property SM_PahtRunGate2       : String read GetSM_PahtRunGate2       write SetSM_PahtRunGate2;
+    property SM_PahtRunGate3       : String read GetSM_PahtRunGate3       write SetSM_PahtRunGate3;
+    property SM_PahtLoginServer    : String read GetSM_PahtLoginServer    write SetSM_PahtLoginServer;
+    property SM_PahtDatabaseServer : String read GetSM_PahtDatabaseServer write SetSM_PahtDatabaseServer;
+    property SM_PahtLogServer      : String read GetSM_PahtLogServer      write SetSM_PahtLogServer;
+    property SM_PahtGameServer     : String read GetSM_PahtGameServer     write SetSM_PahtGameServer;
+    {$ENDREGION}
   end;
 
 implementation
@@ -663,6 +712,9 @@ procedure TMir3ConfigManager.LoadConfig(AFileName: String; AConfigType: TMir3Con
 var
   FTempMem : TMemoryStream;
 begin
+  if not FileExists(AFileName) then
+    DefaultConfig(AFileName, AConfigType);
+
   FTempMem := TMemoryStream.Create;
   try
     case AConfigType of
@@ -730,6 +782,14 @@ begin
         FTempMem.ReadBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
         FTempMem.ReadBuffer(FUserClientConfig, SizeOf(TMir3UserClientConfig));
       end;
+      ctServerManager  : begin
+        ZeroMemory(@FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
+        ZeroMemory(@FServerManagerConfig, SizeOf(TMir3ServerManagerConfig));
+        FTempMem.LoadFromFile(AFileName);
+        FTempMem.Seek(0,0);
+        FTempMem.ReadBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
+        FTempMem.ReadBuffer(FServerManagerConfig, SizeOf(TMir3ServerManagerConfig));
+      end;
     end;
   finally
     FTempMem.Clear;
@@ -796,7 +856,7 @@ begin
         FConfigFileHeader.FFileTypeInfo      := FILE_TYPE_INFO;
         FConfigFileHeader.FConfigFileVersion := $0001;
         FTempMem.WriteBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
-        FTempMem.ReadBuffer(FLauncherConfig  , SizeOf(TMir3LauncherConfig));
+        FTempMem.WriteBuffer(FLauncherConfig  , SizeOf(TMir3LauncherConfig));
         FTempMem.Seek(0,0);
         FTempMem.SaveToFile(AFileName);
       end;
@@ -805,6 +865,14 @@ begin
         FConfigFileHeader.FConfigFileVersion := $0001;
         FTempMem.WriteBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
         FTempMem.WriteBuffer(FUserClientConfig, SizeOf(TMir3UserClientConfig));
+        FTempMem.Seek(0,0);
+        FTempMem.SaveToFile(AFileName);
+      end;
+      ctServerManager  : begin
+        FConfigFileHeader.FFileTypeInfo      := FILE_TYPE_INFO;
+        FConfigFileHeader.FConfigFileVersion := $0001;
+        FTempMem.WriteBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
+        FTempMem.WriteBuffer(FServerManagerConfig, SizeOf(TMir3ServerManagerConfig));
         FTempMem.Seek(0,0);
         FTempMem.SaveToFile(AFileName);
       end;
@@ -973,6 +1041,20 @@ begin
       DB_WindowY            := 10;
       DB_EngineVersion      := 1;
       SaveConfig(AFileName, ctDBServer);
+      {$ENDREGION}
+    end;
+    ctServerManager : begin
+      {$REGION ' Server Manager Defaults '}
+       SM_PahtLoginGate      := ExtractFilePath(ParamStr(0))+'Server_and_Gates\LoginGate';
+       SM_PahtSelectCharGate := ExtractFilePath(ParamStr(0))+'Server_and_Gates\SelectCharGate';
+       SM_PahtRunGate1       := ExtractFilePath(ParamStr(0))+'Server_and_Gates\RunGate';
+       SM_PahtRunGate2       := ExtractFilePath(ParamStr(0))+'Server_and_Gates\RunGate';
+       SM_PahtRunGate3       := ExtractFilePath(ParamStr(0))+'Server_and_Gates\RunGate';
+       SM_PahtLoginServer    := ExtractFilePath(ParamStr(0))+'Server_and_Gates\LoginServer';
+       SM_PahtDatabaseServer := ExtractFilePath(ParamStr(0))+'Server_and_Gates\DatabaseServer';
+       SM_PahtLogServer      := '';
+       SM_PahtGameServer     := ExtractFilePath(ParamStr(0));
+       SaveConfig(AFileName, ctServerManager);
       {$ENDREGION}
     end;
   end;
@@ -2310,6 +2392,128 @@ end;
 
 {$REGION ' - Game Server Getter / Setter '}
 
+{$ENDREGION}
+
+{$REGION ' - Game Server Getter / Setter     '}
+
+  function TMir3ConfigManager.GetSM_PahtLoginGate: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtLoginGate)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtLoginGate)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtSelectCharGate: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtSelectCharGate)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtSelectCharGate)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtRunGate1: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtRunGate_1)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtRunGate_1)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtRunGate2: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtRunGate_2)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtRunGate_2)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtRunGate3: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtRunGate_3)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtRunGate_3)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtLoginServer: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtLoginServer)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtLoginServer)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtDatabaseServer: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtDatabaseServer)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtDatabaseServer)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtLogServer: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtLogServer)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtLogServer)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetSM_PahtGameServer: String;
+  begin
+    if Trim(String(FServerManagerConfig.RPahtGameServer)) <> '' then
+      Result := String(DeCodeString(String(FServerManagerConfig.RPahtGameServer)))
+    else Result := '';
+  end;
+
+  (* Setter *)
+
+  procedure TMir3ConfigManager.SetSM_PahtLoginGate(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtLoginGate := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtSelectCharGate(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtSelectCharGate := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtRunGate1(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtRunGate_1 := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtRunGate2(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtRunGate_2 := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtRunGate3(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtRunGate_3 := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtLoginServer(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtLoginServer := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtDatabaseServer(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtDatabaseServer := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtLogServer(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtLogServer := AnsiString(EncodeString(AValue));
+  end;
+
+  procedure TMir3ConfigManager.SetSM_PahtGameServer(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FServerManagerConfig.RPahtGameServer := AnsiString(EncodeString(AValue));
+  end;
 {$ENDREGION}
 
 end.

@@ -11,7 +11,7 @@ uses
   Mir3ServerCore, Mir3FormsIDServerClient, Mir3ServerRunSocket,
   Mir3ServerFrontEngine, Mir3ServerUserEngine, Mir3ServerEnvironment,
   Mir3ServerUserManagerEngine, Mir3ServerItemUnit, Mir3FormsInterMessageClient,
-  Mir3ServerXMLResourceReader, Mir3ServerCastle, Mir3ServerGroup;
+  Mir3ServerXMLResourceReader, Mir3ServerCastle, Mir3ServerGroup, Mir3ServerCoreGate;
 
 type
   TFrmMain = class(TForm)
@@ -77,10 +77,14 @@ type
     procedure GateSocketClientError(Sender: TObject; Socket: TCustomWinSocket;
       ErrorEvent: TErrorEvent; var ErrorCode: Integer);
     procedure lbServerMessageClick(Sender: TObject);
+  protected
+    procedure ServerControlManagerMessage(var AMessage : TWMCopyData) ; message WM_COPYDATA;
   private
     procedure MakeStoneMines;
   public
     procedure StartServer;
+    procedure StartGameService;
+    procedure StopGameService;
   end;
 
 var
@@ -101,12 +105,50 @@ implementation
 uses Mir3FormsLocalDB, Mir3ServerEvents, Mir3ServerConstants,
      Mir3FormsServerValues;
 
+procedure TFrmMain.ServerControlManagerMessage(var AMessage: TWMCopyData);
+var
+  FIdent : Word;
+begin
+  FIdent := AMessage.CopyDataStruct.dwData;
+  case FIdent of
+    SCM_START   : begin
+      StartGameService;
+    end;
+    SCM_STOP    : begin
+      StopGameService;
+    end;
+    SCM_RELOAD  : begin
+
+    end;
+    SCM_RESTART : begin
+
+    end;
+  end;
+end;
+
 {$REGION ' - Form Section '}
   procedure TFrmMain.FormCreate(Sender: TObject);
   var
     FSetupFileName : String;
     FIniFile       : TIniFile;
+    FX, FY         : Integer;
+    FServiceInfo   : TSCMServiceInfo;
   begin
+    GServerManagerHandle := StrToIntDef(ParamStr(1), 0);
+    if GServerManagerHandle <> 0 then
+    begin
+      FX := StrToIntDef(ParamStr(2), -1);
+      FY := StrToIntDef(ParamStr(3), -1);
+      if (FX >= 0) or (FY >= 0) then
+      begin
+        Left := FX;
+        Top  := FY;
+      end;
+      FServiceInfo.RServiceHandle := Self.Handle;
+      FServiceInfo.RServiceState  := ssCreate;
+      SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER, SCM_FORM_HANDLE);
+    end;
+
     GRunSocket     := TRunSocket.Create;          // Socket Communication
     GItemUnit      := TItemUnit.Create;           // Item things
     GEnvirnoment   := TEnvirList.Create;          // Map things
@@ -268,18 +310,25 @@ uses Mir3FormsLocalDB, Mir3ServerEvents, Mir3ServerConstants,
     GServerRunTime            := GetTickCount;
     StartTimer.Enabled        := True;
     Timer1.Enabled            := True;
+
+
+    StartGameService;
+
   end;
 
   procedure TFrmMain.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   begin
     if not GServerClosing then
     begin
-      CanClose := FALSE;
-      if MessageDlg('Would you like to close the Server?', mtConfirmation, [mbYes, mbNo, mbCancel], 0) = mrYes then
+      if GServerManagerHandle = 0 then
       begin
-        GServerClosing     := True;
-        CloseTimer.Enabled := True;
-        GRunSocket.CloseAllGate;
+        CanClose := FALSE;
+        if MessageDlg('Would you like to close the Server?', mtConfirmation, [mbYes, mbNo, mbCancel], 0) = mrYes then
+        begin
+          GServerClosing     := True;
+          CloseTimer.Enabled := True;
+          GRunSocket.CloseAllGate;
+        end;
       end;
     end;
   end;
@@ -712,6 +761,44 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TFrmMain.StartGameService;
+var
+  FServiceInfo : TSCMServiceInfo;
+begin
+
+
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssStartService;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER, SCM_START);
+  end;
+end;
+
+procedure TFrmMain.StopGameService;
+var
+  FServiceInfo : TSCMServiceInfo;
+begin
+  //if GServerManagerHandle <> 0 then
+  //begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssStopService;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER, SCM_STOP);
+  //end;
+
+  Application.ProcessMessages;
+  // Close all and stop all....
+  Sleep(2000);
+
+ // if GServerManagerHandle <> 0 then
+  //begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssCloseApplication;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER, SCM_STOP);
+  //end;
+  Close;
 end;
 
 end.

@@ -3807,9 +3807,6 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     BevelOuter = bvLowered
     TabOrder = 3
     Visible = False
-    ExplicitLeft = 8
-    ExplicitWidth = 425
-    ExplicitHeight = 233
     object sButton2: TsButton
       Left = 728
       Top = 326
@@ -3851,8 +3848,6 @@ object frmMir3MainSystem: TfrmMir3MainSystem
         Text = 'Game Version : 0.0.0.0'
         Width = 200
       end>
-    ExplicitTop = 545
-    ExplicitWidth = 872
   end
   object sPanel1: TsPanel
     Left = 0
@@ -3860,13 +3855,14 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     Width = 866
     Height = 141
     Align = alBottom
-    TabOrder = 2
+    TabOrder = 1
     object btnStartGame: TsButton
       Left = 703
       Top = 53
       Width = 132
       Height = 42
       Caption = 'Start Game'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -3882,6 +3878,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Width = 113
       Height = 22
       Caption = 'Option'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -3897,6 +3894,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Width = 113
       Height = 22
       Caption = 'Account'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -3912,6 +3910,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Width = 113
       Height = 22
       Caption = 'Change Password'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -3974,7 +3973,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
         Font.Name = 'Tahoma'
         Font.Style = [fsBold]
       end
-      object sProgressBar1: TsProgressBar
+      object pbDownload: TsProgressBar
         Left = 102
         Top = 39
         Width = 479
@@ -4001,6 +4000,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Width = 113
       Height = 22
       Caption = 'News'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -4017,6 +4017,7 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Width = 113
       Height = 22
       Caption = 'Home'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11
@@ -4099,7 +4100,6 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       TabOrder = 2
       object tsInGameOption: TsTabSheet
         Caption = ' InGame Option '
-        ExplicitHeight = 114
         object cbShowMonster: TsCheckBox
           Left = 31
           Top = 21
@@ -4246,7 +4246,6 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       end
       object tsSound: TsTabSheet
         Caption = ' Sound and Video '
-        ExplicitHeight = 114
         object laBGMVolume: TsLabel
           Left = 41
           Top = 76
@@ -4377,7 +4376,6 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       Align = alBottom
       BevelOuter = bvNone
       TabOrder = 3
-      ExplicitTop = 340
       object btnOptSaveClose: TsButton
         Left = 608
         Top = 6
@@ -7763,5 +7761,19 @@ object frmMir3MainSystem: TfrmMir3MainSystem
     ShowCaption = True
     Left = 808
     Top = 127
+  end
+  object ftpSys: TIdFTP
+    OnWork = ftpSysWork
+    OnWorkBegin = ftpSysWorkBegin
+    IPVersion = Id_IPv4
+    ConnectTimeout = 0
+    TransferType = ftBinary
+    NATKeepAlive.UseKeepAlive = False
+    NATKeepAlive.IdleTimeMS = 0
+    NATKeepAlive.IntervalMS = 0
+    ProxySettings.ProxyType = fpcmNone
+    ProxySettings.Port = 0
+    Left = 809
+    Top = 182
   end
 end

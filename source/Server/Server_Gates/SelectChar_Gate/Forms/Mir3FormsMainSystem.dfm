@@ -2,8 +2,8 @@ object frmMainSystem: TfrmMainSystem
   Left = 0
   Top = 0
   Caption = 'LomCN - Mir3 Select Char Gate'
-  ClientHeight = 300
-  ClientWidth = 635
+  ClientHeight = 296
+  ClientWidth = 377
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -2772,8 +2772,18 @@ object frmMainSystem: TfrmMainSystem
     8001000080010000800100008001000080010000800100008001000080010000
     80010000C0030000F87F0000F1FF0000}
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object Memo1: TMemo
+    Left = 80
+    Top = 48
+    Width = 185
+    Height = 89
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 0
+  end
   object AppEvent: TApplicationEvents
     OnMinimize = AppEventMinimize
     Left = 8

@@ -1,0 +1,12 @@
+
+ :: TODO ::
+ - Add Gate to Server and Server to Server and Server to DB Route Visual Support
+ - Cleanup Code
+ - Add Config Manager
+ - Mini Reload Buttons for all Gates and Servers...
+ - Add more Log Infos to the Memo
+ - Check if Log Server Support full added
+
+ :: Issus ::
+ - Check Problem with Interprocess comunication between 32bit and 64bit
+  - Game Server Don't Process correct during close

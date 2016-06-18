@@ -259,7 +259,7 @@ begin
   case FManageMode of
     0 : begin
       {$REGION ' Launcher Defaults '}
-      meServerCount.Text             := '0';
+      meServerCount.Text             := '1';
       meServerName1.Text             := 'TestServer1';
       meServerName2.Text             := 'TestServer2';
       meServerName3.Text             := 'TestServer3';
@@ -272,7 +272,7 @@ begin
       meServerIP2.Text               := '127.0.0.1';
       meServerIP3.Text               := '127.0.0.1';
       meServerIP4.Text               := '127.0.0.1';
-      meServerPort1.Text             := '0';
+      meServerPort1.Text             := '7000';
       meServerPort2.Text             := '0';
       meServerPort3.Text             := '0';
       meServerPort4.Text             := '0';

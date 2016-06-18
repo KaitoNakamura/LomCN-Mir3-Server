@@ -2,8 +2,8 @@ object frmMainSystem: TfrmMainSystem
   Left = 0
   Top = 0
   Caption = 'LomCN - Mir3 Run Gate'
-  ClientHeight = 300
-  ClientWidth = 635
+  ClientHeight = 296
+  ClientWidth = 377
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -11,6 +11,7 @@ object frmMainSystem: TfrmMainSystem
   Font.Name = 'Tahoma'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
   object AppEvent: TApplicationEvents

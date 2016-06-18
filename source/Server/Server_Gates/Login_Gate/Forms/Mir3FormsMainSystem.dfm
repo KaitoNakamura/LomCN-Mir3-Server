@@ -1,18 +1,53 @@
-object Form1: TForm1
+object frmMainSystem: TfrmMainSystem
   Left = 0
   Top = 0
   Caption = 'LomCN - Mir3 Login Gate'
-  ClientHeight = 300
-  ClientWidth = 635
+  ClientHeight = 276
+  ClientWidth = 377
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'Tahoma'
   Font.Style = []
+  Menu = MainMenu1
   OldCreateOrder = False
+  OnClose = FormClose
+  OnCreate = FormCreate
   PixelsPerInch = 96
   TextHeight = 13
+  object sabInfoBar: TStatusBar
+    Left = 0
+    Top = 257
+    Width = 377
+    Height = 19
+    Panels = <
+      item
+        Text = ' Gate Port : 0'
+        Width = 100
+      end
+      item
+        Text = ' --[   ]-- '
+        Width = 52
+      end
+      item
+        Text = 'Not Ready'
+        Width = 70
+      end
+      item
+        Text = ' Connection : 0/0'
+        Width = 160
+      end>
+  end
+  object Memo1: TMemo
+    Left = 40
+    Top = 48
+    Width = 297
+    Height = 185
+    Lines.Strings = (
+      'Memo1')
+    TabOrder = 1
+  end
   object tiLoginGate: TTrayIcon
     Hint = 'LomCN - Mir3 Login Gate'
     BalloonFlags = bfInfo
@@ -2780,11 +2815,81 @@ object Form1: TForm1
     Visible = True
     OnDblClick = tiLoginGateDblClick
     Left = 8
-    Top = 64
+    Top = 8
   end
   object AppEvent: TApplicationEvents
     OnMinimize = AppEventMinimize
     Left = 8
+    Top = 56
+  end
+  object MainMenu1: TMainMenu
+    Left = 8
+    Top = 112
+    object S1: TMenuItem
+      Caption = '&Service'
+      object menuStartGate: TMenuItem
+        Caption = 'St&art Service'
+        OnClick = menuStartGateClick
+      end
+      object menuStopGate: TMenuItem
+        Caption = 'St&op Service'
+        Enabled = False
+        OnClick = menuStopGateClick
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object menuCloseGate: TMenuItem
+        Caption = 'Close Gate'
+        OnClick = menuCloseGateClick
+      end
+    end
+  end
+  object GameClient: TServerSocket
+    Active = False
+    Port = 7000
+    ServerType = stNonBlocking
+    OnClientConnect = GameClientClientConnect
+    OnClientDisconnect = GameClientClientDisconnect
+    OnClientRead = GameClientClientRead
+    OnClientError = GameClientClientError
+    Left = 64
     Top = 8
+  end
+  object LoginServer: TClientSocket
+    Active = False
+    ClientType = ctNonBlocking
+    Port = 5500
+    OnConnect = LoginServerConnect
+    OnDisconnect = LoginServerDisconnect
+    OnRead = LoginServerRead
+    OnError = LoginServerError
+    Left = 64
+    Top = 56
+  end
+  object tiGateToLoginServer: TTimer
+    Enabled = False
+    Interval = 3000
+    OnTimer = tiGateToLoginServerTimer
+    Left = 184
+    Top = 120
+  end
+  object timeDecodeTimer: TTimer
+    Interval = 1
+    Left = 176
+    Top = 16
+  end
+  object timeStartTimer: TTimer
+    Interval = 200
+    OnTimer = tiGateToLoginServerTimer
+    Left = 176
+    Top = 64
+  end
+  object tiGateToClient: TTimer
+    Enabled = False
+    Interval = 3000
+    OnTimer = tiGateToLoginServerTimer
+    Left = 184
+    Top = 176
   end
 end
