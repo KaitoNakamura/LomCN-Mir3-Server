@@ -5,8 +5,10 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, System.Win.TaskbarCore, Vcl.Taskbar,
-  Vcl.ExtCtrls, Vcl.AppEvnts, Vcl.Menus, System.Win.ScktComp, Mir3ServerCoreGate,
-  Vcl.ComCtrls, Vcl.StdCtrls;
+  Vcl.ExtCtrls, Vcl.AppEvnts, Vcl.Menus, System.Win.ScktComp,
+  Vcl.ComCtrls, Vcl.StdCtrls,
+
+  Mir3ServerCoreGate, Mir3CommonConfigDefinition;
 
 type
   TfrmMainSystem = class(TForm)
@@ -49,8 +51,9 @@ type
   protected
     procedure ServerControlManagerMessage(var AMessage : TWMCopyData) ; message WM_COPYDATA;
   private
-    FServerReady : Boolean;
-    FGateReady   : Boolean;
+    FServerReady   : Boolean;
+    FGateReady     : Boolean;
+    FConfigManager : TMir3ConfigManager;
   private
     procedure StartGateService;
     procedure StopGateService;
@@ -67,21 +70,42 @@ uses Mir3ServerCore;
 
   procedure TfrmMainSystem.ServerControlManagerMessage(var AMessage: TWMCopyData);
   var
-    FIdent : Word;
+    FService     : Word;
+    FServiceInfo : TSCMServiceInfo;
   begin
-    FIdent := AMessage.CopyDataStruct.dwData;
-    case FIdent of
-      SCM_START   : begin
-        StartGateService;
-      end;
-      SCM_STOP    : begin
-        StopGateService;
-      end;
-      SCM_RELOAD  : begin
-
-      end;
-      SCM_RESTART : begin
-
+    FService := AMessage.From;
+    FServiceInfo := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^);
+    case FService of
+      IDENT_MANAGER_SERVER : begin
+        case FServiceInfo.RServiceState of
+          ssRelaodConfig : begin
+            Memo1.Lines.Add('Command: ssRelaodConfig');
+            if Assigned(FConfigManager) then
+            begin
+              try
+                FConfigManager.LoadConfig(ExtractFilePath(ParamStr(0))+'Mir3LoginGateSetup.conf', ctGateLogin);
+                GameClient.Active  := False;
+                LoginServer.Active := False;
+                with FConfigManager do
+                begin
+                  GameClient.Port  := GL_GatePort;
+                  LoginServer.Port := GL_ServerPort;
+                  LoginServer.Host := GL_ServerHost;
+                  //TODO : Reload other things...
+                end;
+                GameClient.Active  := True;
+                LoginServer.Active := True;
+              finally
+                FServiceInfo.RServiceState := ssRelaodConfigDone;
+                SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
+              end;
+            end;
+          end;
+          ssCloseApplication : begin
+            StopGateService;
+            Close;
+          end;
+        end;
       end;
     end;
   end;
@@ -92,6 +116,9 @@ uses Mir3ServerCore;
     FX, FY       : Integer;
     FServiceInfo : TSCMServiceInfo;
   begin
+    FConfigManager := TMir3ConfigManager.Create;
+    FConfigManager.LoadConfig(ExtractFilePath(ParamStr(0))+'Mir3LoginGateSetup.conf', ctGateLogin);
+
     GServerManagerHandle := StrToIntDef(ParamStr(1), 0);
     if GServerManagerHandle <> 0 then
     begin
@@ -102,9 +129,15 @@ uses Mir3ServerCore;
         Left := FX;
         Top  := FY;
       end;
-      FServiceInfo.RServiceHandle := Self.Handle;
-      FServiceInfo.RServiceState  := ssCreate;
-      SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE, SCM_FORM_HANDLE);
+      with FServiceInfo do
+      begin
+        RServiceHandle := Self.Handle;
+        RServiceState  := ssStartUpApp;
+        RClientPort    := FConfigManager.GL_GatePort;
+        RServerPort    := FConfigManager.GL_ServerPort;
+        RServerHost    := AnsiString(FConfigManager.GL_ServerHost);
+      end;
+      SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
     end;
     FServerReady := False;
 
@@ -223,14 +256,19 @@ begin
 end;
 
 procedure TfrmMainSystem.tiGateToLoginServerTimer(Sender: TObject);
+//var
+  //FServiceInfo : TSCMServiceInfo;
 begin
-  //
+
   if not GGateReady then
   begin
     sabInfoBar.Panels[0].Text := ' Gate Port : 0';
     sabInfoBar.Panels[1].Text := ' --[   ]-- ';
     sabInfoBar.Panels[2].Text := ' Not Ready ';
     sabInfoBar.Panels[3].Text := ' Connection : 0/0 ';
+    //FServiceInfo.RServiceHandle := 0;
+    //FServiceInfo.RServiceState  := ssCloseClientPart;
+    //SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo, IDENT_LOGIN_GATE);
   end else begin
     if GKeepAliveTimeOut then
     begin
@@ -239,6 +277,9 @@ begin
       sabInfoBar.Panels[1].Text := ' ---[]--- ';
       sabInfoBar.Panels[2].Text := ' Ready ';
       sabInfoBar.Panels[3].Text := ' Connection : 0/0 ';
+      //FServiceInfo.RServiceHandle := 0;
+      //FServiceInfo.RServiceState  := ssCloseClientPart;
+      //SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo, IDENT_LOGIN_GATE);
     end;
   end;
 end;
@@ -247,14 +288,38 @@ procedure TfrmMainSystem.StartGateService;
 var
   FServiceInfo : TSCMServiceInfo;
 begin
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssInitApp;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
+  end;
+
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssOpenClientPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
+  end;
 
 
   if GServerManagerHandle <> 0 then
   begin
     FServiceInfo.RServiceHandle := 0;
-    FServiceInfo.RServiceState  := ssStartService;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE, SCM_START);
+    FServiceInfo.RServiceState  := ssOpenServerPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
   end;
+
+  //if GateConnection and Server Connection OK then
+  //begin
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssServiceIsRunning;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
+  end;
+  //end;
+
 end;
 
 procedure TfrmMainSystem.StopGateService;
@@ -264,9 +329,20 @@ begin
   if GServerManagerHandle <> 0 then
   begin
     FServiceInfo.RServiceHandle := 0;
-    FServiceInfo.RServiceState  := ssStopService;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE, SCM_STOP);
+    FServiceInfo.RServiceState  := ssCloseClientPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
   end;
+
+  GameClient.Active := False;
+
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssCloseServerPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
+  end;
+
+  LoginServer.Active := False;
 
   Application.ProcessMessages;
   // Close all and stop all....
@@ -276,9 +352,8 @@ begin
   begin
     FServiceInfo.RServiceHandle := 0;
     FServiceInfo.RServiceState  := ssCloseApplication;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE, SCM_STOP);
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_LOGIN_GATE);
   end;
-  Close;
 end;
 
 end.

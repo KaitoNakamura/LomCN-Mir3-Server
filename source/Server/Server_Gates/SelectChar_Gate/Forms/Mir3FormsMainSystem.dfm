@@ -5558,4 +5558,18 @@ object frmMainSystem: TfrmMainSystem
     Left = 8
     Top = 64
   end
+  object GameClient: TServerSocket
+    Active = False
+    Port = 7000
+    ServerType = stNonBlocking
+    Left = 64
+    Top = 8
+  end
+  object MirDBServer: TClientSocket
+    Active = False
+    ClientType = ctNonBlocking
+    Port = 5500
+    Left = 64
+    Top = 56
+  end
 end

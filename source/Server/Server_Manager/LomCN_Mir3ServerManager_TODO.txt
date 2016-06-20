@@ -1,12 +1,15 @@
 
  :: TODO ::
- - Add Gate to Server and Server to Server and Server to DB Route Visual Support
  - Cleanup Code
  - Add Config Manager
- - Mini Reload Buttons for all Gates and Servers...
- - Add more Log Infos to the Memo
  - Check if Log Server Support full added
+ - Check is Process Active or closed...
+
+
+   -Build InterProcess Communication Test Function
 
  :: Issus ::
- - Check Problem with Interprocess comunication between 32bit and 64bit
-  - Game Server Don't Process correct during close
+ - No Issus
+
+ :: Knowledge DB ::
+  - Don't mix 32bit and 64bit Server and Gates (both 32bit and 64bit work divergent)

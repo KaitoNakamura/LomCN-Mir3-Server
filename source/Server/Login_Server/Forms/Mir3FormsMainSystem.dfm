@@ -3856,4 +3856,18 @@ object frmMainSystem: TfrmMainSystem
     Left = 16
     Top = 64
   end
+  object GameClient: TServerSocket
+    Active = False
+    Port = 7000
+    ServerType = stNonBlocking
+    Left = 72
+    Top = 16
+  end
+  object LoginServer: TClientSocket
+    Active = False
+    ClientType = ctNonBlocking
+    Port = 5500
+    Left = 72
+    Top = 64
+  end
 end

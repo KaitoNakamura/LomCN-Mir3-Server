@@ -484,10 +484,20 @@ type
     RCurTrain   : Integer;
   end;
 
-  TServiceState   = (ssCreate, ssLoadInfo, ssStartService, ssStopService, ssCloseApplication);
+  TServiceState   = (ssStartUpApp, ssInitApp, ssServiceIsRunning, ssCloseApplication,
+                     ssOpenClientPart, ssCloseClientPart,
+                     ssOpenServerPart, ssCloseServerPart,
+                     ssOpenServerDBPart, ssCloseServerDBPart,
+                     ssError, ssConnectionCount, ssRelaodConfig, ssRelaodConfigDone);
+
   TSCMServiceInfo = packed record
     RServiceHandle : NativeUInt;
     RServiceState  : TServiceState;
+    RClientPort    : Integer;
+    RServerPort    : Integer;
+    RServerHost    : String[20];
+    RParam1        : Integer;
+    RParam2        : Integer;
   end;
 
   TMapAttribute  = (maNoSpaceMove, maNoRandomMove, maNoSpellMove, maNoItemMove,
@@ -511,13 +521,13 @@ procedure ServerLogMessage(ALogMessage: String);
 function MakeDefaultMsg(AMessage: Word; ARecog: Integer; WParam, ATag, ASeries: Word): TDefaultMessage;
 (* Game Center System *)
 function StartGameService(var AProgramInfo: TProgram; AHandle: String; AWaitTime: LongWord): LongWord;
-function StopGameService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
+function EmergencyStopService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
 procedure SendControlManagerMessage(AIdent: Word; AMessage: String; AProgramType: TProgamType);
 procedure SendFromControlManagerMessage(AHandle: THandle; AIdent: Word; AMessage: String; AWaitTime: Cardinal);
 
 
 
-procedure SendSCMMessageServiceInfo(AHandle: HWND; AServiceInfo: TSCMServiceInfo; ASender, AIndent: Word);
+procedure SendSCMMessageServiceInfo(AHandle: HWND; AServiceInfo: TSCMServiceInfo; ASender : Word);
 
 implementation
 
@@ -574,12 +584,10 @@ begin
   Sleep(AWaitTime);
 end;
 
-function StopGameService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
-var
-  FExitCode: LongWord;
+function EmergencyStopService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
 begin
   Result := 0;
-  if TerminateProcess(AProgramInfo.RProcessInfo.hProcess, FExitCode) then
+  if TerminateProcess(AProgramInfo.RProcessInfo.hProcess, 0) then
   begin
     Result := GetLastError();
   end;
@@ -616,13 +624,13 @@ begin
 end;
 
 
-procedure SendSCMMessageServiceInfo(AHandle: HWND; AServiceInfo: TSCMServiceInfo; ASender, AIndent: Word);
+procedure SendSCMMessageServiceInfo(AHandle: HWND; AServiceInfo: TSCMServiceInfo; ASender: Word);
 var
   FSendData : TCopyDataStruct;
 begin
   with FSendData do
   begin
-    dwData := AIndent;
+    dwData := 0;
     cbData := SizeOf(TSCMServiceInfo);
     lpData := @AServiceInfo;
   end;

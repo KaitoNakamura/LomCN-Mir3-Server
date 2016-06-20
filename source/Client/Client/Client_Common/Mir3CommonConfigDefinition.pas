@@ -55,7 +55,6 @@ type
   //Mir3LoginGateSetup.conf
   PMir3GateLoginConfig = ^TMir3GateLoginConfig;
   TMir3GateLoginConfig = packed record
-    RGateHost      : String[50];
     RGatePort      : Integer; //L:7000
     RServerHost    : String[50];
     RServerPort    : Integer; //L:5500
@@ -68,7 +67,6 @@ type
   //Mir3SelCharGateSetup.conf
   PMir3GateSelectCharConfig = ^TMir3GateSelectCharConfig;
   TMir3GateSelectCharConfig = packed record
-    RGateHost      : String[50];
     RGatePort      : Integer; //S:7101
     RServerHost    : String[50];
     RServerPort    : Integer; //S:5100
@@ -81,7 +79,6 @@ type
   //Mir3RunGateSetup.conf
   PMir3GateRunConfig = ^TMir3GateRunConfig;
   TMir3GateRunConfig = packed record
-    RGateHost      : String[50];
     RGatePort      : Integer; //R:7201
     RServerHost    : String[50];
     RServerPort    : Integer; //R:5000
@@ -256,7 +253,6 @@ type
   private
     {$REGION ' - Getter   '}
     {$REGION ' - Gate Login System      '}
-    function GetGL_GateHost: String;
     function GetGL_GatePort: Integer;
     function GetGL_ServerHost: String;
     function GetGL_ServerPort: Integer;
@@ -266,7 +262,6 @@ type
     function GetGL_BlockIPList: String;
     {$ENDREGION}
     {$REGION ' - Gate SelectChar System '}
-    function GetGS_GateHost: String;
     function GetGS_GatePort: Integer;
     function GetGS_ServerHost: String;
     function GetGS_ServerPort: Integer;
@@ -276,7 +271,6 @@ type
     function GetGS_BlockIPList: String;
     {$ENDREGION}
     {$REGION ' - Gate Run System        '}
-    function GetGR_GateHost: String;
     function GetGR_GatePort: Integer;
     function GetGR_ServerHost: String;
     function GetGR_ServerPort: Integer;
@@ -405,7 +399,6 @@ type
   private
     {$REGION ' - Setter  '}
     {$REGION ' - Gate Login System      '}
-    procedure SetGL_GateHost(AValue: String);
     procedure SetGL_GatePort(AValue: Integer);
     procedure SetGL_ServerHost(AValue: String);
     procedure SetGL_ServerPort(AValue: Integer);
@@ -415,7 +408,6 @@ type
     procedure SetGL_BlockIPList(AValue: String);
     {$ENDREGION}
     {$REGION ' - Gate SelectChar System '}
-    procedure SetGS_GateHost(AValue: String);
     procedure SetGS_GatePort(AValue: Integer);
     procedure SetGS_ServerHost(AValue: String);
     procedure SetGS_ServerPort(AValue: Integer);
@@ -425,7 +417,6 @@ type
     procedure SetGS_BlockIPList(AValue: String);
     {$ENDREGION}
     {$REGION ' - Gate Run System        '}
-    procedure SetGR_GateHost(AValue: String);
     procedure SetGR_GatePort(AValue: Integer);
     procedure SetGR_ServerHost(AValue: String);
     procedure SetGR_ServerPort(AValue: Integer);
@@ -559,7 +550,6 @@ type
     property CH_FileVersion        : Word     read GetCH_FileVersion;
     {$ENDREGION}
     {$REGION ' - Gate Login System       '}
-    property GL_GateHost           : String   read GetGL_GateHost           write SetGL_GateHost;
     property GL_GatePort           : Integer  read GetGL_GatePort           write SetGL_GatePort;
     property GL_ServerHost         : String   read GetGL_ServerHost         write SetGL_ServerHost;
     property GL_ServerPort         : Integer  read GetGL_ServerPort         write SetGL_ServerPort;
@@ -569,7 +559,6 @@ type
     property GL_BlockIPList        : String   read GetGL_BlockIPList        write SetGL_BlockIPList;
     {$ENDREGION}
     {$REGION ' - Gate SelectChar System  '}
-    property GS_GateHost           : String   read GetGS_GateHost           write SetGS_GateHost;
     property GS_GatePort           : Integer  read GetGS_GatePort           write SetGS_GatePort;
     property GS_ServerHost         : String   read GetGS_ServerHost         write SetGS_ServerHost;
     property GS_ServerPort         : Integer  read GetGS_ServerPort         write SetGS_ServerPort;
@@ -579,7 +568,6 @@ type
     property GS_BlockIPList        : String   read GetGS_BlockIPList        write SetGS_BlockIPList;
     {$ENDREGION}
     {$REGION ' - Gate Run System         '}
-    property GR_GateHost           : String   read GetGR_GateHost           write SetGR_GateHost;
     property GR_GatePort           : Integer  read GetGR_GatePort           write SetGR_GatePort;
     property GR_ServerHost         : String   read GetGR_ServerHost         write SetGR_ServerHost;
     property GR_ServerPort         : Integer  read GetGR_ServerPort         write SetGR_ServerPort;
@@ -982,7 +970,6 @@ begin
     end;
     ctGateLogin : begin
       {$REGION ' Login Gate Defaults '}
-      GL_GateHost           := '127.0.0.1';
       GL_GatePort           := 7000;
       GL_ServerHost         := '127.0.0.1';
       GL_ServerPort         := 5500;
@@ -995,7 +982,6 @@ begin
     end;
     ctGateSelectChar : begin
       {$REGION ' Select Char Gate Defaults '}
-      GS_GateHost           := '127.0.0.1';
       GS_GatePort           := 7101;
       GS_ServerHost         := '127.0.0.1';
       GS_ServerPort         := 5100;
@@ -1008,7 +994,6 @@ begin
     end;
     ctGateRun : begin
       {$REGION ' Run Gate Defaults '}
-      GR_GateHost           := '127.0.0.1';
       GR_GatePort           := 7201;
       GR_ServerHost         := '127.0.0.1';
       GR_ServerPort         := 5000;
@@ -1077,11 +1062,6 @@ end;
 
   (* Login Gate *)
 
-  function TMir3ConfigManager.GetGL_GateHost: String;
-  begin
-    Result := DeCodeString(String(FGateLoginConfig.RGateHost));
-  end;
-
   function TMir3ConfigManager.GetGL_GatePort: Integer;
   begin
     Result := FGateLoginConfig.RGatePort;
@@ -1089,7 +1069,7 @@ end;
 
   function TMir3ConfigManager.GetGL_ServerHost: String;
   begin
-    Result := DeCodeString(String(FGateLoginConfig.RGateHost));
+    Result := DeCodeString(String(FGateLoginConfig.RServerHost));
   end;
 
   function TMir3ConfigManager.GetGL_ServerPort: Integer;
@@ -1119,11 +1099,6 @@ end;
 
   (* Select Char Gate *)
 
-  function TMir3ConfigManager.GetGS_GateHost: String;
-  begin
-    Result := DeCodeString(String(FGateSelCharConfig.RGateHost));
-  end;
-
   function TMir3ConfigManager.GetGS_GatePort: Integer;
   begin
     Result := FGateSelCharConfig.RGatePort;
@@ -1131,7 +1106,7 @@ end;
 
   function TMir3ConfigManager.GetGS_ServerHost: String;
   begin
-    Result := DeCodeString(String(FGateSelCharConfig.RGateHost));
+    Result := DeCodeString(String(FGateSelCharConfig.RServerHost));
   end;
 
   function TMir3ConfigManager.GetGS_ServerPort: Integer;
@@ -1161,11 +1136,6 @@ end;
 
   (* Run Gate *)
 
-  function TMir3ConfigManager.GetGR_GateHost: String;
-  begin
-    Result := DeCodeString(String(FGateRunConfig.RGateHost));
-  end;
-
   function TMir3ConfigManager.GetGR_GatePort: Integer;
   begin
     Result := FGateRunConfig.RGatePort;
@@ -1173,7 +1143,7 @@ end;
 
   function TMir3ConfigManager.GetGR_ServerHost: String;
   begin
-    Result := DeCodeString(String(FGateRunConfig.RGateHost));
+    Result := DeCodeString(String(FGateRunConfig.RServerHost));
   end;
 
   function TMir3ConfigManager.GetGR_ServerPort: Integer;
@@ -1202,12 +1172,6 @@ end;
   end;
 
   (* Setter *)
-
-  procedure TMir3ConfigManager.SetGL_GateHost(AValue: String);
-  begin
-    if Trim(AValue) <> '' then
-      FGateLoginConfig.RGateHost := AnsiString(EncodeString(AValue));
-  end;
 
   procedure TMir3ConfigManager.SetGL_GatePort(AValue: Integer);
   begin
@@ -1253,12 +1217,6 @@ end;
 
     (* Select Char Gate *)
 
-  procedure TMir3ConfigManager.SetGS_GateHost(AValue: String);
-  begin
-    if Trim(AValue) <> '' then
-      FGateSelCharConfig.RGateHost := AnsiString(EncodeString(AValue));
-  end;
-
   procedure TMir3ConfigManager.SetGS_GatePort(AValue: Integer);
   begin
     if AValue <> FGateSelCharConfig.RGatePort then
@@ -1301,13 +1259,7 @@ end;
       FGateSelCharConfig.RBlockIPList := AnsiString(EncodeString(AValue));
   end;
 
-    (* Select Char Gate *)
-
-  procedure TMir3ConfigManager.SetGR_GateHost(AValue: String);
-  begin
-    if Trim(AValue) <> '' then
-      FGateRunConfig.RGateHost := AnsiString(EncodeString(AValue));
-  end;
+    (* Run Gate *)
 
   procedure TMir3ConfigManager.SetGR_GatePort(AValue: Integer);
   begin

@@ -7,7 +7,10 @@ uses
   Vcl.Styles,
   Mir3ServerCoreGate in '..\..\Game_Server\Core\Mir3ServerCoreGate.pas',
   Mir3ServerCore in '..\..\Game_Server\core\Mir3ServerCore.pas',
-  Mir3ServerConstants in '..\..\Game_Server\Core\Mir3ServerConstants.pas';
+  Mir3ServerConstants in '..\..\Game_Server\Core\Mir3ServerConstants.pas',
+  Mir3ClientCommonGlobals in '..\..\..\Client\Client\Client_Common\Mir3ClientCommonGlobals.pas',
+  Mir3CommonConfigDefinition in '..\..\..\Client\Client\Client_Common\Mir3CommonConfigDefinition.pas',
+  Mir3ClientEngineEnDecode in '..\..\..\Client\Client\Client_Engine\Mir3ClientEngineEnDecode.pas';
 
 {$R *.res}
 

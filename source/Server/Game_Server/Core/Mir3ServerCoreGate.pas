@@ -20,9 +20,10 @@ const
   IDENT_SELECTCHAR_GATE          = 101;
   IDENT_RUN_GAME_GATE            = 102;
   IDENT_LOGIN_SERVER             = 103;
-  IDENT_DB_SERVER                = 104;
+  IDENT_MIR_DB_SERVER            = 104;
   IDENT_GAME_SERVER              = 105;
   IDENT_LOG_SERVER               = 106;
+  IDENT_MANAGER_SERVER           = 110;
 
 type
   { TUserSession }

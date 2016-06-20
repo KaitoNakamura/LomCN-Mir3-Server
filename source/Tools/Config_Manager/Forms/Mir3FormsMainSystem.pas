@@ -130,11 +130,9 @@ type
     tsRunGateConfig: TTabSheet;
     tsLoginServerConfig: TTabSheet;
     tsDBServerConfig: TTabSheet;
-    meRunGateHost: TMaskEdit;
     meRunGatePort: TMaskEdit;
     meRunWinPosX: TMaskEdit;
     meRunWinPosY: TMaskEdit;
-    Label31: TLabel;
     Label32: TLabel;
     Label33: TLabel;
     meRunServerHost: TMaskEdit;
@@ -148,11 +146,9 @@ type
     meRunIPBlacklist: TMaskEdit;
     meRunEngineVersion: TMaskEdit;
     Label39: TLabel;
-    meSelectCharGateHost: TMaskEdit;
     meSelectCharGatePort: TMaskEdit;
     meSelectCharWinPosX: TMaskEdit;
     meSelectCharWinPosY: TMaskEdit;
-    Label40: TLabel;
     Label41: TLabel;
     Label42: TLabel;
     meSelectCharServerHost: TMaskEdit;
@@ -166,11 +162,9 @@ type
     meSelectCharIPBlacklist: TMaskEdit;
     meSelectCharEngineVersion: TMaskEdit;
     Label48: TLabel;
-    meLoginGateHost: TMaskEdit;
     meLoginGatePort: TMaskEdit;
     meLoginWinPosX: TMaskEdit;
     meLoginWinPosY: TMaskEdit;
-    Label49: TLabel;
     Label50: TLabel;
     Label51: TLabel;
     meLoginServerHost: TMaskEdit;
@@ -343,7 +337,6 @@ begin
     end;
     3 : begin
       {$REGION ' Login Gate Defaults '}
-      meLoginGateHost.Text      := '127.0.0.1';
       meLoginGatePort.Text      := '7000';
       meLoginServerHost.Text    := '127.0.0.1';
       meLoginServerPort.Text    := '5500';
@@ -355,7 +348,6 @@ begin
     end;
     4 : begin
       {$REGION ' Select Char Gate Defaults '}
-      meSelectCharGateHost.Text      := '127.0.0.1';
       meSelectCharGatePort.Text      := '7101';
       meSelectCharServerHost.Text    := '127.0.0.1';
       meSelectCharServerPort.Text    := '5100';
@@ -367,7 +359,6 @@ begin
     end;
     5 : begin
       {$REGION ' Run Gate Defaults '}
-      meRunGateHost.Text      := '127.0.0.1';
       meRunGatePort.Text      := '7201';
       meRunServerHost.Text    := '127.0.0.1';
       meRunServerPort.Text    := '5000';
@@ -519,7 +510,6 @@ begin
       {$REGION ' Load Login Gate Config '}
       with FConfigManager do
       begin
-        meLoginGateHost.Text      := GL_GateHost;
         meLoginGatePort.Text      := IntToStr(GL_GatePort);
         meLoginServerHost.Text    := GL_ServerHost;
         meLoginServerPort.Text    := IntToStr(GL_ServerPort);
@@ -539,7 +529,6 @@ begin
       {$REGION ' Load Select Char Gate Config '}
       with FConfigManager do
       begin
-        meSelectCharGateHost.Text      := GS_GateHost;
         meSelectCharGatePort.Text      := IntToStr(GS_GatePort);
         meSelectCharServerHost.Text    := GS_ServerHost;
         meSelectCharServerPort.Text    := IntToStr(GS_ServerPort);
@@ -559,7 +548,6 @@ begin
       {$REGION ' Load Run Gate Config '}
       with FConfigManager do
       begin
-        meRunGateHost.Text      := GR_GateHost;
         meRunGatePort.Text      := IntToStr(GR_GatePort);
         meRunServerHost.Text    := GR_ServerHost;
         meRunServerPort.Text    := IntToStr(GR_ServerPort);
@@ -738,7 +726,6 @@ begin
         {$REGION ' Save Login Gate Config '}
         with FConfigManager do
         begin
-          GL_GateHost       := meLoginGateHost.Text;
           GL_GatePort       := StrToIntDef(Trim(meLoginGatePort.Text), 0);
           GL_ServerHost     := meLoginServerHost.Text;
           GL_ServerPort     := StrToIntDef(Trim(meLoginServerPort.Text), 0);
@@ -759,7 +746,6 @@ begin
         {$REGION ' Save Select Char Gate Config '}
         with FConfigManager do
         begin
-          GS_GateHost       := meSelectCharGateHost.Text;
           GS_GatePort       := StrToIntDef(Trim(meSelectCharGatePort.Text), 0);
           GS_ServerHost     := meSelectCharServerHost.Text;
           GS_ServerPort     := StrToIntDef(Trim(meSelectCharServerPort.Text), 0);
@@ -780,7 +766,6 @@ begin
         {$REGION ' Save Run Gate Config '}
         with FConfigManager do
         begin
-          GR_GateHost       := meRunGateHost.Text;
           GR_GatePort       := StrToIntDef(Trim(meRunGatePort.Text), 0);
           GR_ServerHost     := meRunServerHost.Text;
           GR_ServerPort     := StrToIntDef(Trim(meRunServerPort.Text), 0);

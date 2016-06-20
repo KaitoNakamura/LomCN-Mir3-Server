@@ -3849,7 +3849,7 @@ object frmConfigManager: TfrmConfigManager
     Top = 17
     Width = 1013
     Height = 628
-    ActivePage = tsLauncher
+    ActivePage = tsRunGateConfig
     Align = alClient
     TabOrder = 0
     OnChange = pcConfigManagerChange
@@ -4955,19 +4955,6 @@ object frmConfigManager: TfrmConfigManager
     object tsLoginGateConfig: TTabSheet
       Caption = 'Login Gate Config'
       ImageIndex = 3
-      object Label49: TLabel
-        Left = 38
-        Top = 67
-        Width = 80
-        Height = 13
-        Caption = 'Gate Host / IP'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object Label50: TLabel
         Left = 38
         Top = 97
@@ -5072,20 +5059,12 @@ object frmConfigManager: TfrmConfigManager
         Font.Style = [fsBold]
         ParentFont = False
       end
-      object meLoginGateHost: TMaskEdit
-        Left = 124
-        Top = 64
-        Width = 121
-        Height = 21
-        TabOrder = 0
-        Text = '127.0.0.1'
-      end
       object meLoginGatePort: TMaskEdit
         Left = 124
         Top = 94
         Width = 121
         Height = 21
-        TabOrder = 1
+        TabOrder = 0
         Text = '0'
       end
       object meLoginWinPosX: TMaskEdit
@@ -5093,7 +5072,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 152
         Width = 121
         Height = 21
-        TabOrder = 2
+        TabOrder = 1
         Text = '10'
       end
       object meLoginWinPosY: TMaskEdit
@@ -5101,7 +5080,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 183
         Width = 121
         Height = 21
-        TabOrder = 3
+        TabOrder = 2
         Text = '10'
       end
       object meLoginServerHost: TMaskEdit
@@ -5109,7 +5088,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 64
         Width = 121
         Height = 21
-        TabOrder = 4
+        TabOrder = 3
         Text = '127.0.0.1'
       end
       object meLoginServerPort: TMaskEdit
@@ -5117,7 +5096,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 94
         Width = 121
         Height = 21
-        TabOrder = 5
+        TabOrder = 4
         Text = '0'
       end
       object Panel9: TPanel
@@ -5127,14 +5106,14 @@ object frmConfigManager: TfrmConfigManager
         Height = 2
         Color = clGray
         ParentBackground = False
-        TabOrder = 6
+        TabOrder = 5
       end
       object meLoginIPBlacklist: TMaskEdit
         Left = 371
         Top = 152
         Width = 230
         Height = 21
-        TabOrder = 7
+        TabOrder = 6
         Text = '.\Mir3IPBlacklist.txt'
       end
       object meLoginEngineVersion: TMaskEdit
@@ -5143,26 +5122,13 @@ object frmConfigManager: TfrmConfigManager
         Width = 29
         Height = 21
         Alignment = taCenter
-        TabOrder = 8
+        TabOrder = 7
         Text = '1'
       end
     end
     object tsSelectCharGateConfig: TTabSheet
       Caption = 'Select Char Gate Config'
       ImageIndex = 4
-      object Label40: TLabel
-        Left = 30
-        Top = 59
-        Width = 80
-        Height = 13
-        Caption = 'Gate Host / IP'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object Label41: TLabel
         Left = 30
         Top = 89
@@ -5267,20 +5233,12 @@ object frmConfigManager: TfrmConfigManager
         Font.Style = [fsBold]
         ParentFont = False
       end
-      object meSelectCharGateHost: TMaskEdit
-        Left = 116
-        Top = 56
-        Width = 121
-        Height = 21
-        TabOrder = 0
-        Text = '127.0.0.1'
-      end
       object meSelectCharGatePort: TMaskEdit
         Left = 116
         Top = 86
         Width = 121
         Height = 21
-        TabOrder = 1
+        TabOrder = 0
         Text = '0'
       end
       object meSelectCharWinPosX: TMaskEdit
@@ -5288,7 +5246,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 144
         Width = 121
         Height = 21
-        TabOrder = 2
+        TabOrder = 1
         Text = '10'
       end
       object meSelectCharWinPosY: TMaskEdit
@@ -5296,7 +5254,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 175
         Width = 121
         Height = 21
-        TabOrder = 3
+        TabOrder = 2
         Text = '10'
       end
       object meSelectCharServerHost: TMaskEdit
@@ -5304,7 +5262,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 56
         Width = 121
         Height = 21
-        TabOrder = 4
+        TabOrder = 3
         Text = '127.0.0.1'
       end
       object meSelectCharServerPort: TMaskEdit
@@ -5312,7 +5270,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 86
         Width = 121
         Height = 21
-        TabOrder = 5
+        TabOrder = 4
         Text = '0'
       end
       object Panel8: TPanel
@@ -5322,14 +5280,14 @@ object frmConfigManager: TfrmConfigManager
         Height = 2
         Color = clGray
         ParentBackground = False
-        TabOrder = 6
+        TabOrder = 5
       end
       object meSelectCharIPBlacklist: TMaskEdit
         Left = 363
         Top = 144
         Width = 230
         Height = 21
-        TabOrder = 7
+        TabOrder = 6
         Text = '.\Mir3IPBlacklist.txt'
       end
       object meSelectCharEngineVersion: TMaskEdit
@@ -5338,26 +5296,13 @@ object frmConfigManager: TfrmConfigManager
         Width = 29
         Height = 21
         Alignment = taCenter
-        TabOrder = 8
+        TabOrder = 7
         Text = '1'
       end
     end
     object tsRunGateConfig: TTabSheet
       Caption = ' Run Gate Config '
       ImageIndex = 5
-      object Label31: TLabel
-        Left = 22
-        Top = 51
-        Width = 80
-        Height = 13
-        Caption = 'Gate Host / IP'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = -11
-        Font.Name = 'Tahoma'
-        Font.Style = [fsBold]
-        ParentFont = False
-      end
       object Label32: TLabel
         Left = 22
         Top = 81
@@ -5462,20 +5407,12 @@ object frmConfigManager: TfrmConfigManager
         Font.Style = [fsBold]
         ParentFont = False
       end
-      object meRunGateHost: TMaskEdit
-        Left = 108
-        Top = 48
-        Width = 121
-        Height = 21
-        TabOrder = 0
-        Text = '127.0.0.1'
-      end
       object meRunGatePort: TMaskEdit
         Left = 108
         Top = 78
         Width = 121
         Height = 21
-        TabOrder = 1
+        TabOrder = 0
         Text = '0'
       end
       object meRunWinPosX: TMaskEdit
@@ -5483,7 +5420,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 136
         Width = 121
         Height = 21
-        TabOrder = 2
+        TabOrder = 1
         Text = '10'
       end
       object meRunWinPosY: TMaskEdit
@@ -5491,7 +5428,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 167
         Width = 121
         Height = 21
-        TabOrder = 3
+        TabOrder = 2
         Text = '10'
       end
       object meRunServerHost: TMaskEdit
@@ -5499,7 +5436,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 48
         Width = 121
         Height = 21
-        TabOrder = 4
+        TabOrder = 3
         Text = '127.0.0.1'
       end
       object meRunServerPort: TMaskEdit
@@ -5507,7 +5444,7 @@ object frmConfigManager: TfrmConfigManager
         Top = 78
         Width = 121
         Height = 21
-        TabOrder = 5
+        TabOrder = 4
         Text = '0'
       end
       object Panel7: TPanel
@@ -5517,14 +5454,14 @@ object frmConfigManager: TfrmConfigManager
         Height = 2
         Color = clGray
         ParentBackground = False
-        TabOrder = 6
+        TabOrder = 5
       end
       object meRunIPBlacklist: TMaskEdit
         Left = 355
         Top = 136
         Width = 230
         Height = 21
-        TabOrder = 7
+        TabOrder = 6
         Text = '.\Mir3IPBlacklist.txt'
       end
       object meRunEngineVersion: TMaskEdit
@@ -5533,7 +5470,7 @@ object frmConfigManager: TfrmConfigManager
         Width = 29
         Height = 21
         Alignment = taCenter
-        TabOrder = 8
+        TabOrder = 7
         Text = '1'
       end
     end
