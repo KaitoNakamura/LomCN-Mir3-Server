@@ -23,7 +23,7 @@ implementation
 {$REGION ' - TMir3_Thread Constructor / Destructor '}
   constructor TMir3_Thread.create;
   begin
-    FEvent := CreateEvent(nil, True, True, 0);
+    FEvent := CreateEvent(nil, True, True, nil);
     ResetEvent(FEvent);
   end;
 

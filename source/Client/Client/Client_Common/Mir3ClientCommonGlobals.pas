@@ -7,11 +7,6 @@ uses Windows;
 const
  (* Basic Consts *)
   GGameClientVersion             = '0.0.3.0';
-
-  USELOCALCODE                   = 0;
-  USEREMOTECODE                  = 1;
-  USECODE                        = USELOCALCODE;
-  MIR3_BUFFER_SIZE               = 30000;
   MIR3_ACTOR_NAME_LEN            = 20;
   MIR3_DEF_BLOCK_SIZE            = 27;
   UNIT_BIG_X                     = 96;
@@ -690,16 +685,6 @@ type
     {Character 3}
     Char_3_Found : Boolean;
     Char_3_Info  : TMir3Character;
-  end;
-
-  { TDefaultMessage }
-  PDefaultMessage = ^TDefaultMessage;
-  TDefaultMessage = record //32 bit
-    Recog    : Integer;
-    Ident    : Integer;
-    Param    : Integer;
-    Tag      : Integer;
-    Series   : Integer;
   end;
 
 var

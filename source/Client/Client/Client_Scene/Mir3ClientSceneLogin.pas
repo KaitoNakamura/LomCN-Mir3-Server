@@ -41,7 +41,7 @@ uses
 {Game   }  Mir3ClientControlsGuiDefinitionSystem, Mir3ClientControlsGuiDefinitionLogin,
 {Game   }  Mir3ClientControlsCoreControls, Mir3ClientEngine, Mir3ClientCommonMiscUtils,
 {Game   }  Mir3ClientEngineFileManager, Mir3ClientEngineFileManagerConstants,
-{Game   }  Mir3ClientEngineSoundEngine, Mir3ClientEngineEnDecode;
+{Game   }  Mir3ClientEngineSoundEngine, Mir3CommonCrypto;
 
 { Callback Functions }
 procedure LoginGUIEvent(AEventID: LongWord; AControlID: Cardinal; AControl: PMIR3_GUI_Default); stdcall;
@@ -193,12 +193,12 @@ uses Mir3ClientEngineBackend;
       FMessageBody := Copy(AReceiveData, MIR3_DEF_BLOCK_SIZE + 1, Length(AReceiveData) - MIR3_DEF_BLOCK_SIZE);
       FMessage     := DecodeMessage(FMessageHead);
 
-      case FMessage.Ident of
+      case FMessage.RIdent of
         SM_OUTOFCONNECTION    : begin
           SystemMessage(GGameEngine.GameLanguage.GetTextFromLangSystem(50), [mbOK],0);
         end;
         SM_LOGIN_PASSWORD_FAIL: begin
-          FLastMessageError := FMessage.Recog;
+          FLastMessageError := FMessage.RRecog;
           case FLastMessageError of
             -1:  SystemMessage('',[mbOK],0, 37);
             -2:  SystemMessage('',[mbOK],0, 38);

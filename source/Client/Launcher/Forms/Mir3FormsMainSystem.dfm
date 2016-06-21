@@ -4100,6 +4100,9 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       TabOrder = 2
       object tsInGameOption: TsTabSheet
         Caption = ' InGame Option '
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object cbShowMonster: TsCheckBox
           Left = 31
           Top = 21
@@ -4246,6 +4249,9 @@ object frmMir3MainSystem: TfrmMir3MainSystem
       end
       object tsSound: TsTabSheet
         Caption = ' Sound and Video '
+        ExplicitTop = 0
+        ExplicitWidth = 0
+        ExplicitHeight = 0
         object laBGMVolume: TsLabel
           Left = 41
           Top = 76

@@ -98,7 +98,7 @@ type
 implementation
 
 uses System.SyncObjs, Mir3ObjectsBase, Mir3FormsMainSystem,
-     Mir3ServerCrypto, Mir3ServerFunctions;
+     Mir3CommonCrypto, Mir3ServerFunctions;
 
 {$REGION ' - TRunSocket Constructor / Destructor '}
   constructor TRunSocket.Create;

@@ -2,7 +2,8 @@ unit Mir3ServerCore;
 
 interface
 
-uses WinAPI.Windows, WinAPI.Messages, System.SysUtils, System.Classes, System.Generics.Collections, System.SyncObjs;
+uses WinAPI.Windows, WinAPI.Messages, System.SysUtils, System.Classes,
+     System.Generics.Collections, System.SyncObjs;
 
 const
   MIR3_MAX_REQUIRE = 10;
@@ -134,15 +135,6 @@ type
     RUserListIndex      : Word;     //User List Index
     RTemp               : Word;     //
     RLength             : Integer;  //body binary
-  end;
-
-  PDefaultMessage = ^TDefaultMessage;
-  TDefaultMessage = record
-    RRecog:   Integer;
-    RIdent:   Word;
-    RParam:   Word;
-    RTag:     Word;
-    RSeries:  Word;
   end;
 
   PQuestActionInfo = ^TQuestActionInfo;
@@ -518,7 +510,6 @@ var
 
 
 procedure ServerLogMessage(ALogMessage: String);
-function MakeDefaultMsg(AMessage: Word; ARecog: Integer; WParam, ATag, ASeries: Word): TDefaultMessage;
 (* Game Center System *)
 function StartGameService(var AProgramInfo: TProgram; AHandle: String; AWaitTime: LongWord): LongWord;
 function EmergencyStopService(var AProgramInfo: TProgram; AWaitTime: LongWord): Integer;
@@ -538,18 +529,6 @@ begin
     GServerLogList.Add(ALogMessage);
   finally
     GCS_MessageLock.Leave;
-  end;
-end;
-
-function MakeDefaultMsg(AMessage: Word; ARecog: Integer; WParam, ATag, ASeries: Word): TDefaultMessage;
-begin
-  with Result do
-  begin
-    RIdent  := AMessage;
-    RRecog  := ARecog;
-    RParam  := WParam;
-    RTag	  := ATag;
-    RSeries := ASeries;
   end;
 end;
 

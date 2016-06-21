@@ -44,7 +44,7 @@ uses
 {Game   }  Mir3ClientControlsGuiDefinitionSystem, Mir3ClientControlsGuiDefinitionInGame,
 {Game   }  Mir3ClientControlsCoreControls, Mir3ClientEngine, Mir3ClientCommonMiscUtils,
 {Game   }  Mir3ClientEngineFileManager, Mir3ClientEngineFileManagerConstants,
-{Game   }  Mir3ClientEngineSoundEngine, Mir3ClientEngineEnDecode, Mir3ClientInternalActor,
+{Game   }  Mir3ClientEngineSoundEngine, Mir3CommonCrypto, Mir3ClientInternalActor,
 {Game   }  Mir3ClientInternalMapFramework;
 
 
@@ -899,7 +899,7 @@ uses Mir3ClientCommonMiscIngame, Mir3ClientEngineBackend;
       FMessageBody := Copy(AReceiveData, MIR3_DEF_BLOCK_SIZE + 1, Length(AReceiveData) - MIR3_DEF_BLOCK_SIZE);
       FMessage     := DecodeMessage(FMessageHead);
 
-      case FMessage.Ident of
+      case FMessage.RIdent of
         SM_OUTOFCONNECTION : begin
         
         end;

@@ -40,7 +40,7 @@ uses
 {Game   }  Mir3ClientControlsGuiDefinitionSystem, Mir3ClientControlsGuiDefinitionSelectServer,
 {Game   }  Mir3ClientControlsCoreControls, Mir3ClientEngine, Mir3ClientCommonMiscUtils,
 {Game   }  Mir3ClientEngineFileManager, Mir3ClientEngineFileManagerConstants,
-{Game   }  Mir3ClientEngineSoundEngine, Mir3ClientEngineEnDecode;
+{Game   }  Mir3ClientEngineSoundEngine, Mir3CommonCrypto;
 
 { Callback Functions }
 procedure SelectServerGUIEvent(AEventID: LongWord; AControlID: Cardinal; AControl: PMIR3_GUI_Default); stdcall;
@@ -179,7 +179,7 @@ uses Mir3ClientEngineBackend;
       FMessageBody := Copy(AReceiveData, MIR3_DEF_BLOCK_SIZE + 1, Length(AReceiveData) - MIR3_DEF_BLOCK_SIZE);
       FMessage     := DecodeMessage(FMessageHead);
 
-      case FMessage.Ident of
+      case FMessage.RIdent of
         SM_SELECT_SERVER_FAIL  : begin
           // TODO : Add Error Message
         end;

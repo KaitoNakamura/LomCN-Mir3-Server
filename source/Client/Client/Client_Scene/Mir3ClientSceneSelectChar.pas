@@ -41,7 +41,7 @@ uses
 {Game   }  Mir3ClientControlsGuiDefinitionSystem, Mir3ClientControlsGuiDefinitionSelectChar,
 {Game   }  Mir3ClientControlsCoreControls, Mir3ClientEngine, Mir3ClientCommonMiscUtils,
 {Game   }  Mir3ClientEngineFileManager, Mir3ClientEngineFileManagerConstants,
-{Game   }  Mir3ClientEngineSoundEngine, Mir3ClientEngineEnDecode, Mir3ClientCommonLanguageUtils;
+{Game   }  Mir3ClientEngineSoundEngine, Mir3CommonCrypto, Mir3ClientCommonLanguageUtils;
 
 { Callback Functions }
 procedure SelectCharGUIEvent(AEventID: LongWord; AControlID: Cardinal; AControl: PMIR3_GUI_Default); stdcall;
@@ -454,7 +454,7 @@ uses Mir3ClientEngineBackend;
       FMessageBody := Copy(AReceiveData, MIR3_DEF_BLOCK_SIZE + 1, Length(AReceiveData) - MIR3_DEF_BLOCK_SIZE);
       FMessage     := DecodeMessage(FMessageHead);
 
-      case FMessage.Ident of
+      case FMessage.RIdent of
         SM_OUTOFCONNECTION    : begin
 
           SystemMessage('', [mbOK],0,50);
@@ -551,7 +551,7 @@ uses Mir3ClientEngineBackend;
           FGameEngine.Send_Query_Player;
         end;
         SM_NEWCHR_FAIL        : begin //Create Char Fail
-          case FMessage.Recog of
+          case FMessage.RRecog of
             2: SystemMessage('', [mbOK],0,70);
             3: SystemMessage('', [mbOK],0,71);
             4: SystemMessage('', [mbOK],0,72);

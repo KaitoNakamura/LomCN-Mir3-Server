@@ -11,7 +11,6 @@ uses
   Mir3ServerConstants in 'core\Mir3ServerConstants.pas',
   Mir3ServerCore in 'core\Mir3ServerCore.pas',
   Mir3ServerCoreShare in 'core\Mir3ServerCoreShare.pas',
-  Mir3ServerCrypto in 'core\Mir3ServerCrypto.pas',
   Mir3ServerEnvironment in 'core\Mir3ServerEnvironment.pas',
   Mir3ServerEvents in 'core\Mir3ServerEvents.pas',
   Mir3ServerFriendBlockUser in 'core\Mir3ServerFriendBlockUser.pas',
@@ -37,8 +36,10 @@ uses
   Mir3ObjectsMonster_5 in 'objects\Mir3ObjectsMonster_5.pas',
   Mir3ObjectsMonster_6 in 'objects\Mir3ObjectsMonster_6.pas',
   Mir3ObjectsNPC in 'objects\Mir3ObjectsNPC.pas',
-  Mir3CommonThread in '..\..\Client\Client\Client_Common\Mir3CommonThread.pas',
-  Mir3ServerCoreGate in 'Core\Mir3ServerCoreGate.pas';
+  Mir3ServerCoreGate in 'Core\Mir3ServerCoreGate.pas',
+  Mir3CommonConfigDefinition in '..\..\Common\Mir3CommonConfigDefinition.pas',
+  Mir3CommonCrypto in '..\..\Common\Mir3CommonCrypto.pas',
+  Mir3CommonThread in '..\..\Common\Mir3CommonThread.pas';
 
 {$R *.res}
 

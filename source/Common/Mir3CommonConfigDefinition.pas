@@ -36,7 +36,7 @@ unit Mir3CommonConfigDefinition;
 
 interface
 
-uses Windows, SysUtils, Classes, Mir3ClientEngineEnDecode;
+uses Windows, SysUtils, Classes, Mir3CommonCrypto;
 
 const
   FILE_TYPE_INFO          = 'CONF ';

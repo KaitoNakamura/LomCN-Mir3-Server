@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.ComCtrls, Vcl.StdCtrls,
-  Vcl.Mask, Mir3ServerFunctions, Mir3CommonConfigDefinition, Mir3ClientEngineEnDecode;
+  Vcl.Mask, Mir3ServerFunctions, Mir3CommonConfigDefinition, Mir3CommonCrypto;
 
 type
   TfrmConfigManager = class(TForm)

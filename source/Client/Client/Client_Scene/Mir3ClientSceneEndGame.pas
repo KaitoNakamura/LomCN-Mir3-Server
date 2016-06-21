@@ -40,7 +40,7 @@ uses
 {Game   }  Mir3ClientControlsGuiDefinitionSystem, Mir3ClientControlsGuiDefinitionEndGame,
 {Game   }  Mir3ClientControlsCoreControls, Mir3ClientEngine, Mir3ClientCommonMiscUtils,
 {Game   }  Mir3ClientEngineFileManager, Mir3ClientEngineFileManagerConstants,
-{Game   }  Mir3ClientEngineSoundEngine, Mir3ClientEngineEnDecode;
+{Game   }  Mir3ClientEngineSoundEngine, Mir3CommonCrypto;
 
 { Callback Functions }
 procedure EndGameGUIEvent(AEventID: LongWord; AControlID: Cardinal; AControl: PMIR3_GUI_Default); stdcall;

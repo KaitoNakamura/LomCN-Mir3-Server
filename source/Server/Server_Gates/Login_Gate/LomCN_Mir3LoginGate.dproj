@@ -143,9 +143,9 @@
         <DCCReference Include="..\..\Game_Server\core\Mir3ServerConstants.pas"/>
         <DCCReference Include="..\..\Game_Server\Core\Mir3ServerCoreGate.pas"/>
         <DCCReference Include="..\..\Game_Server\core\Mir3ServerCore.pas"/>
-        <DCCReference Include="..\..\..\Client\Client\Client_Common\Mir3CommonConfigDefinition.pas"/>
-        <DCCReference Include="..\..\..\Client\Client\Client_Engine\Mir3ClientEngineEnDecode.pas"/>
-        <DCCReference Include="..\..\..\Client\Client\Client_Common\Mir3ClientCommonGlobals.pas"/>
+        <DCCReference Include="..\..\..\Common\Mir3CommonConfigDefinition.pas"/>
+        <DCCReference Include="..\..\..\Common\Mir3CommonCrypto.pas"/>
+        <DCCReference Include="..\..\..\Common\Mir3CommonThread.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

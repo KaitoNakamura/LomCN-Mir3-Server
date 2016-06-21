@@ -3,7 +3,7 @@ unit Mir3ServerUserEngine;
 interface
 uses System.SysUtils, System.Classes, System.Generics.Collections, WinAPI.Windows,
 
-     Mir3ServerCore, Mir3ObjectsBase, Mir3ServerConstants;
+     Mir3ServerCore, Mir3ObjectsBase, Mir3ServerConstants, Mir3CommonCrypto;
 
 type
   TUserEngine = class
@@ -76,7 +76,7 @@ implementation
 uses Mir3ServerFunctions, Mir3FormsMainSystem, Mir3ServerEnvironment,
      Mir3ObjectsMonster_1, Mir3ObjectsMonster_2, Mir3ObjectsMonster_3,
      Mir3ObjectsMonster_4, Mir3ObjectsMonster_5, Mir3ObjectsMonster_6,
-     Mir3ObjectsAnimal, Mir3ObjectsNPC, Mir3ServerProtocol, Mir3ServerCrypto,
+     Mir3ObjectsAnimal, Mir3ObjectsNPC, Mir3ServerProtocol,
      Mir3FormsIDServerClient, Mir3ServerGuild;
 
   (* class TUserEngine *)

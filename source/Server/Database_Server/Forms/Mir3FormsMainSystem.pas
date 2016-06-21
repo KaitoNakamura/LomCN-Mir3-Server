@@ -5,7 +5,7 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.ExtCtrls, Vcl.AppEvnts,
-  Mir3ServerCoreGate;
+  Mir3ServerCoreGate, Mir3CommonConfigDefinition;
 
 type
   TfrmMainSystem = class(TForm)
@@ -17,8 +17,9 @@ type
   protected
     procedure ServerControlManagerMessage(var AMessage : TWMCopyData) ; message WM_COPYDATA;
   private
-    FServerReady : Boolean;
-    FGateReady   : Boolean;
+    FServerReady   : Boolean;
+    FGateReady     : Boolean;
+    FConfigManager : TMir3ConfigManager;
   private
     procedure StartDBServerService;
     procedure StopDBServerService;
@@ -48,9 +49,15 @@ begin
       Left := FX;
       Top  := FY;
     end;
-    FServiceInfo.RServiceHandle := Self.Handle;
-    FServiceInfo.RServiceState  := ssCreate;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_DB_SERVER, SCM_FORM_HANDLE);
+    with FServiceInfo do
+    begin
+      RServiceHandle := Self.Handle;
+      RServiceState  := ssStartUpApp;
+      RClientPort    := FConfigManager.DB_GatePort;
+      RServerPort    := FConfigManager.DB_ServerPort;
+      RServerHost    := AnsiString(FConfigManager.DB_ServerHost);
+    end;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_MIR_DB_SERVER);
   end;
   FServerReady := False;
 
@@ -106,8 +113,8 @@ begin
   if GServerManagerHandle <> 0 then
   begin
     FServiceInfo.RServiceHandle := 0;
-    FServiceInfo.RServiceState  := ssStartService;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_DB_SERVER, SCM_START);
+    FServiceInfo.RServiceState  := ssInitApp;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_MIR_DB_SERVER);
   end;
 end;
 
@@ -118,8 +125,8 @@ begin
   if GServerManagerHandle <> 0 then
   begin
     FServiceInfo.RServiceHandle := 0;
-    FServiceInfo.RServiceState  := ssStopService;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_DB_SERVER, SCM_STOP);
+    FServiceInfo.RServiceState  := ssOpenClientPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_MIR_DB_SERVER);
   end;
 
   Application.ProcessMessages;
@@ -130,7 +137,7 @@ begin
   begin
     FServiceInfo.RServiceHandle := 0;
     FServiceInfo.RServiceState  := ssCloseApplication;
-    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_DB_SERVER, SCM_STOP);
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_MIR_DB_SERVER);
   end;
   Close;
 end;

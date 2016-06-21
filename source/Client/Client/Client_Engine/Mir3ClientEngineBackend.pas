@@ -45,7 +45,7 @@ uses
 {Game   }  Mir3ClientEngineSoundEngine, Mir3ClientEngineFileManager,
 {Game   }  Mir3ClientEngineFileManagerConstants, Mir3ClientInternalLanguageEngine,
 {Game   }  Mir3ClientCommonMiscUtils, Mir3ClientEngineFontEngine,
-{Game   }  Mir3ClientEngineEnDecode, Mir3ClientEngineTextEngine,
+{Game   }  Mir3CommonCrypto, Mir3ClientEngineTextEngine,
 {Scene  }  Mir3ClientSceneLogonInfo, Mir3ClientSceneLogin,
 {Scene  }  Mir3ClientSceneSelectServer, Mir3ClientSceneSelectChar,
 {Scene  }  Mir3ClientSceneInGame, Mir3ClientSceneEndGame;

@@ -13,7 +13,7 @@ const
   LED_YELLOW        = 1; //App Start
   LED_ORANGE        = 2; //App Wait to Connect Client and Server Parts
   LED_GREEN         = 3; //Full Running
-  LED_BLUE          = 4; //Reload
+  LED_BLUE          = 4; //App is in Reload Mode
 
   LANE_RED          = 0;
   LANE_GREEN        = 1;
@@ -98,14 +98,12 @@ type
     procedure btnStopServerSystemClick(Sender: TObject);
     procedure btnReloadLoginGateMouseEnter(Sender: TObject);
     procedure btnReloadLoginGateMouseLeave(Sender: TObject);
-    procedure btnReloadLoginGateMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure btnReloadLoginGateMouseUp(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
+    procedure btnReloadLoginGateMouseDown(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+    procedure btnReloadLoginGateMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure btnReloadLoginGateClick(Sender: TObject);
     procedure btnEmergencyStopClick(Sender: TObject);
   protected
-    procedure ServerControlManagerMessage(var AMessage : TWMCopyData) ; message WM_COPYDATA;
+    procedure ServerControlManagerMessage(var AMessage : TWMCopyData); message WM_COPYDATA;
   private
     FConfigManager      : TMir3ConfigManager;
     FPI_LoginGate       : TProgram;
@@ -235,7 +233,6 @@ uses Mir3ServerCoreGate;
     FreeAndNil(FConfigManager);
   end;
 {$ENDREGION}
-
 
 procedure TfrmMainSystem.ServerControlManagerMessage(var AMessage: TWMCopyData);
 var
@@ -668,329 +665,17 @@ begin
     {$ENDREGION}
 
   end;
-
-
-
-
-
-
-
-
-
-//  case FIdent of
-//    SCM_FORM_HANDLE : begin
-//      case FService of
-//        IDENT_LOGIN_GATE : begin
-//          FServiceInfo.RServiceHandle  := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState   := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_LoginGate.RProcessHandle := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgLoginGate.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Login Gate..');
-//        end;
-//        IDENT_SELECTCHAR_GATE : begin
-//          FServiceInfo.RServiceHandle       := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState        := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_SelectCharGate.RProcessHandle := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgSelectCharGate.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Select Char Gate..');
-//        end;
-//        IDENT_RUN_GAME_GATE   : begin
-//          FServiceInfo.RServiceHandle := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState  := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_RunGate.RProcessHandle  := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgRunGate.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Run Gate..');
-//        end;
-//        IDENT_LOGIN_SERVER    : begin
-//          FServiceInfo.RServiceHandle    := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState     := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_LoginServer.RProcessHandle := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgLoginServer.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Login Server..');
-//        end;
-//        IDENT_DB_SERVER       : begin
-//          FServiceInfo.RServiceHandle       := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState        := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_DataBaseServer.RProcessHandle := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgMirDBServer.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Mir DB Server..');
-//        end;
-//        IDENT_GAME_SERVER       : begin
-//          FServiceInfo.RServiceHandle   := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState    := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_GameServer.RProcessHandle := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgGameServer.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Game Server..');
-//        end;
-//        IDENT_LOG_SERVER        : begin
-//          FServiceInfo.RServiceHandle  := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceHandle;
-//          FServiceInfo.RServiceState   := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          FPI_LogServer.RProcessHandle := FServiceInfo.RServiceHandle;
-//          imgStatusLedList.GetIcon(LED_YELLOW, imgLogServer.Picture.Icon);
-//          Memo1.Lines.Add(' - Try to initialize Log Server..');
-//        end;
-//      end;
-//    end;
-//    SCM_START : begin
-//      case FService of
-//        IDENT_LOGIN_GATE      : begin
-////          case FServiceInfo.RServiceState of
-////            ssServiceStarted    : begin
-////              FPI_LoginGate.RRunning   := True;
-////              imgStatusLedList.GetIcon(LED_GREEN, imgLoginGate.Picture.Icon);
-////            end;
-////            ssOpenGateToClient  : begin
-////              imgClientStatusList.GetIcon(LANE_GREEN, imgClientToLoginGate.Picture.Icon);
-////            end;
-////            ssOpenGateToServer  : begin
-////              imgGateServerStatusList.GetIcon(LANE_GREEN, imgLoginGateToLoginServer.Picture.Icon);
-////            end;
-////            ssCloseGateToClient : begin
-////              imgClientStatusList.GetIcon(LANE_RED, imgClientToLoginGate.Picture.Icon);
-////            end;
-////          end;
-//        end;
-//        IDENT_SELECTCHAR_GATE : begin
-//          case FServiceInfo.RServiceState of
-//            ssServiceStarted   : begin
-//              FPI_SelectCharGate.RRunning   := True;
-//              imgStatusLedList.GetIcon(LED_GREEN, imgSelectCharGate.Picture.Icon);
-//            end;
-//            ssOpenGateToClient : begin
-//              imgClientStatusList.GetIcon(LANE_GREEN, imgClientToSelGate.Picture.Icon);
-//            end;
-//            ssOpenGateToServer : begin
-//              imgGateServerStatusList.GetIcon(LANE_GREEN, imgSelGateToMirDBServer.Picture.Icon);
-//            end;
-//            ssCloseGateToClient : begin
-//              imgClientStatusList.GetIcon(LANE_RED, imgClientToSelGate.Picture.Icon);
-//            end;
-//          end;
-//        end;
-//        IDENT_RUN_GAME_GATE   : begin
-//          case FServiceInfo.RServiceState of
-//            ssServiceStarted   : begin
-//              FPI_RunGate.RRunning   := True;
-//              imgStatusLedList.GetIcon(LED_GREEN, imgRunGate.Picture.Icon);
-//            end;
-//            ssOpenGateToClient : begin
-//              imgClientStatusList.GetIcon(LANE_GREEN, imgClientToRunGate.Picture.Icon);
-//            end;
-//            ssOpenGateToServer : begin
-//              imgGateServerStatusList.GetIcon(LANE_GREEN, imgRunGateToGameServer.Picture.Icon);
-//            end;
-//            ssCloseGateToClient : begin
-//              imgClientStatusList.GetIcon(LANE_RED, imgClientToRunGate.Picture.Icon);
-//            end;
-//          end;
-//        end;
-//        IDENT_LOGIN_SERVER    : begin
-//          case FServiceInfo.RServiceState of
-//            ssServiceStarted   : begin
-//              FPI_LoginServer.RRunning   := True;
-//              imgStatusLedList.GetIcon(LED_GREEN, imgLoginServer.Picture.Icon);
-//            end;
-//            ssOpenServerToDB : begin
-//              imgLLaneStatusList.GetIcon(BIG_R_LANE_GRENN, imgLoginServerToDB.Picture.Icon);
-//            end;
-//          end;
-//        end;
-//        IDENT_DB_SERVER       : begin
-//          case FServiceInfo.RServiceState of
-//            ssServiceStarted   : begin
-//              FPI_DataBaseServer.RRunning   := True;
-//              imgStatusLedList.GetIcon(LED_GREEN, imgMirDBServer.Picture.Icon);
-//            end;
-//            ssOpenServerToDB : begin
-//              imgGateServerStatusList.GetIcon(LANE_GREEN, imgMirDBServerToDB.Picture.Icon);
-//            end;
-//          end;
-//        end;
-//        IDENT_GAME_SERVER     : begin
-//          case FServiceInfo.RServiceState of
-//            ssServiceStarted   : begin
-//              FPI_GameServer.RRunning   := True;
-//              imgStatusLedList.GetIcon(LED_GREEN, imgGameServer.Picture.Icon);
-//            end;
-//            ssOpenServerToDB : begin
-//              imgLLaneStatusList.GetIcon(BIG_R_LANE_GRENN, imgGameServerToDB.Picture.Icon);
-//            end;
-//          end;
-//        end;
-//        IDENT_LOG_SERVER      : begin
-//          case FServiceInfo.RServiceState of
-//            ssServiceStarted   : begin
-//              FPI_LogServer.RRunning   := True;
-//              imgStatusLedList.GetIcon(LED_GREEN, imgLogServer.Picture.Icon);
-//            end;
-//          end;
-//        end;
-//      end;
-//    end;
-//    SCM_STOP  : begin
-//      case FService of
-//        IDENT_LOGIN_GATE : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgLoginGate.Picture.Icon);
-//              imgClientStatusList.GetIcon(LANE_RED, imgClientToLoginGate.Picture.Icon);
-//              FPI_LoginGate.RRunning   := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgLoginGate.Picture.Icon);
-//              imgGateServerStatusList.GetIcon(LANE_RED, imgLoginGateToLoginServer.Picture.Icon);
-//              FPI_LoginGate.RRunning                := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//        IDENT_SELECTCHAR_GATE : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgSelectCharGate.Picture.Icon);
-//              imgClientStatusList.GetIcon(LANE_RED, imgClientToSelGate.Picture.Icon);
-//              FPI_SelectCharGate.RRunning   := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgSelectCharGate.Picture.Icon);
-//              imgGateServerStatusList.GetIcon(LANE_RED, imgSelGateToMirDBServer.Picture.Icon);
-//              FPI_SelectCharGate.RRunning          := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//        IDENT_RUN_GAME_GATE : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgRunGate.Picture.Icon);
-//              imgClientStatusList.GetIcon(LANE_RED, imgClientToRunGate.Picture.Icon);
-//              FPI_RunGate.RRunning   := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgRunGate.Picture.Icon);
-//              imgGateServerStatusList.GetIcon(LANE_RED, imgRunGateToGameServer.Picture.Icon);
-//              FPI_RunGate.RRunning               := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//        IDENT_LOGIN_SERVER : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgLoginServer.Picture.Icon);
-//              FPI_LoginServer.RRunning   := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgLoginServer.Picture.Icon);
-//              imgLLaneStatusList.GetIcon(LANE_RED, imgLoginServerToDB.Picture.Icon);
-//              FPI_LoginServer.RRunning               := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//        IDENT_DB_SERVER : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgMirDBServer.Picture.Icon);
-//              FPI_DataBaseServer.RRunning   := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgMirDBServer.Picture.Icon);
-//              imgGateServerStatusList.GetIcon(LANE_RED, imgMirDBServerToDB.Picture.Icon);
-//              FPI_DataBaseServer.RRunning          := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//        IDENT_GAME_SERVER : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgGameServer.Picture.Icon);
-//              FPI_GameServer.RRunning   := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgGameServer.Picture.Icon);
-//              imgLLaneStatusList.GetIcon(LANE_RED, imgGameServerToDB.Picture.Icon);
-//              FPI_GameServer.RRunning          := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//        IDENT_LOG_SERVER : begin
-//          FServiceInfo.RServiceState := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^).RServiceState;
-//          case FServiceInfo.RServiceState of
-//            ssStopService      : begin
-//              imgStatusLedList.GetIcon(LED_ORANGE, imgLogServer.Picture.Icon);
-//              FPI_LogServer.RRunning := False;
-//              Application.ProcessMessages;
-//            end;
-//            ssCloseApplication : begin
-//              imgStatusLedList.GetIcon(LED_RED, imgLogServer.Picture.Icon);
-//              imgServerServerStatusList.GetIcon(LANE_RED, imgGameServerToLogServer.Picture.Icon);
-//              FPI_LogServer.RRunning := False;
-//              Application.ProcessMessages;
-//            end;
-//          end;
-//        end;
-//      end;
-//    end;
-//  end;
-end;
-
-procedure TfrmMainSystem.AppEventMinimize(Sender: TObject);
-begin
-  Hide;
-  WindowState := wsMinimized;
-  tiServerManager.Visible := True;
-  tiServerManager.Animate := True;
-  tiServerManager.ShowBalloonHint;
-end;
-
-procedure TfrmMainSystem.btnEmergencyStopClick(Sender: TObject);
-begin
-  if Application.MessageBox('Attention, all systems are terminated without saving!' + #13#10 +
-                            'All unsaved data will be lost!!!' + #13#10 +
-                            'Do you want to continue?', 'Emergency Stop', MB_YESNO) = ID_YES then
-  begin
-    if FPI_LoginGate.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_LoginGate     , 200);
-    if FPI_SelectCharGate.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_SelectCharGate, 200);
-    if FPI_RunGate.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_RunGate       , 200);
-    if FPI_LoginServer.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_LoginServer   , 200);
-    if FPI_LogServer.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_LogServer     , 200);
-    if FPI_DataBaseServer.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_DataBaseServer, 200);
-    if FPI_GameServer.RProcessHandle <> 0 then
-      EmergencyStopService(FPI_GameServer    , 200);
-    moManagerInfo.Lines.Add(' [System] - Emergency Stop Done...');
-  end;
 end;
 
 procedure TfrmMainSystem.btnStartServerSystemClick(Sender: TObject);
 var
   FErrorCode: Integer;
 begin
-//  FErrorCode := StartGameService(FPI_DataBaseServer, IntToStr(Self.Handle), 500);
-//  if FErrorCode <> 0 then
-//  begin
-//    imgStatusLedList.GetIcon(LED_RED, imgMirDBServer.Picture.Icon);
-//  end else imgStatusLedList.GetIcon(LED_YELLOW, imgMirDBServer.Picture.Icon);
+  FErrorCode := StartGameService(FPI_DataBaseServer, IntToStr(Self.Handle), 500);
+  if FErrorCode <> 0 then
+  begin
+    imgStatusLedList.GetIcon(LED_RED, imgMirDBServer.Picture.Icon);
+  end else imgStatusLedList.GetIcon(LED_YELLOW, imgMirDBServer.Picture.Icon);
   Application.ProcessMessages;
 
   FErrorCode := StartGameService(FPI_LoginServer, IntToStr(Self.Handle), 500);
@@ -1000,17 +685,18 @@ begin
   end else imgStatusLedList.GetIcon(LED_YELLOW, imgLoginServer.Picture.Icon);
   Application.ProcessMessages;
 
-//  FErrorCode := StartGameService(FPI_LogServer, IntToStr(Self.Handle), 500);
-//  if FErrorCode <> 0 then
-//  begin
-//    imgStatusLedList.GetIcon(LED_RED, imgLogServer.Picture.Icon);
-//  end else imgStatusLedList.GetIcon(LED_YELLOW, imgLogServer.Picture.Icon);
+  FErrorCode := StartGameService(FPI_LogServer, IntToStr(Self.Handle), 500);
+  if FErrorCode <> 0 then
+  begin
+    imgStatusLedList.GetIcon(LED_RED, imgLogServer.Picture.Icon);
+  end else imgStatusLedList.GetIcon(LED_YELLOW, imgLogServer.Picture.Icon);
   Application.ProcessMessages;
-//  FErrorCode := StartGameService(FPI_GameServer, IntToStr(Self.Handle), 500);
-//  if FErrorCode <> 0 then
-//  begin
-//    imgStatusLedList.GetIcon(LED_RED, imgGameServer.Picture.Icon);
-//  end else imgStatusLedList.GetIcon(LED_YELLOW, imgGameServer.Picture.Icon);
+
+  FErrorCode := StartGameService(FPI_GameServer, IntToStr(Self.Handle), 500);
+  if FErrorCode <> 0 then
+  begin
+    imgStatusLedList.GetIcon(LED_RED, imgGameServer.Picture.Icon);
+  end else imgStatusLedList.GetIcon(LED_YELLOW, imgGameServer.Picture.Icon);
   Application.ProcessMessages;
 
   FErrorCode := StartGameService(FPI_LoginGate, IntToStr(Self.Handle), 500);
@@ -1061,6 +747,69 @@ begin
 
   btnStartServerSystem.Enabled := True;
   btnStopServerSystem.Enabled  := False;
+end;
+
+procedure TfrmMainSystem.btnEmergencyStopClick(Sender: TObject);
+begin
+  if Application.MessageBox('Attention, all systems are terminated without saving!' + #13#10 +
+                            'All unsaved data will be lost!!!' + #13#10 +
+                            'Do you want to continue?', 'Emergency Stop', MB_YESNO) = ID_YES then
+  begin
+    if FPI_LoginGate.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_LoginGate     , 200);
+    if FPI_SelectCharGate.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_SelectCharGate, 200);
+    if FPI_RunGate.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_RunGate       , 200);
+    if FPI_LoginServer.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_LoginServer   , 200);
+    if FPI_LogServer.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_LogServer     , 200);
+    if FPI_DataBaseServer.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_DataBaseServer, 200);
+    if FPI_GameServer.RProcessHandle <> 0 then
+      EmergencyStopService(FPI_GameServer    , 200);
+
+    (* Reset all Status Lights and other infos *)
+    laPortLoginGate.Caption              := '0';
+    laPortSelGate.Caption                := '0';
+    laPortRunGate.Caption                := '0';
+    laPortLoginGateToLoginServer.Caption := '0';
+    laPortSelGateToMirDBServer.Caption   := '0';
+    laPortRunGateToGameServer.Caption    := '0';
+    laPortLoginToMirDBServer.Caption     := '0';
+    laPortMirDBToGameServer.Caption      := '0';
+    laPortGameToLogServer.Caption        := '0';
+
+    imgStatusLedList.GetIcon(LED_RED, imgLoginGateStatus.Picture.Icon);
+    imgStatusLedList.GetIcon(LED_RED, imgSelectCharGate.Picture.Icon);
+    imgStatusLedList.GetIcon(LED_RED, imgRunGate.Picture.Icon);
+    imgStatusLedList.GetIcon(LED_RED, imgLoginServer.Picture.Icon);
+    imgStatusLedList.GetIcon(LED_RED, imgMirDBServer.Picture.Icon);
+    imgStatusLedList.GetIcon(LED_RED, imgGameServer.Picture.Icon);
+    imgStatusLedList.GetIcon(LED_RED, imgLogServer.Picture.Icon);
+    imgClientStatusList.GetIcon(LANE_RED, imgClientToLoginGate.Picture.Icon);
+    imgClientStatusList.GetIcon(LANE_RED, imgClientToSelGate.Picture.Icon);
+    imgClientStatusList.GetIcon(LANE_RED, imgClientToRunGate.Picture.Icon);
+    imgLLaneStatusList.GetIcon(LANE_RED, imgLoginServerToDB.Picture.Icon);
+    imgLLaneStatusList.GetIcon(LANE_RED, imgGameServerToDB.Picture.Icon);
+    imgServerServerStatusList.GetIcon(LANE_RED, imgLoginServerToMirDBServer.Picture.Icon);
+    imgServerServerStatusList.GetIcon(LANE_RED, imgDBServerToGameServer.Picture.Icon);
+    imgServerServerStatusList.GetIcon(LANE_RED, imgGameServerToLogServer.Picture.Icon);
+    imgGateServerStatusList.GetIcon(LANE_RED, imgLoginGateToLoginServer.Picture.Icon);
+    imgGateServerStatusList.GetIcon(LANE_RED, imgSelGateToMirDBServer.Picture.Icon);
+    imgGateServerStatusList.GetIcon(LANE_RED, imgRunGateToGameServer.Picture.Icon);
+    moManagerInfo.Lines.Add(' [System] - Emergency Stop Done...');
+  end;
+end;
+
+procedure TfrmMainSystem.AppEventMinimize(Sender: TObject);
+begin
+  Hide;
+  WindowState := wsMinimized;
+  tiServerManager.Visible := True;
+  tiServerManager.Animate := True;
+  tiServerManager.ShowBalloonHint;
 end;
 
 procedure TfrmMainSystem.tiServerManagerDblClick(Sender: TObject);
@@ -1180,8 +929,5 @@ end;
     imgReloadButtons.GetIcon(1, TImage(Sender).Picture.Icon);
   end;
 {$ENDREGION}
-
-
-
 
 end.

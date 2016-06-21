@@ -7,9 +7,9 @@ uses
   Vcl.Styles,
   Mir3ServerCore in '..\..\Server\Game_Server\Core\Mir3ServerCore.pas',
   Mir3ServerFunctions in '..\..\Server\Game_Server\Core\Mir3ServerFunctions.pas',
-  Mir3CommonConfigDefinition in '..\..\Client\Client\Client_Common\Mir3CommonConfigDefinition.pas',
-  Mir3ClientEngineEnDecode in '..\..\Client\Client\Client_Engine\Mir3ClientEngineEnDecode.pas',
-  Mir3ClientCommonGlobals in '..\..\Client\Client\Client_Common\Mir3ClientCommonGlobals.pas';
+  Mir3CommonConfigDefinition in '..\..\Common\Mir3CommonConfigDefinition.pas',
+  Mir3CommonCrypto in '..\..\Common\Mir3CommonCrypto.pas',
+  Mir3CommonThread in '..\..\Common\Mir3CommonThread.pas';
 
 {$R *.res}
 

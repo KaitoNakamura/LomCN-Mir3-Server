@@ -3855,6 +3855,10 @@ object frmConfigManager: TfrmConfigManager
     OnChange = pcConfigManagerChange
     object tsLauncher: TTabSheet
       Caption = ' Mir3 Launcher Config  '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label5: TLabel
         Left = 22
         Top = 77
@@ -4627,6 +4631,10 @@ object frmConfigManager: TfrmConfigManager
     object tsClient: TTabSheet
       Caption = ' Client Startup Config '
       ImageIndex = 1
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label1: TLabel
         Left = 3
         Top = 125
@@ -4925,6 +4933,10 @@ object frmConfigManager: TfrmConfigManager
     object tsServerConfig: TTabSheet
       Caption = ' Server Config '
       ImageIndex = 2
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label74: TLabel
         Left = 3
         Top = 3
@@ -4955,6 +4967,10 @@ object frmConfigManager: TfrmConfigManager
     object tsLoginGateConfig: TTabSheet
       Caption = 'Login Gate Config'
       ImageIndex = 3
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label50: TLabel
         Left = 38
         Top = 97
@@ -5129,6 +5145,10 @@ object frmConfigManager: TfrmConfigManager
     object tsSelectCharGateConfig: TTabSheet
       Caption = 'Select Char Gate Config'
       ImageIndex = 4
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label41: TLabel
         Left = 30
         Top = 89
@@ -5303,6 +5323,10 @@ object frmConfigManager: TfrmConfigManager
     object tsRunGateConfig: TTabSheet
       Caption = ' Run Gate Config '
       ImageIndex = 5
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label32: TLabel
         Left = 22
         Top = 81
@@ -5477,6 +5501,10 @@ object frmConfigManager: TfrmConfigManager
     object tsLoginServerConfig: TTabSheet
       Caption = ' Login Server Config '
       ImageIndex = 6
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label58: TLabel
         Left = 46
         Top = 75
@@ -5663,6 +5691,10 @@ object frmConfigManager: TfrmConfigManager
     object tsDBServerConfig: TTabSheet
       Caption = ' DB Server Config '
       ImageIndex = 7
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object Label65: TLabel
         Left = 54
         Top = 83

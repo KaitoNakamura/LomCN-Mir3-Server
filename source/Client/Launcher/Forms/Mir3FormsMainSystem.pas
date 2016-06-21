@@ -9,7 +9,7 @@ uses
   Vcl.Samples.Gauges, acTitleBar, sSkinProvider, sSkinManager, acWebBrowser,
   Vcl.StdCtrls, sButton, acProgressBar, sPanel, sStatusBar, sLabel,
   Mir3ServerFunctions, Mir3CoreLanguageConstants, Mir3CommonConfigDefinition,
-  Mir3CoreLauncherLanguage, Mir3ClientEngineEnDecode, sComboBox, sCheckBox,
+  Mir3CoreLauncherLanguage, Mir3CommonCrypto, sComboBox, sCheckBox,
   sEdit, sSpinEdit, sPageControl, Mir3CommonThread, Mir3CoreMD5,
   IdBaseComponent, IdComponent, IdTCPConnection, IdTCPClient,
   IdExplicitTLSClientServerBase, IdFTP, System.Zip, IdHashMessageDigest, idHash;

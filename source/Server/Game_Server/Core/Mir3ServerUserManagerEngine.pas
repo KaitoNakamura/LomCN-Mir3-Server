@@ -2,7 +2,8 @@ unit Mir3ServerUserManagerEngine;
 
 interface
 
-uses System.Classes, System.SyncObjs, System.SysUtils, Mir3ServerCore;
+uses System.Classes, System.SyncObjs, System.SysUtils,
+     Mir3ServerCore;
 
 type
   TUserMgrEngine = class(TThread)

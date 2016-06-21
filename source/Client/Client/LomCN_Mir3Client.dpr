@@ -40,8 +40,8 @@ uses
   Mir3GDIPUTIL in 'Client_Engine\GDI+\Mir3GDIPUTIL.pas',
   Mir3ClientCommonGlobals in 'Client_Common\Mir3ClientCommonGlobals.pas',
   Mir3ClientCommonLanguageUtils in 'Client_Common\Mir3ClientCommonLanguageUtils.pas',
-  Mir3ClientEngineEnDecode in 'Client_Engine\Mir3ClientEngineEnDecode.pas',
-  Dynamic_Bass in 'Client_Engine\Dynamic_Bass.pas';
+  Dynamic_Bass in 'Client_Engine\Dynamic_Bass.pas',
+  Mir3CommonCrypto in '..\..\Common\Mir3CommonCrypto.pas';
 
 {$R LomCN_Mir3Client.res}
 {$I DevelopmentDefinition.inc}

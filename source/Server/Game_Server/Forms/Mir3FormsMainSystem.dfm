@@ -28,6 +28,10 @@ object FrmMain: TFrmMain
     TabOrder = 0
     object tsMainView: TTabSheet
       Caption = ' Server Main '
+      ExplicitLeft = 0
+      ExplicitTop = 0
+      ExplicitWidth = 0
+      ExplicitHeight = 0
       object GroupBox1: TGroupBox
         Left = 0
         Top = 0

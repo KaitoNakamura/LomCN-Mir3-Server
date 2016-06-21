@@ -1,17 +1,31 @@
-unit Mir3ClientEngineEnDecode; // Ryan - Any point cleaning this file up? probably best to create new en-decode routines that is not public.
+unit Mir3CommonCrypto; // Ryan - Any point cleaning this file up? probably best to create new en-decode routines that is not public.
 
 interface
 
 {$WARNINGS OFF}
 
 uses
-  { Delphi    }  Windows, SysUtils,
-  { Mir3 Game }  Mir3ClientCommonGlobals;
+  { Delphi    }  Windows, SysUtils;
 
 const
-  OLDMODE      = 0;
-  NEWMODE      = 1;
-  ENDECODEMODE = OLDMODE;
+  OLDMODE                        = 0;
+  NEWMODE                        = 1;
+  USELOCALCODE                   = 0;
+  USEREMOTECODE                  = 1;
+  ENDECODEMODE                   = OLDMODE;
+  USECODE                        = USELOCALCODE;
+  MIR3_BUFFER_SIZE               = 30000;
+  
+type
+  { TDefaultMessage }
+  PDefaultMessage = ^TDefaultMessage;
+  TDefaultMessage = record
+    RRecog : Integer;
+    RIdent : Word;
+    RParam : Word;
+    RTag   : Word;
+    RSeries: Word;
+  end;
 
 function EncodeMessage(sMsg: TDefaultMessage): String;
 function DecodeMessage(Str: String): TDefaultMessage;
@@ -71,11 +85,11 @@ var
 
 function MakeDefaultMsg(wIdent: Integer; nRecog: Integer; wParam, wTag, wSeries: Integer): TDefaultMessage;
 begin
-  Result.Recog  := nRecog;
-  Result.Ident  := wIdent;
-  Result.Param  := wParam;
-  Result.Tag    := wTag;
-  Result.Series := wSeries;
+  Result.RRecog  := nRecog;
+  Result.RIdent  := wIdent;
+  Result.RParam  := wParam;
+  Result.RTag    := wTag;
+  Result.RSeries := wSeries;
 end;
 {$IF USECODE = USEREMOTECODE}
 
