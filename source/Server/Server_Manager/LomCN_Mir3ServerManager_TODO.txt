@@ -10,6 +10,7 @@
 
  :: Issus ::
  - No Issus
+ - Reload Config by Mir DB and Game Server do not work correct
 
  :: Knowledge DB ::
   - Don't mix 32bit and 64bit Server and Gates (both 32bit and 64bit work divergent)

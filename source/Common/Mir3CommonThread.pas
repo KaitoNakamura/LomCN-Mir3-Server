@@ -12,8 +12,8 @@ type
     procedure ThreadSuspend;
     procedure ThreadResume;
   public
-    constructor create;
-    destructor destroy; override;
+    constructor Create;
+    destructor Destroy; override;
   public
     property Event : THandle read FEvent;
   end;
@@ -21,13 +21,13 @@ type
 implementation
 
 {$REGION ' - TMir3_Thread Constructor / Destructor '}
-  constructor TMir3_Thread.create;
+  constructor TMir3_Thread.Create;
   begin
     FEvent := CreateEvent(nil, True, True, nil);
     ResetEvent(FEvent);
   end;
 
-  destructor TMir3_Thread.destroy;
+  destructor TMir3_Thread.Destroy;
   begin
     if not Terminated then
     begin

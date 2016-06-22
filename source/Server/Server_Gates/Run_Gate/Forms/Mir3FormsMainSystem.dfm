@@ -2802,4 +2802,9 @@ object frmMainSystem: TfrmMainSystem
     Left = 64
     Top = 56
   end
+  object Timer1: TTimer
+    Interval = 5000
+    Left = 120
+    Top = 16
+  end
 end

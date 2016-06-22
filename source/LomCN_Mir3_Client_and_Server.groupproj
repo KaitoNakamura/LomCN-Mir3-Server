@@ -9,6 +9,9 @@
         <Projects Include="Client\Client\LomCN_Mir3Client.dproj">
             <Dependencies/>
         </Projects>
+        <Projects Include="Server\Log_Server\LomCN_Mir3LogServer.dproj">
+            <Dependencies/>
+        </Projects>
         <Projects Include="Server\Database_Server\LomCN_Mir3DatabaseServer.dproj">
             <Dependencies/>
         </Projects>
@@ -70,6 +73,15 @@
     </Target>
     <Target Name="LomCN_Mir3Client:Make">
         <MSBuild Projects="Client\Client\LomCN_Mir3Client.dproj" Targets="Make"/>
+    </Target>
+    <Target Name="LomCN_Mir3LogServer">
+        <MSBuild Projects="Server\Log_Server\LomCN_Mir3LogServer.dproj"/>
+    </Target>
+    <Target Name="LomCN_Mir3LogServer:Clean">
+        <MSBuild Projects="Server\Log_Server\LomCN_Mir3LogServer.dproj" Targets="Clean"/>
+    </Target>
+    <Target Name="LomCN_Mir3LogServer:Make">
+        <MSBuild Projects="Server\Log_Server\LomCN_Mir3LogServer.dproj" Targets="Make"/>
     </Target>
     <Target Name="LomCN_Mir3DatabaseServer">
         <MSBuild Projects="Server\Database_Server\LomCN_Mir3DatabaseServer.dproj"/>
@@ -180,13 +192,13 @@
         <MSBuild Projects="Client\Language\Spanish\Spanish.dproj" Targets="Make"/>
     </Target>
     <Target Name="Build">
-        <CallTarget Targets="LomCN_Mir3Server;LomCN_Mir3Client;LomCN_Mir3DatabaseServer;LomCN_Mir3LoginServer;LomCN_Mir3LoginGate;LomCN_Mir3SelectCharGate;LomCN_Mir3RunGate;LomCN_Mir3Launcher;LomCN_Mir3ServerManager;LomCN_Mir3ConfigManager;English;German;Polish;Spanish"/>
+        <CallTarget Targets="LomCN_Mir3Server;LomCN_Mir3Client;LomCN_Mir3LogServer;LomCN_Mir3DatabaseServer;LomCN_Mir3LoginServer;LomCN_Mir3LoginGate;LomCN_Mir3SelectCharGate;LomCN_Mir3RunGate;LomCN_Mir3Launcher;LomCN_Mir3ServerManager;LomCN_Mir3ConfigManager;English;German;Polish;Spanish"/>
     </Target>
     <Target Name="Clean">
-        <CallTarget Targets="LomCN_Mir3Server:Clean;LomCN_Mir3Client:Clean;LomCN_Mir3DatabaseServer:Clean;LomCN_Mir3LoginServer:Clean;LomCN_Mir3LoginGate:Clean;LomCN_Mir3SelectCharGate:Clean;LomCN_Mir3RunGate:Clean;LomCN_Mir3Launcher:Clean;LomCN_Mir3ServerManager:Clean;LomCN_Mir3ConfigManager:Clean;English:Clean;German:Clean;Polish:Clean;Spanish:Clean"/>
+        <CallTarget Targets="LomCN_Mir3Server:Clean;LomCN_Mir3Client:Clean;LomCN_Mir3LogServer:Clean;LomCN_Mir3DatabaseServer:Clean;LomCN_Mir3LoginServer:Clean;LomCN_Mir3LoginGate:Clean;LomCN_Mir3SelectCharGate:Clean;LomCN_Mir3RunGate:Clean;LomCN_Mir3Launcher:Clean;LomCN_Mir3ServerManager:Clean;LomCN_Mir3ConfigManager:Clean;English:Clean;German:Clean;Polish:Clean;Spanish:Clean"/>
     </Target>
     <Target Name="Make">
-        <CallTarget Targets="LomCN_Mir3Server:Make;LomCN_Mir3Client:Make;LomCN_Mir3DatabaseServer:Make;LomCN_Mir3LoginServer:Make;LomCN_Mir3LoginGate:Make;LomCN_Mir3SelectCharGate:Make;LomCN_Mir3RunGate:Make;LomCN_Mir3Launcher:Make;LomCN_Mir3ServerManager:Make;LomCN_Mir3ConfigManager:Make;English:Make;German:Make;Polish:Make;Spanish:Make"/>
+        <CallTarget Targets="LomCN_Mir3Server:Make;LomCN_Mir3Client:Make;LomCN_Mir3LogServer:Make;LomCN_Mir3DatabaseServer:Make;LomCN_Mir3LoginServer:Make;LomCN_Mir3LoginGate:Make;LomCN_Mir3SelectCharGate:Make;LomCN_Mir3RunGate:Make;LomCN_Mir3Launcher:Make;LomCN_Mir3ServerManager:Make;LomCN_Mir3ConfigManager:Make;English:Make;German:Make;Polish:Make;Spanish:Make"/>
     </Target>
     <Import Project="$(BDS)\Bin\CodeGear.Group.Targets" Condition="Exists('$(BDS)\Bin\CodeGear.Group.Targets')"/>
 </Project>

@@ -110,21 +110,41 @@ uses Mir3FormsLocalDB, Mir3ServerEvents, Mir3ServerConstants,
 
 procedure TFrmMain.ServerControlManagerMessage(var AMessage: TWMCopyData);
 var
-  FIdent : Word;
+  FService     : Word;
+  FServiceInfo : TSCMServiceInfo;
 begin
-  FIdent := AMessage.CopyDataStruct.dwData;
-  case FIdent of
-    SCM_START   : begin
-      StartGameService;
-    end;
-    SCM_STOP    : begin
-      StopGameService;
-    end;
-    SCM_RELOAD  : begin
-
-    end;
-    SCM_RESTART : begin
-
+  FService := AMessage.From;
+  FServiceInfo := TSCMServiceInfo(AMessage.CopyDataStruct.lpData^);
+  case FService of
+    IDENT_MANAGER_SERVER : begin
+      case FServiceInfo.RServiceState of
+        ssRelaodConfig : begin
+          if Assigned(FConfigManager) then
+          begin
+            try
+              FConfigManager.LoadConfig(ExtractFilePath(ParamStr(0))+'Mir3GameServerSetup.conf', ctLoginServer);
+              //GameClient.Active  := False;
+              //LoginServer.Active := False;
+              with FConfigManager do
+              begin
+                //GameClient.Port  := LS_GatePort;
+                //LoginServer.Port := LS_ServerPort;
+                //LoginServer.Host := LS_ServerHost;
+                //TODO : Reload other things...
+              end;
+              //GameClient.Active  := True;
+              //LoginServer.Active := True;
+            finally
+              FServiceInfo.RServiceState := ssRelaodConfigDone;
+              SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
+            end;
+          end;
+        end;
+        ssCloseApplication : begin
+          StopGameService;
+          Close;
+        end;
+      end;
     end;
   end;
 end;
@@ -137,6 +157,8 @@ end;
     FX, FY         : Integer;
     FServiceInfo   : TSCMServiceInfo;
   begin
+    FConfigManager := TMir3ConfigManager.Create;
+    FConfigManager.LoadConfig(ExtractFilePath(ParamStr(0))+'Mir3GameServerSetup.conf', ctLoginServer);
     GServerManagerHandle := StrToIntDef(ParamStr(1), 0);
     if GServerManagerHandle <> 0 then
     begin
@@ -784,30 +806,56 @@ begin
     FServiceInfo.RServiceState  := ssInitApp;
     SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
   end;
+
+
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssOpenClientPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
+  end;
+
+
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssOpenServerPart;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
+  end;
+
+  //if GateConnection and Server Connection OK then
+  //begin
+  if GServerManagerHandle <> 0 then
+  begin
+    FServiceInfo.RServiceHandle := 0;
+    FServiceInfo.RServiceState  := ssServiceIsRunning;
+    SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
+  end;
+  //end;
+
 end;
 
 procedure TFrmMain.StopGameService;
 var
   FServiceInfo : TSCMServiceInfo;
 begin
-  //if GServerManagerHandle <> 0 then
-  //begin
+  if GServerManagerHandle <> 0 then
+  begin
     FServiceInfo.RServiceHandle := 0;
     FServiceInfo.RServiceState  := ssCloseClientPart;
     SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
-  //end;
+  end;
 
   Application.ProcessMessages;
   // Close all and stop all....
   Sleep(2000);
 
- // if GServerManagerHandle <> 0 then
-  //begin
+  if GServerManagerHandle <> 0 then
+  begin
     FServiceInfo.RServiceHandle := 0;
     FServiceInfo.RServiceState  := ssCloseApplication;
     SendSCMMessageServiceInfo(GServerManagerHandle, FServiceInfo , IDENT_GAME_SERVER);
-  //end;
-  Close;
+  end;
 end;
 
 end.

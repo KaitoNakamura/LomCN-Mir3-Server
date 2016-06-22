@@ -21,8 +21,8 @@ type
     procedure ProcessReadyPlayers;
     procedure ProcessEtc;
   public
-    constructor create;
-    destructor destroy; override;
+    constructor Create;
+    destructor Destroy; override;
     procedure AddDBData(AData: String);
     function IsFinished: Boolean;
     function IsDoingSave(ACharName: String): Boolean;
@@ -40,7 +40,7 @@ implementation
 uses Mir3FormsMainSystem;
 
 {$REGION ' - TFrontEngine Constructor / Destructor '}
-  constructor TFrontEngine.create;
+  constructor TFrontEngine.Create;
   begin
 //  TODO : need Working out for Suspend and Resume (both a deprecated)
 //  FEventHandle := CreateEvent(
@@ -63,7 +63,7 @@ uses Mir3FormsMainSystem;
     FreeOnTerminate := True;
   end;
 
-  destructor TFrontEngine.destroy;
+  destructor TFrontEngine.Destroy;
   begin
     FDBDatas.Clear;
     FreeAndNil(FDBDatas);

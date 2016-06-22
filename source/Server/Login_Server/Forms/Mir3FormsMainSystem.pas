@@ -1,3 +1,32 @@
+(*****************************************************************************************
+ *   LomCN Mir3 Login Server File 2016                                                   *
+ *                                                                                       *
+ *   Web       : http://www.lomcn.org/forum/forum.php                                    *
+ *   Version   : 0.0.0.1                                                                 *
+ *                                                                                       *
+ *   - File Info -                                                                       *
+ *                                                                                       *
+ *   It hold the LomCN Mir3 Login Server Code                                            *
+ *                                                                                       *
+ *                                                                                       *
+ *                                                                                       *
+ *****************************************************************************************
+ * Change History                                                                        *
+ *                                                                                       *
+ *  - 0.0.0.1  [2016-06-10] Coly : first init                                            *
+ *                                                                                       *
+ *****************************************************************************************
+ *  - TODO List for this *.pas file -                                                    *
+ *---------------------------------------------------------------------------------------*
+ *  if a todo finished, then delete it here...                                           *
+ *  if you find a global TODO thats need to do, then add it here..                       *
+ *---------------------------------------------------------------------------------------*
+ *                                                                                       *
+ *  - TODO : -all -fill *.pas header information                                         *
+ *                 (how to need this file etc.)                                          *
+ *                                                                                       *
+ *****************************************************************************************)
+
 unit Mir3FormsMainSystem;
 
 interface

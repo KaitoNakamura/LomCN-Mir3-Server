@@ -216,6 +216,11 @@ type
     TodoList3: TMemo;
     rbUseCRCCheck: TRadioButton;
     rbUseMD5Check: TRadioButton;
+    TabSheet1: TTabSheet;
+    meLogServerPort: TMaskEdit;
+    meLogBaseDir: TMaskEdit;
+    Label31: TLabel;
+    Label40: TLabel;
     procedure pcConfigManagerChange(Sender: TObject);
     procedure btnDefaultClick(Sender: TObject);
     procedure btnSaveConfigClick(Sender: TObject);
@@ -369,10 +374,20 @@ begin
       {$ENDREGION}
     end;
     6 : begin
+      {$REGION ' Login Server Defaults '}
 
+      {$ENDREGION}
     end;
     7 : begin
+      {$REGION ' Mir DB Server Defaults '}
 
+      {$ENDREGION}
+    end;
+    8 : begin
+      {$REGION ' Log Server Defaults '}
+      meLogServerPort.Text     := '10000';
+      meLogBaseDir.Text        := '.\Logs';
+      {$ENDREGION}
     end;
   end;
 end;
@@ -382,12 +397,14 @@ begin
   case FManageMode of
     0 : begin
       OpenDialog.Filter     := 'Launcher File Mir3.conf|Mir3.conf';
+      OpenDialog.FileName   := 'Mir3.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
         {$REGION ' Load Launcher Config '}
         with FConfigManager do
         begin
+          LoadConfig(OpenDialog.FileName, ctLauncher);
           meServerCount.Text                  := IntToStr(LC_ServerCount);
           meServerName1.Text                  := LC_ServerName1;
           meServerName2.Text                  := LC_ServerName2;
@@ -455,12 +472,14 @@ begin
     end;
     1 : begin
       OpenDialog.Filter     := 'Client File Mir3Client.conf|Mir3Client.conf';
+      OpenDialog.FileName   := 'Mir3Client.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
         {$REGION ' Load Client Config '}
         with FConfigManager do
         begin
+          LoadConfig(OpenDialog.FileName, ctUserClient);
           cbLanguage.ItemIndex            := CC_LanguageId;
           if CC_ScreenSize = 800 then
             cbScreenResolution.Text  := '800x600'
@@ -491,12 +510,14 @@ begin
     end;
     2 : begin
       OpenDialog.Filter     := 'Server File Mir3ServerSetup.conf|Mir3ServerSetup.conf';
+      OpenDialog.FileName   := 'Mir3ServerSetup.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
       {$REGION ' Load Game Server Config '}
       with FConfigManager do
       begin
+        LoadConfig(OpenDialog.FileName, ctGameServer);
        //TODO : Add Server Config Defaults
       end;
       {$ENDREGION}
@@ -504,12 +525,14 @@ begin
     end;
     3 : begin
       OpenDialog.Filter     := 'Server File Mir3LoginGateSetup.conf|Mir3LoginGateSetup.conf';
+      OpenDialog.FileName   := 'Mir3LoginGateSetup.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
       {$REGION ' Load Login Gate Config '}
       with FConfigManager do
       begin
+        LoadConfig(OpenDialog.FileName, ctGateLogin);
         meLoginGatePort.Text      := IntToStr(GL_GatePort);
         meLoginServerHost.Text    := GL_ServerHost;
         meLoginServerPort.Text    := IntToStr(GL_ServerPort);
@@ -523,12 +546,14 @@ begin
     end;
     4 : begin
       OpenDialog.Filter     := 'Server File Mir3SelCharGateSetup.conf|Mir3SelCharGateSetup.conf';
+      OpenDialog.FileName   := 'Mir3SelCharGateSetup.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
       {$REGION ' Load Select Char Gate Config '}
       with FConfigManager do
       begin
+        LoadConfig(OpenDialog.FileName, ctGateSelectChar);
         meSelectCharGatePort.Text      := IntToStr(GS_GatePort);
         meSelectCharServerHost.Text    := GS_ServerHost;
         meSelectCharServerPort.Text    := IntToStr(GS_ServerPort);
@@ -542,12 +567,14 @@ begin
     end;
     5 : begin
       OpenDialog.Filter     := 'Server File Mir3RunGateSetup.conf|Mir3RunGateSetup.conf';
+      OpenDialog.FileName   := 'Mir3RunGateSetup.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
       {$REGION ' Load Run Gate Config '}
       with FConfigManager do
       begin
+        LoadConfig(OpenDialog.FileName, ctGateRun);
         meRunGatePort.Text      := IntToStr(GR_GatePort);
         meRunServerHost.Text    := GR_ServerHost;
         meRunServerPort.Text    := IntToStr(GR_ServerPort);
@@ -561,12 +588,14 @@ begin
     end;
     6 : begin
       OpenDialog.Filter     := 'Server File Mir3LoginServerSetup.conf|Mir3LoginServerSetup.conf';
+      OpenDialog.FileName   := 'Mir3LoginServerSetup.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
       {$REGION ' Load Login Server Config '}
       with FConfigManager do
       begin
+        LoadConfig(OpenDialog.FileName, ctLoginServer);
        //TODO : Add Server Config Defaults
       end;
       {$ENDREGION}
@@ -574,13 +603,31 @@ begin
     end;
     7 : begin
       OpenDialog.Filter     := 'Server File Mir3DBServerSetup.conf|Mir3DBServerSetup.conf';
+      OpenDialog.FileName   := 'Mir3DBServerSetup.conf';
       OpenDialog.DefaultExt := 'conf';
       if OpenDialog.Execute then
       begin
-      {$REGION ' Load DB Server Config '}
+      {$REGION ' Load Mir DB Server Config '}
       with FConfigManager do
       begin
+        LoadConfig(OpenDialog.FileName, ctDBServer);
          //TODO : Add Server Config Defaults
+      end;
+      {$ENDREGION}
+      end;
+    end;
+    8 : begin
+      OpenDialog.Filter     := 'Server File Mir3LogServerSetup.conf|Mir3LogServerSetup.conf';
+      OpenDialog.FileName   := 'Mir3LogServerSetup.conf';
+      OpenDialog.DefaultExt := 'conf';
+      if OpenDialog.Execute then
+      begin
+      {$REGION ' Load Log Server Config '}
+      with FConfigManager do
+      begin
+        LoadConfig(OpenDialog.FileName, ctLogServer);
+        meLogServerPort.Text  := IntToStr(LL_ServerPort);
+        meLogBaseDir.Text     := LL_LogFolder;
       end;
       {$ENDREGION}
       end;
@@ -593,6 +640,7 @@ begin
   case FManageMode of
     0 : begin
       SaveDialog.Filter     := 'Launcher File Mir3.conf|Mir3.conf';
+      SaveDialog.FileName   := 'Mir3.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -669,6 +717,7 @@ begin
     end;
     1 : begin
       SaveDialog.Filter     := 'Client File Mir3Client.conf|Mir3Client.conf';
+      SaveDialog.FileName   := 'Mir3Client.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -705,7 +754,8 @@ begin
       end;
     end;
     2 : begin
-      SaveDialog.Filter     := 'Server File Mir3ServerSetup.conf|Mir3ServerSetup.conf';
+      SaveDialog.Filter     := 'Server File Mir3GameServerSetup.conf|Mir3GameServerSetup.conf';
+      SaveDialog.FileName   := 'Mir3GameServerSetup.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -720,6 +770,7 @@ begin
     end;
     3 : begin
       SaveDialog.Filter     := 'Server File Mir3LoginGateSetup.conf|Mir3LoginGateSetup.conf';
+      SaveDialog.FileName   := 'Mir3LoginGateSetup.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -740,6 +791,7 @@ begin
     end;
     4 : begin
       SaveDialog.Filter     := 'Server File Mir3SelCharGateSetup.conf|Mir3SelCharGateSetup.conf';
+      SaveDialog.FileName   := 'Mir3SelCharGateSetup.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -760,6 +812,7 @@ begin
     end;
     5 : begin
       SaveDialog.Filter     := 'Server File Mir3RunGateSetup.conf|Mir3RunGateSetup.conf';
+      SaveDialog.FileName   := 'Mir3RunGateSetup.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -780,6 +833,7 @@ begin
     end;
     6 : begin
       SaveDialog.Filter     := 'Server File Mir3LoginServerSetup.conf|Mir3LoginServerSetup.conf';
+      SaveDialog.FileName   := 'Mir3LoginServerSetup.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
@@ -794,15 +848,32 @@ begin
     end;
     7 : begin
       SaveDialog.Filter     := 'Server File Mir3DBServerSetup.conf|Mir3DBServerSetup.conf';
+      SaveDialog.FileName   := 'Mir3DBServerSetup.conf';
       SaveDialog.DefaultExt := 'conf';
       if SaveDialog.Execute then
       begin
-        {$REGION ' Save DB Server Config '}
+        {$REGION ' Save Mir DB Server Config '}
         with FConfigManager do
         begin
 
         end;
         FConfigManager.SaveConfig(SaveDialog.FileName, ctDBServer);
+        {$ENDREGION}
+      end;
+    end;
+    8 : begin
+      SaveDialog.Filter     := 'Server File Mir3LogServerSetup.conf|Mir3LogServerSetup.conf';
+      SaveDialog.FileName   := 'Mir3LogServerSetup.conf';
+      SaveDialog.DefaultExt := 'conf';
+      if SaveDialog.Execute then
+      begin
+        {$REGION ' Save Log Server Config '}
+        with FConfigManager do
+        begin
+          LL_LogFolder  := meLogBaseDir.Text;
+          LL_ServerPort := StrToIntDef(meLogServerPort.Text, 10000);
+        end;
+        FConfigManager.SaveConfig(SaveDialog.FileName, ctLogServer);
         {$ENDREGION}
       end;
     end;
@@ -848,9 +919,14 @@ begin
       FManageMode := 6;
     end;
     7 : begin
-      btnSaveConfig.Caption := 'Save DB Server Config';
-      btnLoadConfig.Caption := 'Load DB Server Config';
+      btnSaveConfig.Caption := 'Save Mir DB Server Config';
+      btnLoadConfig.Caption := 'Load Mir DB Server Config';
       FManageMode := 7;
+    end;
+    8 : begin
+      btnSaveConfig.Caption := 'Save Log Server Config';
+      btnLoadConfig.Caption := 'Load Log Server Config';
+      FManageMode := 8;
     end;
   end;
 end;

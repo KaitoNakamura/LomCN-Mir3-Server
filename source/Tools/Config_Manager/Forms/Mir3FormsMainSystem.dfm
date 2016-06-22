@@ -3849,16 +3849,12 @@ object frmConfigManager: TfrmConfigManager
     Top = 17
     Width = 1013
     Height = 628
-    ActivePage = tsRunGateConfig
+    ActivePage = tsLauncher
     Align = alClient
     TabOrder = 0
     OnChange = pcConfigManagerChange
     object tsLauncher: TTabSheet
       Caption = ' Mir3 Launcher Config  '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label5: TLabel
         Left = 22
         Top = 77
@@ -4631,10 +4627,6 @@ object frmConfigManager: TfrmConfigManager
     object tsClient: TTabSheet
       Caption = ' Client Startup Config '
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label1: TLabel
         Left = 3
         Top = 125
@@ -4933,10 +4925,6 @@ object frmConfigManager: TfrmConfigManager
     object tsServerConfig: TTabSheet
       Caption = ' Server Config '
       ImageIndex = 2
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label74: TLabel
         Left = 3
         Top = 3
@@ -4967,10 +4955,6 @@ object frmConfigManager: TfrmConfigManager
     object tsLoginGateConfig: TTabSheet
       Caption = 'Login Gate Config'
       ImageIndex = 3
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label50: TLabel
         Left = 38
         Top = 97
@@ -5145,10 +5129,6 @@ object frmConfigManager: TfrmConfigManager
     object tsSelectCharGateConfig: TTabSheet
       Caption = 'Select Char Gate Config'
       ImageIndex = 4
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label41: TLabel
         Left = 30
         Top = 89
@@ -5323,10 +5303,6 @@ object frmConfigManager: TfrmConfigManager
     object tsRunGateConfig: TTabSheet
       Caption = ' Run Gate Config '
       ImageIndex = 5
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label32: TLabel
         Left = 22
         Top = 81
@@ -5501,10 +5477,6 @@ object frmConfigManager: TfrmConfigManager
     object tsLoginServerConfig: TTabSheet
       Caption = ' Login Server Config '
       ImageIndex = 6
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label58: TLabel
         Left = 46
         Top = 75
@@ -5691,10 +5663,6 @@ object frmConfigManager: TfrmConfigManager
     object tsDBServerConfig: TTabSheet
       Caption = ' DB Server Config '
       ImageIndex = 7
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object Label65: TLabel
         Left = 54
         Top = 83
@@ -5876,6 +5844,53 @@ object frmConfigManager: TfrmConfigManager
           ' - Add MYSQL Support'
           ' - check if we need more config things')
         TabOrder = 8
+      end
+    end
+    object TabSheet1: TTabSheet
+      Caption = ' Log Server Config '
+      ImageIndex = 8
+      object Label31: TLabel
+        Left = 17
+        Top = 69
+        Width = 46
+        Height = 13
+        Caption = 'Base Dir'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object Label40: TLabel
+        Left = 37
+        Top = 33
+        Width = 24
+        Height = 13
+        Caption = 'Port'
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clWindowText
+        Font.Height = -11
+        Font.Name = 'Tahoma'
+        Font.Style = [fsBold]
+        ParentFont = False
+      end
+      object meLogServerPort: TMaskEdit
+        Left = 77
+        Top = 30
+        Width = 150
+        Height = 21
+        MaxLength = 40
+        TabOrder = 0
+        Text = '0'
+      end
+      object meLogBaseDir: TMaskEdit
+        Left = 77
+        Top = 66
+        Width = 150
+        Height = 21
+        TabOrder = 1
+        Text = '\update\'
       end
     end
   end

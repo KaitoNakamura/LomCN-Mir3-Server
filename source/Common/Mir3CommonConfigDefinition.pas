@@ -112,7 +112,7 @@ type
     REngineVersion : Integer;
   end;
 
-  //Mir3ServerSetup.conf
+  //Mir3GameServerSetup.conf
   PMir3GameServerConfig = ^TMir3GameServerConfig;
   TMir3GameServerConfig = packed record
 
@@ -234,9 +234,20 @@ type
     RPahtGameServer     : String[255];
   end;
 
+  //Mir3LogServerSetup.conf
+  PMir3LogServerConfig = ^TMir3LogServerConfig;
+  TMir3LogServerConfig = packed record
+    RLogBaseFolder : String[255];
+    RServerPort    : Integer;
+    RWindowX       : Integer;
+    RWindowY       : Integer;
+  end;
+
+
+
 {$ENDREGION}
 
-  TMir3ConfigType = (ctGateLogin, ctGateSelectChar, ctGateRun, ctLoginServer, ctDBServer, ctGameServer, ctLauncher, ctUserClient, ctServerManager);
+  TMir3ConfigType = (ctGateLogin, ctGateSelectChar, ctGateRun, ctLoginServer, ctDBServer, ctGameServer, ctLauncher, ctUserClient, ctServerManager, ctLogServer);
 
   TMir3ConfigManager = class
   private
@@ -250,6 +261,7 @@ type
     FLauncherConfig      : TMir3LauncherConfig;
     FUserClientConfig    : TMir3UserClientConfig;
     FServerManagerConfig : TMir3ServerManagerConfig;
+    FLogServerConfig     : TMir3LogServerConfig;
   private
     {$REGION ' - Getter   '}
     {$REGION ' - Gate Login System      '}
@@ -382,7 +394,7 @@ type
     function GetCC_ShowTooltipImage: Boolean;
     function GetCC_ShowCharacterName: Boolean;
     {$ENDREGION}
-    {$REGION ' - Server Manager System     '}
+    {$REGION ' - Server Manager System  '}
     function GetSM_PahtLoginGate: String;
     function GetSM_PahtSelectCharGate: String;
     function GetSM_PahtRunGate1: String;
@@ -392,6 +404,12 @@ type
     function GetSM_PahtDatabaseServer: String;
     function GetSM_PahtLogServer: String;
     function GetSM_PahtGameServer: String;
+    {$ENDREGION}
+    {$REGION ' - Log Server System      '}
+    function GetLL_LogFolder: String;
+    function GetLL_ServerPort: Integer;
+    function GetLL_WindowX: Integer;
+    function GetLL_WindowY: Integer;
     {$ENDREGION}
     {$ENDREGION}
     function GetCH_FileTypeInfo: String;
@@ -528,7 +546,7 @@ type
     procedure SetCC_ShowTooltipImage(AValue: Boolean);
     procedure SetCC_ShowCharacterName(AValue: Boolean);
     {$ENDREGION}
-    {$REGION ' - Game Server System     '}
+    {$REGION ' - Server Manager System     '}
     procedure SetSM_PahtLoginGate(AValue: String);
     procedure SetSM_PahtSelectCharGate(AValue: String);
     procedure SetSM_PahtRunGate1(AValue: String);
@@ -538,6 +556,12 @@ type
     procedure SetSM_PahtDatabaseServer(AValue: String);
     procedure SetSM_PahtLogServer(AValue: String);
     procedure SetSM_PahtGameServer(AValue: String);
+    {$ENDREGION}
+    {$REGION ' - Log Server System      '}
+    procedure SetLL_LogFolder(AValue: String);
+    procedure SetLL_ServerPort(AValue: Integer);
+    procedure SetLL_WindowX(AValue: Integer);
+    procedure SetLL_WindowY(AValue: Integer);
     {$ENDREGION}
     {$ENDREGION}
   public (* Function  *)
@@ -597,6 +621,12 @@ type
     {$REGION ' - Game Server System      '}
 
 
+    {$ENDREGION}
+    {$REGION ' - Log Server System       '}
+    property LL_LogFolder          : String   read GetLL_LogFolder          write SetLL_LogFolder;
+    property LL_ServerPort         : Integer  read GetLL_ServerPort         write SetLL_ServerPort;
+    property LL_WindowX            : Integer  read GetLL_WindowX            write SetLL_WindowX;
+    property LL_WindowY            : Integer  read GetLL_WindowY            write SetLL_WindowY;
     {$ENDREGION}
     {$REGION ' - Launcher System         '}
     property LC_ServerCount        : Integer  read GetLC_ServerCount        write SetLC_ServerCount;
@@ -681,7 +711,7 @@ type
     property CC_ShowTooltipImage      : Boolean  read GetCC_ShowTooltipImage      write SetCC_ShowTooltipImage;
     property CC_ShowCharacterName     : Boolean  read GetCC_ShowCharacterName     write SetCC_ShowCharacterName;
     {$ENDREGION}
-    {$REGION ' - Server Manager System      '}
+    {$REGION ' - Server Manager System   '}
     property SM_PahtLoginGate      : String read GetSM_PahtLoginGate      write SetSM_PahtLoginGate;
     property SM_PahtSelectCharGate : String read GetSM_PahtSelectCharGate write SetSM_PahtSelectCharGate;
     property SM_PahtRunGate1       : String read GetSM_PahtRunGate1       write SetSM_PahtRunGate1;
@@ -778,6 +808,14 @@ begin
         FTempMem.ReadBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
         FTempMem.ReadBuffer(FServerManagerConfig, SizeOf(TMir3ServerManagerConfig));
       end;
+      ctLogServer       : begin
+        ZeroMemory(@FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
+        ZeroMemory(@FLogServerConfig, SizeOf(TMir3LogServerConfig));
+        FTempMem.LoadFromFile(AFileName);
+        FTempMem.Seek(0,0);
+        FTempMem.ReadBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
+        FTempMem.ReadBuffer(FLogServerConfig, SizeOf(TMir3LogServerConfig));
+      end;
     end;
   finally
     FTempMem.Clear;
@@ -864,6 +902,15 @@ begin
         FTempMem.Seek(0,0);
         FTempMem.SaveToFile(AFileName);
       end;
+      ctLogServer      : begin
+        FConfigFileHeader.FFileTypeInfo      := FILE_TYPE_INFO;
+        FConfigFileHeader.FConfigFileVersion := $0001;
+        FTempMem.WriteBuffer(FConfigFileHeader, SizeOf(TMir3ConfigFileHeader));
+        FTempMem.WriteBuffer(FLogServerConfig, SizeOf(TMir3LogServerConfig));
+        FTempMem.Seek(0,0);
+        FTempMem.SaveToFile(AFileName);
+      end;
+
     end;
   finally
     FTempMem.Clear;
@@ -964,8 +1011,8 @@ begin
     end;
     ctGameServer : begin
       {$REGION ' Game Server Defaults '}
-
       //TODO : Add Server Config Defaults
+      SaveConfig(AFileName, ctGameServer);
       {$ENDREGION}
     end;
     ctGateLogin : begin
@@ -1037,9 +1084,18 @@ begin
        SM_PahtRunGate3       := ExtractFilePath(ParamStr(0))+'Server_and_Gates\RunGate';
        SM_PahtLoginServer    := ExtractFilePath(ParamStr(0))+'Server_and_Gates\LoginServer';
        SM_PahtDatabaseServer := ExtractFilePath(ParamStr(0))+'Server_and_Gates\DatabaseServer';
-       SM_PahtLogServer      := '';
+       SM_PahtLogServer      := ExtractFilePath(ParamStr(0))+'Server_and_Gates\LogServer';
        SM_PahtGameServer     := ExtractFilePath(ParamStr(0));
        SaveConfig(AFileName, ctServerManager);
+      {$ENDREGION}
+    end;
+    ctLogServer : begin
+      {$REGION ' Log Server Defaults '}
+      LL_LogFolder          := ExtractFilePath(ParamStr(0))+'Server_and_Gates\LogServer\Logs';
+      LL_ServerPort         := 10000;
+      LL_WindowX            := 5;
+      LL_WindowY            := 400;
+      SaveConfig(AFileName, ctLogServer);
       {$ENDREGION}
     end;
   end;
@@ -2346,7 +2402,7 @@ end;
 
 {$ENDREGION}
 
-{$REGION ' - Game Server Getter / Setter     '}
+{$REGION ' - Server Manager Getter / Setter     '}
 
   function TMir3ConfigManager.GetSM_PahtLoginGate: String;
   begin
@@ -2466,6 +2522,58 @@ end;
     if Trim(AValue) <> '' then
       FServerManagerConfig.RPahtGameServer := AnsiString(EncodeString(AValue));
   end;
+{$ENDREGION}
+
+{$REGION ' - Log Server Getter / Setter     '}
+
+  function TMir3ConfigManager.GetLL_LogFolder: String;
+  begin
+    if Trim(String(FLogServerConfig.RLogBaseFolder)) <> '' then
+      Result := String(DeCodeString(String(FLogServerConfig.RLogBaseFolder)))
+    else Result := '';
+  end;
+
+  function TMir3ConfigManager.GetLL_ServerPort: Integer;
+  begin
+    Result := FLogServerConfig.RServerPort;
+  end;
+
+  function TMir3ConfigManager.GetLL_WindowX: Integer;
+  begin
+    Result := FLogServerConfig.RWindowX;
+  end;
+
+  function TMir3ConfigManager.GetLL_WindowY: Integer;
+  begin
+    Result := FLogServerConfig.RWindowY;
+  end;
+
+  (* Setter *)
+
+  procedure TMir3ConfigManager.SetLL_LogFolder(AValue: String);
+  begin
+    if Trim(AValue) <> '' then
+      FLogServerConfig.RLogBaseFolder := AnsiString(EncodeString(Trim(AValue)));
+  end;
+
+  procedure TMir3ConfigManager.SetLL_ServerPort(AValue: Integer);
+  begin
+    if AValue <> FLogServerConfig.RServerPort then
+      FLogServerConfig.RServerPort := AValue;
+  end;
+
+  procedure TMir3ConfigManager.SetLL_WindowX(AValue: Integer);
+  begin
+    if AValue <> FLogServerConfig.RWindowX then
+      FLogServerConfig.RWindowX := AValue;
+  end;
+
+  procedure TMir3ConfigManager.SetLL_WindowY(AValue: Integer);
+  begin
+    if AValue <> FLogServerConfig.RWindowY then
+      FLogServerConfig.RWindowY := AValue;
+  end;
+
 {$ENDREGION}
 
 end.

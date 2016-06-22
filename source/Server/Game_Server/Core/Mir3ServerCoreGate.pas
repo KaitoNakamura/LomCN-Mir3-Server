@@ -61,6 +61,7 @@ var
   GKeepConnectTimeOut     : LongWord  = 120000;
 
 function CleanupSessionArray: Boolean;
+function CloseSessionArray: Boolean;
 function GetFreeSessionPort: PUserGateSession;
 function SetupSessionArray: Boolean;
 function ResetSessionArray: Boolean;
@@ -95,6 +96,38 @@ begin
               RMessageList.Clear;
               FreeAndNil(RMessageList);
             end;
+          end;
+        end;
+      end;
+    end;
+  except
+    Result := False;
+  end;
+end;
+
+function CloseSessionArray: Boolean;
+var
+  I        : Integer;
+  FSession : PUserGateSession;
+begin
+  Result := True;
+  try
+    for I := 0 to MIR3_MAX_GATE_SESSION-1 do
+    begin
+      FSession := @GSessionArray[I];
+      if FSession.RSocket <> nil then
+      begin
+        with FSession^ do
+        begin
+          if RSocket.Connected then
+            RSocket.Close;
+          RSocket       := nil;
+          RSocketHandle := -1;
+          RRemoteIPaddr := '';
+          if RMessageList <> nil then
+          begin
+            RMessageList.Clear;
+            FreeAndNil(RMessageList);
           end;
         end;
       end;

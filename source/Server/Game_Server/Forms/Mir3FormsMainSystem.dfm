@@ -28,10 +28,6 @@ object FrmMain: TFrmMain
     TabOrder = 0
     object tsMainView: TTabSheet
       Caption = ' Server Main '
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object GroupBox1: TGroupBox
         Left = 0
         Top = 0
@@ -388,10 +384,6 @@ object FrmMain: TFrmMain
     object tsFastTools: TTabSheet
       Caption = ' Server Tools '
       ImageIndex = 1
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 290
     end
   end
   object lbServerMessage: TListBox
@@ -403,6 +395,7 @@ object FrmMain: TFrmMain
     ItemHeight = 13
     TabOrder = 1
     OnClick = lbServerMessageClick
+    ExplicitTop = -6
   end
   object stbServerInfo: TStatusBar
     Left = 0
@@ -451,7 +444,8 @@ object FrmMain: TFrmMain
     Top = 8
   end
   object LogUdp: TIdUDPClient
-    Port = 0
+    Host = '127.0.0.1'
+    Port = 10000
     Left = 336
     Top = 8
   end
